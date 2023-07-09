@@ -20,7 +20,7 @@ export interface IPromotions {
 
   export const promotionsApi = createApi({
     reducerPath: "promotionsApi",
-    baseQuery: fetchBaseQuery({ baseUrl: "process.env.API_URL" }),
+    baseQuery: fetchBaseQuery({ baseUrl: `${process.env.API_URL}` }),
     endpoints: (builder) => ({
       getPromotions: builder.query<IPromotions, void>({
         query: () => `/api/v1/promotion/`,

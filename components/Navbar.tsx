@@ -15,7 +15,7 @@ const Navbar = () => {
 
     try {
       axios
-        .post("process.env.API_URL/api/v1/user/logout")
+        .post(`${process.env.API_URL}/api/v1/user/logout`)
         .then((response) => {
           console.log(response);
           if (response.status === 200) {

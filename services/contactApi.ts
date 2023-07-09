@@ -36,7 +36,7 @@ interface AddContact {
 
 export const contactsApi = createApi({
   reducerPath: "contactsApi",
-  baseQuery: fetchBaseQuery({ baseUrl: "process.env.API_URL" }),
+  baseQuery: fetchBaseQuery({ baseUrl: `${process.env.API_URL}` }),
   endpoints: (builder) => ({
     getContacts: builder.query<Contact, void>({
       query: () => `/api/v1/contact`,

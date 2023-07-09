@@ -61,7 +61,6 @@ const Home = (): JSX.Element => {
   } = useGetContactByIDQuery("64731c5526d071ac04063cfc");
 
   datas != undefined && console.log("data", datas);
-  console.log(process.env.API_URL);
 
   return (
     <div className="container">

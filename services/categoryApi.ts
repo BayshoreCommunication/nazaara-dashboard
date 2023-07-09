@@ -17,7 +17,7 @@ export interface ICategory {
 
 export const categoriesApi = createApi({
     reducerPath: "categoriesApi",
-    baseQuery: fetchBaseQuery({ baseUrl: "process.env.API_URL" }),
+    baseQuery: fetchBaseQuery({ baseUrl: `${process.env.API_URL}` }),
     endpoints: (builder) => ({
       getCategories: builder.query<ICategory, void>({
         query: () => `/api/v1/category/`,

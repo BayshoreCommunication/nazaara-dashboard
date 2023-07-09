@@ -41,7 +41,7 @@ export default function RootLayout({
   useEffect(() => {
     const isLoggedIn = async () => {
       axios
-        .get("process.env.API_URL/api/v1/user/isLoggedIn", {
+        .get(`${process.env.API_URL}/api/v1/user/isLoggedIn`, {
           withCredentials: true,
         })
         .then((data) => {

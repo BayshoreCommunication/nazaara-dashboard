@@ -18,7 +18,7 @@ export interface ISubCategories {
 
   export const subCategoriesApi = createApi({
     reducerPath: "subCategoriesApi",
-    baseQuery: fetchBaseQuery({ baseUrl: "process.env.API_URL" }),
+    baseQuery: fetchBaseQuery({ baseUrl: `${process.env.API_URL}` }),
     endpoints: (builder) => ({
       getSubCategories: builder.query<ISubCategories, void>({
         query: () => `/api/v1/sub-category/`,

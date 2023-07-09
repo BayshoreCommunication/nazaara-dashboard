@@ -22,7 +22,7 @@ export interface IUsers {
 
 export const usersApi = createApi({
     reducerPath: "usersApi",
-    baseQuery: fetchBaseQuery({ baseUrl: "process.env.API_URL" }),
+    baseQuery: fetchBaseQuery({ baseUrl: `${process.env.API_URL}` }),
     endpoints: (builder) => ({
       getUsers: builder.query<IUsers, void>({
         query: () => `/api/v1/user/`,
