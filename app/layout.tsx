@@ -27,7 +27,7 @@ export default function RootLayout({
   //     // const response = await axios.get(`${URL}/api/v1/admin/isLoggedIn`, {
   //     //   withCredentials: true,
   //     // });
-  //     // const data = await fetch("http://localhost:8000/api/v1/user/isLoggedIn");
+  //     // const data = await fetch("process.env.API_URL/api/v1/user/isLoggedIn");
   //     // // setLoggedIn(true);
   //     // console.log("data for response", data);
   //   } catch (error) {
@@ -41,7 +41,7 @@ export default function RootLayout({
   useEffect(() => {
     const isLoggedIn = async () => {
       axios
-        .get("http://localhost:8000/api/v1/user/isLoggedIn", {
+        .get("process.env.API_URL/api/v1/user/isLoggedIn", {
           withCredentials: true,
         })
         .then((data) => {

@@ -20,7 +20,7 @@ export interface IWarehouses {
 
   export const warehouseApi = createApi({
     reducerPath: "warehouseApi",
-    baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:8000" }),
+    baseQuery: fetchBaseQuery({ baseUrl: "process.env.API_URL" }),
     endpoints: (builder) => ({
       getwarehouses: builder.query<IWarehouses, void>({
         query: () => `/api/v1/warehouse/`,

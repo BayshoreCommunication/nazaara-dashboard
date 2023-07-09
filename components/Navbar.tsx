@@ -15,7 +15,7 @@ const Navbar = () => {
 
     try {
       axios
-        .post("http://localhost:8000/api/v1/user/logout")
+        .post("process.env.API_URL/api/v1/user/logout")
         .then((response) => {
           console.log(response);
           if (response.status === 200) {
@@ -32,7 +32,7 @@ const Navbar = () => {
 
     // try {
     //   const response = await axios.post(
-    //     `http://localhost:8000/api/v1/user/logout`
+    //     `process.env.API_URL/api/v1/user/logout`
     //     // {
     //     //   withCredentials: true,
     //     // }

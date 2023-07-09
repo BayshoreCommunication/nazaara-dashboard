@@ -48,7 +48,7 @@ export interface IProducts {
 
 export const productsApi = createApi({
     reducerPath: "productsApi",
-    baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:8000" }),
+    baseQuery: fetchBaseQuery({ baseUrl: "process.env.API_URL" }),
     endpoints: (builder) => ({
       getProducts: builder.query<IProducts, void>({
         query: () => `/api/v1/product/`,
