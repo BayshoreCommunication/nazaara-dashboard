@@ -1,13 +1,13 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import "./globals.css";
 import Sidebar from "@/components/Sidebar";
 import { store } from "../store/store";
 import { Provider } from "react-redux";
 import { Toaster } from "react-hot-toast";
-import { useRouter, redirect } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
+import { hasCookie, getCookie } from "cookies-next";
 import axios from "axios";
 import Login from "./nazara-admin/page";
 
@@ -16,64 +16,35 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const router = usePathname();
-  const routerForPush = useRouter();
-  const [isAuth, setIsAuth] = useState(false);
-  const [isloading, setIsLoading] = useState(true);
+  const router = useRouter();
+  const routerPath = usePathname();
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
 
-  // const isLoggedIn = useCallback(async () => {
-  //   try {
-  //     // const response = await axios.get(`${URL}/api/v1/admin/isLoggedIn`, {
-  //     //   withCredentials: true,
-  //     // });
-  //     // const data = await fetch("process.env.API_URL/api/v1/user/isLoggedIn");
-  //     // // setLoggedIn(true);
-  //     // console.log("data for response", data);
-  //   } catch (error) {
-  //     routerForPush.push("/nazara-admin");
-  //     console.error(error);
-  //   }
-
-  //   // setIsLoading(false);
-  // }, [routerForPush]);
+  const isLoggedIn = useCallback(async () => {
+    const checkCookie = getCookie("token");
+    if (checkCookie) {
+      await axios
+        .post(`${process.env.API_URL}/api/v1/user/isLoggedIn`, {
+          token: checkCookie,
+        })
+        .then((response) => {
+          console.log("response", response);
+          if (response.data.status != "success") {
+            router.push("/nazara-admin");
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      router.push("/nazara-admin");
+    }
+  }, []);
 
   useEffect(() => {
-    const isLoggedIn = async () => {
-      axios
-        .get(`${process.env.API_URL}/api/v1/user/isLoggedIn`, {
-          withCredentials: true,
-        })
-        .then((data) => {
-          if (data.status === 200) {
-            setIsAuth(true);
-            setIsLoading(false);
-          }
-        })
-        .catch(function (error) {
-          routerForPush.replace("/nazara-admin");
-          if (error.response) {
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx
-            console.log("error", error.response.data);
-            console.log("error", error.response.status);
-            console.log("error", error.response.headers);
-          } else if (error.request) {
-            // The request was made but no response was received
-            // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-            // http.ClientRequest in node.js
-            console.log(error.request);
-          } else {
-            // Something happened in setting up the request that triggered an Error
-            console.log("Error", error.message);
-          }
-          console.log(error.config);
-        });
-    };
     isLoggedIn();
-  }, [routerForPush]);
-
-  console.log(isAuth);
+  }, [isLoggedIn]);
 
   return (
     <html lang="en">
@@ -81,7 +52,7 @@ export default function RootLayout({
         <Provider store={store}>
           <Toaster position="top-center" reverseOrder={false} />
           <>
-            {router === "/nazara-admin" ? (
+            {routerPath === "/nazara-admin" ? (
               children
             ) : (
               <>

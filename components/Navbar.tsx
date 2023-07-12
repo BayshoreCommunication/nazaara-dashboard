@@ -4,45 +4,15 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AiOutlineBell } from "react-icons/ai";
 import { FaAngleDown, FaAngleUp } from "react-icons/fa";
+import { deleteCookie } from "cookies-next";
 
 const Navbar = () => {
   const routerForPush = useRouter();
 
   const handleLogOut = async (event: any) => {
-    event.preventDefault();
-
-    // handle login logic here
-
-    try {
-      axios
-        .post(`${process.env.API_URL}/api/v1/user/logout`)
-        .then((response) => {
-          console.log(response);
-          if (response.status === 200) {
-            routerForPush.replace("/nazara-admin");
-          }
-        })
-        .catch((error) => {
-          // Handle any errors that occur during the request
-          console.error(error);
-        });
-    } catch (error) {
-      console.log(error);
-    }
-
-    // try {
-    //   const response = await axios.post(
-    //     `process.env.API_URL/api/v1/user/logout`
-    //     // {
-    //     //   withCredentials: true,
-    //     // }
-    //   );
-    //   if (response.status === 200) {
-    //     routerForPush.replace("/nazara-admin");
-    //   }
-    // } catch (err) {
-    //   console.log(err);
-    // }
+    deleteCookie("token");
+    deleteCookie("adminCredential");
+    routerForPush.push("/nazara-admin");
   };
 
   return (

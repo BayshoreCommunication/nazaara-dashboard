@@ -2,7 +2,11 @@
 // import component 👇
 import { useState } from "react";
 import { FaTimes } from "react-icons/fa";
-import Drawer from "react-modern-drawer";
+import dynamic from "next/dynamic";
+
+const Drawer = dynamic(() => import("react-modern-drawer"), {
+  ssr: false,
+});
 
 //import styles 👇
 import "react-modern-drawer/dist/index.css";

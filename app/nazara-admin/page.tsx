@@ -1,34 +1,33 @@
 "use client";
+import axios from "axios";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { setCookie } from "cookies-next";
 
 const Login = () => {
   const router = useRouter();
-  // router.push("/");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleLogin = async (e: any) => {
     e.preventDefault();
 
-    // Send login request to your API endpoint
-    const response = await fetch(`${process.env.API_URL}/api/v1/user/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
-
-    if (response.ok) {
-      const { token } = await response.json();
-      // Store the token in a cookie
-      document.cookie = `token=${token}; path=/`;
-      router.push("/");
-    } else {
-      console.log("login error occured");
-    }
+    await axios
+      .post(`${process.env.API_URL}/api/v1/user/login`, {
+        email,
+        password,
+      })
+      .then((response) => {
+        setCookie("token", response.data.token, { maxAge: 60 * 60 * 24 });
+        setCookie("adminCredential", JSON.stringify(response.data.user), {
+          maxAge: 60 * 60 * 24,
+        });
+        router.push("/");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (

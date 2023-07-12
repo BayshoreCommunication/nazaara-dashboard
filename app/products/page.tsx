@@ -15,9 +15,9 @@ const Products = () => {
   const { data: singleProductData, isLoading: singleProductLoading } =
     useGetProductByIdQuery("649145ae57ee24fc54bb6f99");
 
-  !allProductsLoading && console.log("getAllProductdata", allProductsData);
-  !singleProductLoading &&
-    console.log("getsingleProductdata", singleProductData);
+  // !allProductsLoading && console.log("getAllProductdata", allProductsData);
+  // !singleProductLoading &&
+  //   console.log("getsingleProductdata", singleProductData);
 
   return (
     <div>
