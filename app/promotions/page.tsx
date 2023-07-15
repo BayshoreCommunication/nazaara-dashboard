@@ -64,8 +64,8 @@ const Promotions = () => {
                   <option selected disabled>
                     Choose Status
                   </option>
-                  <option value="Draft">Draft</option>
-                  <option value="Publish">Publish</option>
+                  <option value="draft">Draft</option>
+                  <option value="publish">Publish</option>
                 </select>
               </div>
               <button className="bg-secondary py-1 px-4 rounded-md text-white w-full">

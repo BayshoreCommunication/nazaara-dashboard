@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { jwtVerify } from "jose";
 
-const verifyJWT = async (jwt) => {
+const verifyJWT = async (token) => {
   const { payload } = await jwtVerify(
-    jwt,
+    token,
     new TextEncoder().encode(process.env.JWT_SECRET)
   );
 
@@ -11,16 +11,15 @@ const verifyJWT = async (jwt) => {
 };
 
 export default async function middleware(req, res) {
+  const token = req.cookies.get(process.env.COOKIE_NAME);
 
-  const jwt = req.cookies.get(process.env.COOKIE_NAME);
-
-  if (!jwt) {
+  if (!token) {
     req.nextUrl.pathname = "/nazara-admin";
     return NextResponse.redirect(req.nextUrl);
   }
 
   try {
-    await verifyJWT(jwt.value);
+    await verifyJWT(token);
     return NextResponse.next();
   } catch (e) {
     console.error(e);

@@ -7,9 +7,8 @@ import { store } from "../store/store";
 import { Provider } from "react-redux";
 import { Toaster } from "react-hot-toast";
 import { useRouter, usePathname } from "next/navigation";
-import { hasCookie, getCookie } from "cookies-next";
+import { getCookie } from "cookies-next";
 import axios from "axios";
-import Login from "./nazara-admin/page";
 
 export default function RootLayout({
   children,
@@ -29,7 +28,6 @@ export default function RootLayout({
           token: checkCookie,
         })
         .then((response) => {
-          console.log("response", response);
           if (response.data.status != "success") {
             router.push("/nazara-admin");
           }

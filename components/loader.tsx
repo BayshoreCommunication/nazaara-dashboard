@@ -1,7 +1,5 @@
 import { ScaleLoader } from "react-spinners";
 
-import React from "react";
-
 interface Props {
   height: string;
 }

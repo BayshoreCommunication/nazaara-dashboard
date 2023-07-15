@@ -211,8 +211,8 @@ const Category: React.FC = () => {
                         value={selectedValue}
                         onChange={(e) => setSelectedValue(e.target.value)}
                       >
-                        <option value="Publish">Publish</option>
-                        <option value="Draft">Draft</option>
+                        <option value="publish">Publish</option>
+                        <option value="draft">Draft</option>
                       </select>
                     </div>
                     <button
