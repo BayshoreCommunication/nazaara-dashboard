@@ -8,15 +8,35 @@
   }
 }
 
-.login-bg{
+.login-bg {
   background-image: url("/images/login-bg1.png");
   background-size: cover;
-  background-position: center; 
+  background-position: center;
 }
 
-
 /* quill */
-.quill-content .ql-container{
+.quill-content .ql-container {
   height: 24vh;
   max-width: 100%;
+}
+
+.upload-image-background {
+  background-color: rgba(221, 221, 221, 0.24);
+  height: 100px;
+  width: 100px;
+  font-size: 25px;
+  font-weight: 300;
+  border: solid 1px #e0cd8d;
+  border-style: dashed;
+  box-shadow: 5px 5px 10px 4px rgb(193 193 193 / 13%);
+}
+.upload-image-background:hover {
+  box-shadow: 5px 5px 10px 4px rgba(82, 11, 11, 0.13);
+}
+.css-b62m3t-container {
+  margin-top: 5px;
+}
+.css-jdph3x-control {
+  min-height: 40px !important;
+  border-color: #a8a8a8 !important;
 }

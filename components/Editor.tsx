@@ -6,12 +6,14 @@ import dynamic from "next/dynamic";
 const ReactQuill = dynamic(() => import("react-quill"), {
   ssr: false,
 });
-const Editor = () => {
+const Editor = (props: any) => {
   const [text, setText] = useState("");
-
   const handleChange = (value: string) => {
-    console.log("value", value);
     setText(value);
+    props.setFormData({
+      ...props.formData,
+      ["description"]: value,
+    });
   };
 
   const modules = {
@@ -43,7 +45,6 @@ const Editor = () => {
     "header",
     "bold",
     "color",
-
     "italic",
     "underline",
     "strike",
@@ -56,6 +57,8 @@ const Editor = () => {
     "image",
     "code",
   ];
+
+  console.log("", props.formData);
 
   return (
     <div className="quill-content">
