@@ -58,7 +58,7 @@ const Editor = (props: any) => {
     "code",
   ];
 
-  console.log("", props.formData);
+  // console.log("", props.formData);
 
   return (
     <div className="quill-content">

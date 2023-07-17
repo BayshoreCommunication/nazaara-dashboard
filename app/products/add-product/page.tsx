@@ -47,6 +47,10 @@ const AddProduct: React.FC = () => {
     { id: Date.now() }, // Display one content by default
   ]);
 
+  const [divFields2, setDivFields2] = useState<DivField[]>([
+    { id: Date.now() }, // Display one content by default
+  ]);
+
   let selectedOption;
   const addDivField = () => {
     const newDivField: DivField = {
@@ -54,9 +58,21 @@ const AddProduct: React.FC = () => {
     };
     setDivFields((prevFields) => [...prevFields, newDivField]);
   };
-
   const removeDivField = (id: number) => {
     setDivFields((prevFields) => prevFields.filter((field) => field.id !== id));
+  };
+
+  const addDivField2 = () => {
+    const newDivField2: DivField = {
+      id: Date.now(), // Generate a unique ID for each div field
+    };
+    setDivFields2((prevFields2) => [...prevFields2, newDivField2]);
+  };
+
+  const removeDivField2 = (id: number) => {
+    setDivFields2((prevFields2) =>
+      prevFields2.filter((field) => field.id !== id)
+    );
   };
 
   const [createProduct] = useCreateProductMutation();
@@ -116,91 +132,90 @@ const AddProduct: React.FC = () => {
     }));
   };
 
+  const handleClear = () => {
+    setFormData({
+      productName: "",
+      regularPrice: 0,
+      salePrice: 0,
+      size: [],
+      variant: [
+        {
+          color: "",
+          stock: 0,
+        },
+      ],
+      description: "",
+      category: "",
+      subCategory: "",
+      promotion: "",
+      warehouse: "",
+      status: "",
+    });
+  };
+
   return (
     <div className="container">
       <h1 className="text-2xl font-bold mb-3">Add Product</h1>
       <div className="flex flex-col gap-y-5">
         <div className="bg-basic rounded-lg px-6 py-3 flex flex-col gap-y-4">
           <h4 className="text-lg font-bold">Product Information</h4>
-          <div className="flex gap-4 items-start">
-            <div className="flex-[2] bg-gray-100 py-3 px-5 flex flex-col gap-y-3 rounded-lg">
-              <div>
-                <label className="font-medium" htmlFor="name">
-                  Product Name
-                </label>
-                <input
-                  className="block w-full rounded-lg p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
-                  name="productName"
-                  type="text"
-                  placeholder="Enter product name."
-                  onChange={(event) => {
-                    handleChange(event);
-                  }}
-                />
-              </div>
+          <div className="flex flex-col gap-4 items-start">
+            <div className="w-full bg-gray-100 py-3 px-5 flex flex-col gap-y-3 rounded-lg">
               <div className="grid grid-cols-2 gap-4 items-start">
                 <div className="bg-gray-100 py-3 flex flex-col gap-y-3 rounded-lg">
                   <div>
+                    <label className="font-medium" htmlFor="name">
+                      Product Name
+                    </label>
+                    <input
+                      className="block w-full rounded-lg p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
+                      value={formData.productName}
+                      name="productName"
+                      type="text"
+                      placeholder="Enter product name."
+                      onChange={(event) => {
+                        handleChange(event);
+                      }}
+                    />
+                  </div>
+                  <div>
                     <label className="font-medium" htmlFor="category">
-                      Product Category
+                      Category
                     </label>
-                    <div className="relative">
-                      <input
-                        className="block rounded-lg w-full p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
+                    <div className="flex items-center mt-1">
+                      <select
+                        className="w-full border border-gray-400 rounded-sm p-2 focus:outline-none text-gray-500"
                         name="category"
-                        type="text"
-                        placeholder="Choose category."
                         onChange={(event) => {
                           handleChange(event);
                         }}
-                      />
-                      <BiSearchAlt2
-                        color="gray"
-                        size={18}
-                        className="absolute top-[50%] right-2 -translate-y-1/2"
-                      />
+                      >
+                        <option value="" disabled>
+                          Choose one
+                        </option>
+                        <option value="publish">Publish</option>
+                        <option value="draft">Draft</option>
+                      </select>
                     </div>
                   </div>
                   <div>
-                    <label className="font-medium" htmlFor="Subcategory">
-                      Product Subcategory
+                    <label className="font-medium" htmlFor="subCategory">
+                      Subcategory
                     </label>
-                    <div className="relative">
-                      <input
-                        className="block rounded-lg w-full p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
-                        name="subcategory"
-                        type="text"
-                        placeholder="Choose subcategory."
+                    <div className="flex items-center mt-1">
+                      <select
+                        className="w-full border border-gray-400 rounded-sm p-2 focus:outline-none text-gray-500"
+                        name="subCategory"
                         onChange={(event) => {
                           handleChange(event);
                         }}
-                      />
-                      <BiSearchAlt2
-                        color="gray"
-                        size={18}
-                        className="absolute top-[50%] right-2 -translate-y-1/2"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="font-medium" htmlFor="Promotion">
-                      Promotion
-                    </label>
-                    <div className="relative">
-                      <input
-                        className="block rounded-lg w-full p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
-                        name="promotion"
-                        type="text"
-                        placeholder="Choose promotion."
-                        onChange={(event) => {
-                          handleChange(event);
-                        }}
-                      />
-                      <BiSearchAlt2
-                        color="gray"
-                        size={18}
-                        className="absolute top-[50%] right-2 -translate-y-1/2"
-                      />
+                      >
+                        <option value="" disabled>
+                          Choose one
+                        </option>
+                        <option value="publish">Publish</option>
+                        <option value="draft">Draft</option>
+                      </select>
                     </div>
                   </div>
                   <div>
@@ -227,24 +242,23 @@ const AddProduct: React.FC = () => {
                 </div>
                 <div className="bg-gray-100 py-3 flex flex-col gap-y-3 rounded-lg">
                   <div>
-                    <label className="font-medium" htmlFor="Warehouse">
-                      Warehouse
+                    <label className="font-medium" htmlFor="promotion">
+                      Promotion
                     </label>
-                    <div className="relative">
-                      <input
-                        className="block rounded-lg w-full p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
-                        name="warehouse"
-                        type="text"
-                        placeholder="Choose warehouse."
+                    <div className="flex items-center mt-1">
+                      <select
+                        className="w-full border border-gray-400 rounded-sm p-2 focus:outline-none text-gray-500"
+                        name="promotion"
                         onChange={(event) => {
                           handleChange(event);
                         }}
-                      />
-                      <BiSearchAlt2
-                        color="gray"
-                        size={18}
-                        className="absolute top-[50%] right-2 -translate-y-1/2"
-                      />
+                      >
+                        <option value="" disabled>
+                          Choose one
+                        </option>
+                        <option value="publish">Publish</option>
+                        <option value="draft">Draft</option>
+                      </select>
                     </div>
                   </div>
                   <div>
@@ -310,13 +324,13 @@ const AddProduct: React.FC = () => {
                 </div>
               </div>
             </div>
-            <div className="flex-1 bg-gray-100 rounded-lg py-3 px-5">
+            <div className="w-full bg-gray-100 rounded-lg py-3 px-5">
               <h1 className="font-semibold mb-2">Product Details</h1>
               <div className="text-gray-500 ">
                 {divFields.map((field, index) => (
                   <div className="flex gap-2 items-center" key={index}>
-                    <div className="flex gap-4 mb-2 bg-slate-200 w-full p-3 rounded-lg">
-                      <div className="w-full flex items-center mt-1">
+                    <div className="flex flex-col gap-4 mb-2 w-full rounded-lg">
+                      <div className="w-1/4 flex items-center mt-1">
                         <div className="border border-gray-400 bg-gray-100 rounded-sm p-[10px] text-sm text-gray-500 font-medium">
                           Color
                         </div>
@@ -328,20 +342,45 @@ const AddProduct: React.FC = () => {
                           onChange={(event) => handleVariant(event, index)}
                         />
                       </div>
-                      <div className="w-full flex items-center mt-1">
-                        <div className="border border-gray-400 bg-gray-100 rounded-sm p-[10px] text-sm text-gray-500 font-medium">
-                          Stock
+                      {divFields2.map((elem, i) => (
+                        <div key={i} className="flex w-1/4 items-center">
+                          <div className="flex mt-1">
+                            <input
+                              className="border border-gray-400 rounded-sm p-[10px] text-sm text-gray-500 font-medium max-w-[100px]"
+                              name="warehouse"
+                              type="text"
+                              min={0}
+                              step={1}
+                              placeholder="Warehouse"
+                            />
+                            <input
+                              className="rounded-e-lg p-2 border border-gray-400 focus:outline-none text-gray-500 w-full"
+                              name="stock"
+                              type="number"
+                              min={0}
+                              step={1}
+                              placeholder="stock"
+                            />
+                          </div>
+                          {divFields2.length > 1 && (
+                            <button
+                              onClick={() => removeDivField2(elem.id)}
+                              disabled={divFields2.length === 1} // Disable "-" button when there is only one content
+                              className="w-5 h-5 rounded-full border border-gray-400 flex justify-center items-center"
+                            >
+                              -
+                            </button>
+                          )}
+                          {divFields2.length > 0 && (
+                            <button
+                              onClick={addDivField2}
+                              className="w-5 h-5 rounded-full border border-gray-400 flex justify-center items-center"
+                            >
+                              +
+                            </button>
+                          )}
                         </div>
-                        <input
-                          className="rounded-e-lg p-2 border border-gray-400 focus:outline-none text-gray-500 w-full"
-                          name="stock"
-                          type="number"
-                          min={0}
-                          step={1}
-                          placeholder="1"
-                          onChange={(event) => handleVariant(event, index)}
-                        />
-                      </div>
+                      ))}
                     </div>
                     {divFields.length > 1 && (
                       <div className="w-5 mb-2">
@@ -372,8 +411,18 @@ const AddProduct: React.FC = () => {
           <Editor setFormData={setFormData} formData={formData} />
         </div>
         <div className="flex justify-end gap-x-3">
-          <PrimaryButton name="Add" />
-          <SecondaryButton name="Cancel" />
+          <button
+            className="bg-secondary py-1 px-4 rounded-md text-white"
+            onClick={() => console.log(formData)}
+          >
+            Add
+          </button>
+          <button
+            className="bg-warning py-1 px-4 rounded-md text-white"
+            onClick={handleClear}
+          >
+            Clear All
+          </button>
         </div>
       </div>
     </div>
