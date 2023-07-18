@@ -20,11 +20,11 @@ export const promotionsApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: `${process.env.API_URL}` }),
   endpoints: (builder) => ({
     getPromotions: builder.query<IPromotions, void>({
-      query: () => `/api/v1/promotion/`,
+      query: () => `/api/v1/promotion`,
     }),
     createPromotion: builder.mutation<IPromotion, Partial<IPromotion>>({
       query: (payload) => ({
-        url: "/api/v1/promotion/",
+        url: "/api/v1/promotion",
         method: "POST",
         body: payload,
         headers: {

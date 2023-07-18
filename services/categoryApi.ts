@@ -19,14 +19,14 @@ export const categoriesApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: `${process.env.API_URL}` }),
   endpoints: (builder) => ({
     getCategories: builder.query<ICategory, void>({
-      query: () => `/api/v1/category/`,
+      query: () => `/api/v1/category`,
     }),
     getCategoryById: builder.query<IData, string>({
       query: (id: string) => `/api/v1/category/${id}`,
     }),
     createCategory: builder.mutation<IData, Partial<IData>>({
       query: (payload) => ({
-        url: "/api/v1/category/",
+        url: "/api/v1/category",
         method: "POST",
         body: payload,
         headers: {

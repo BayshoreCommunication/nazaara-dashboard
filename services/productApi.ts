@@ -37,14 +37,14 @@ export const productsApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: `${process.env.API_URL}` }),
   endpoints: (builder) => ({
     getProducts: builder.query<IProducts, void>({
-      query: () => `/api/v1/product/`,
+      query: () => `/api/v1/product`,
     }),
     getProductById: builder.query<IProduct, string>({
       query: (id: string) => `/api/v1/product/${id}`,
     }),
     createProduct: builder.mutation<IProduct, Partial<IProduct>>({
       query: (payload) => ({
-        url: "/api/v1/product/",
+        url: "/api/v1/product",
         method: "POST",
         body: payload,
         headers: {

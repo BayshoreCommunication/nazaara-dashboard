@@ -20,11 +20,11 @@ export const subCategoriesApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: `${process.env.API_URL}` }),
   endpoints: (builder) => ({
     getSubCategories: builder.query<ISubCategories, void>({
-      query: () => `/api/v1/sub-category/`,
+      query: () => `/api/v1/sub-category`,
     }),
     createSubCategory: builder.mutation<ISubCategory, Partial<ISubCategory>>({
       query: (payload) => ({
-        url: "/api/v1/sub-category/",
+        url: "/api/v1/sub-category",
         method: "POST",
         body: payload,
         headers: {

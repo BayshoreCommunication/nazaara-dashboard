@@ -24,7 +24,7 @@ export const warehouseApi = createApi({
     }),
     createWarehouse: builder.mutation<IWarehouse, Partial<IWarehouse>>({
       query: (payload) => ({
-        url: "/api/v1/warehouse/",
+        url: "/api/v1/warehouse",
         method: "POST",
         body: payload,
         headers: {
