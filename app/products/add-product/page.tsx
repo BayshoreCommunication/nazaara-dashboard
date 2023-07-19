@@ -1,11 +1,15 @@
 "use client";
 import Editor from "@/components/Editor";
-import PrimaryButton from "@/components/PrimaryButton";
-import SecondaryButton from "@/components/SecondaryButton";
-import { ChangeEvent, useCallback, useState } from "react";
-import { BiSearchAlt2 } from "react-icons/bi";
+import { ChangeEvent, useState } from "react";
 import { useCreateProductMutation } from "@/services/productApi";
-import Select from "react-select";
+import { useGetCategoriesQuery } from "@/services/categoryApi";
+import { useGetSubCategoriesQuery } from "@/services/subcategory";
+import { useGetPromotionsQuery } from "@/services/promotionApi";
+import { useGetWarehousesQuery } from "@/services/warehouseApi";
+import dynamic from "next/dynamic";
+const Select = dynamic(() => import("react-select"), {
+  ssr: false,
+});
 
 const customStyles = {
   control: (provided: any) => ({
@@ -17,9 +21,6 @@ const customStyles = {
 };
 
 //id to handle multiple variant
-interface DivField {
-  id: number;
-}
 
 //form Data type for creating new product
 interface IFormData {
@@ -38,11 +39,19 @@ interface IFormData {
 
 interface IVariant {
   color: string;
+  imageUrl: string[];
   warehouse: [IWarehouse];
 }
 interface IWarehouse {
   warehouseName: string;
   stock: number;
+}
+
+interface ICategory {
+  _id: string;
+  imageUrl: string;
+  name: string;
+  status: string;
 }
 
 const options = [
@@ -55,37 +64,16 @@ const options = [
 ];
 
 const AddProduct: React.FC = () => {
-  const [divFields, setDivFields] = useState<DivField[]>([
-    { id: Date.now() }, // Display one content by default
-  ]);
-
-  const [divFields2, setDivFields2] = useState<DivField[]>([
-    { id: Date.now() }, // Display one content by default
-  ]);
-
   let selectedOption;
-  const addDivField = () => {
-    const newDivField: DivField = {
-      id: Date.now(), // Generate a unique ID for each div field
-    };
-    setDivFields((prevFields) => [...prevFields, newDivField]);
-  };
-  const removeDivField = (id: number) => {
-    setDivFields((prevFields) => prevFields.filter((field) => field.id !== id));
-  };
 
-  const addDivField2 = () => {
-    const newDivField2: DivField = {
-      id: Date.now(), // Generate a unique ID for each div field
-    };
-    setDivFields2((prevFields2) => [...prevFields2, newDivField2]);
-  };
-
-  const removeDivField2 = (id: number) => {
-    setDivFields2((prevFields2) =>
-      prevFields2.filter((field) => field.id !== id)
-    );
-  };
+  const { data: categoriesData, isLoading: categoriesLoading } =
+    useGetCategoriesQuery();
+  const { data: subCategoriesData, isLoading: subCategoriesLoading } =
+    useGetSubCategoriesQuery();
+  const { data: promotionsData, isLoading: promotionsLoading } =
+    useGetPromotionsQuery();
+  const { data: warehousesData, isLoading: warehousesLoading } =
+    useGetWarehousesQuery();
 
   const [createProduct] = useCreateProductMutation();
 
@@ -98,6 +86,7 @@ const AddProduct: React.FC = () => {
     variant: [
       {
         color: "",
+        imageUrl: [],
         warehouse: [
           {
             warehouseName: "",
@@ -150,42 +139,30 @@ const AddProduct: React.FC = () => {
 
   const handleWarehouse = (
     event: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-    index: number,
-    i: number
+    variantIndex: number,
+    warehouseIndex: number
   ) => {
     const { name, value } = event.target;
-    setFormData((formData: any) => {
-      const updatedVariants = [...formData.variant];
-      let variant = updatedVariants[index];
+    const updatedVariants = [...formData.variant];
+    const variant = updatedVariants[variantIndex];
+    const updatedWarehouse = {
+      ...variant.warehouse[warehouseIndex],
+      [name]: value,
+    };
+    variant.warehouse[warehouseIndex] = updatedWarehouse;
+    updatedVariants[variantIndex] = variant;
 
-      if (!variant) {
-        variant = {
-          color: "",
-          warehouse: {},
-        };
-        updatedVariants[index] = variant;
-      }
-
-      const warehouse = { ...variant.warehouse };
-      warehouse[name] = value;
-
-      variant.warehouse = warehouse;
-      updatedVariants[index] = variant;
-
-      return {
-        ...formData,
-        variant: updatedVariants,
-      };
-    });
+    setFormData((prevFormData: any) => ({
+      ...prevFormData,
+      variant: updatedVariants,
+    }));
   };
 
-  const handleClear = () => {
-    setFormData({
-      productName: "",
-      regularPrice: 0,
-      salePrice: 0,
-      size: [],
+  const addDivField = () => {
+    setFormData((prevFormData: any) => ({
+      ...prevFormData,
       variant: [
+        ...prevFormData.variant,
         {
           color: "",
           warehouse: [
@@ -196,14 +173,78 @@ const AddProduct: React.FC = () => {
           ],
         },
       ],
-      description: "",
-      category: "",
-      subCategory: "",
-      promotion: "",
-      status: "",
+    }));
+  };
+
+  const removeDivField = (index: number) => {
+    setFormData((prevFormData: any) => {
+      const updatedVariants = prevFormData.variant.filter(
+        (_: any, i: number) => i !== index
+      );
+      return {
+        ...prevFormData,
+        variant: updatedVariants,
+      };
     });
   };
 
+  const addDivField2 = (variantIndex: number) => {
+    setFormData((prevFormData: any) => {
+      const updatedVariants = [...prevFormData.variant];
+      const variant = updatedVariants[variantIndex];
+      variant.warehouse.push({
+        warehouseName: "",
+        stock: 0,
+      });
+      updatedVariants[variantIndex] = variant;
+
+      return {
+        ...prevFormData,
+        variant: updatedVariants,
+      };
+    });
+  };
+
+  const removeDivField2 = (variantIndex: number, warehouseIndex: number) => {
+    setFormData((prevFormData: any) => {
+      const updatedVariants = [...prevFormData.variant];
+      const variant = updatedVariants[variantIndex];
+      variant.warehouse = variant.warehouse.filter(
+        (_: any, i: number) => i !== warehouseIndex
+      );
+      updatedVariants[variantIndex] = variant;
+
+      return {
+        ...prevFormData,
+        variant: updatedVariants,
+      };
+    });
+  };
+
+  // const handleClear = () => {
+  //   setFormData({
+  //     productName: "",
+  //     regularPrice: 0,
+  //     salePrice: 0,
+  //     size: [],
+  //     variant: [
+  //       {
+  //         color: "",
+  //         warehouse: [
+  //           {
+  //             warehouseName: "",
+  //             stock: 0,
+  //           },
+  //         ],
+  //       },
+  //     ],
+  //     description: "",
+  //     category: "",
+  //     subCategory: "",
+  //     promotion: "",
+  //     status: "",
+  //   });
+  // };
   return (
     <div className="container">
       <h1 className="text-2xl font-bold mb-3">Add Product</h1>
@@ -244,8 +285,11 @@ const AddProduct: React.FC = () => {
                         <option value="" disabled>
                           Choose one
                         </option>
-                        <option value="publish">Publish</option>
-                        <option value="draft">Draft</option>
+                        {categoriesData?.data.map((elem, index) => (
+                          <option value={`${elem.name}`} key={index}>
+                            {elem.name}
+                          </option>
+                        ))}
                       </select>
                     </div>
                   </div>
@@ -379,10 +423,10 @@ const AddProduct: React.FC = () => {
             <div className="w-full bg-gray-100 rounded-lg py-3 px-5">
               <h1 className="font-semibold mb-2">Stock Distribution</h1>
               <div className="text-gray-500 ">
-                {divFields.map((field, index) => (
+                {formData.variant.map((variant, variantIndex) => (
                   <div
                     className="flex  gap-2 items-center border-b-[1px] border-gray-300"
-                    key={index}
+                    key={variantIndex}
                   >
                     <div className="flex flex-wrap gap-4 mb-2 w-full rounded-lg">
                       <div className="w-[20%] flex items-center mt-2">
@@ -394,11 +438,13 @@ const AddProduct: React.FC = () => {
                           name="color"
                           type="text"
                           placeholder="Enter color"
-                          onChange={(event) => handleVariant(event, index)}
+                          onChange={(event) =>
+                            handleVariant(event, variantIndex)
+                          }
                         />
                       </div>
-                      {divFields2.map((elem, inx) => (
-                        <div key={inx} className="flex w-1/4 gap-1">
+                      {variant.warehouse.map((warehouse, warehouseIndex) => (
+                        <div key={warehouseIndex} className="flex w-1/4 gap-1">
                           <div className="flex mt-2">
                             <input
                               className="p-2 border border-gray-400 focus:outline-none text-gray-500 max-w-[140px]"
@@ -407,7 +453,11 @@ const AddProduct: React.FC = () => {
                               min={0}
                               step={1}
                               onChange={(event) =>
-                                handleWarehouse(event, index, inx)
+                                handleWarehouse(
+                                  event,
+                                  variantIndex,
+                                  warehouseIndex
+                                )
                               }
                               placeholder="Enter warehouse"
                             />
@@ -418,23 +468,33 @@ const AddProduct: React.FC = () => {
                               min={0}
                               step={1}
                               onChange={(event) =>
-                                handleWarehouse(event, index, inx)
+                                handleWarehouse(
+                                  event,
+                                  variantIndex,
+                                  warehouseIndex
+                                )
                               }
                               placeholder="Enter stock"
                             />
                           </div>
                           <div className="grid place-items-end">
-                            {inx === divFields2.length - 1 && (
+                            {warehouseIndex ===
+                              variant.warehouse.length - 1 && (
                               <>
                                 <button
-                                  onClick={addDivField2}
+                                  onClick={() => addDivField2(variantIndex)}
                                   className="w-5 h-5 rounded-full border border-gray-400 hover:bg-green-300 flex justify-center items-center hover:text-white hover:border-none focus:animate-ping"
                                 >
                                   +
                                 </button>
-                                {inx != 0 ? (
+                                {warehouseIndex != 0 ? (
                                   <button
-                                    onClick={() => removeDivField2(elem.id)}
+                                    onClick={() =>
+                                      removeDivField2(
+                                        variantIndex,
+                                        warehouseIndex
+                                      )
+                                    }
                                     className="w-5 h-5 rounded-full border border-gray-400 flex hover:bg-secondary justify-center items-center hover:text-white hover:border-none focus:animate-ping"
                                   >
                                     -
@@ -448,10 +508,10 @@ const AddProduct: React.FC = () => {
                         </div>
                       ))}
                     </div>
-                    {divFields.length > 1 ? (
+                    {variantIndex !== 0 ? (
                       <div className="w-5 mb-2">
                         <button
-                          onClick={() => removeDivField(field.id)}
+                          onClick={() => removeDivField(variantIndex)}
                           className="w-5 h-5 rounded-full border border-sky-400 text-sky-400 flex justify-center items-center"
                         >
                           -
@@ -484,14 +544,14 @@ const AddProduct: React.FC = () => {
             className="bg-secondary py-1 px-4 rounded-md text-white"
             onClick={() => console.log(formData)}
           >
-            Add
+            Add New Product
           </button>
-          <button
+          {/* <button
             className="bg-warning py-1 px-4 rounded-md text-white"
             onClick={handleClear}
           >
             Clear All
-          </button>
+          </button> */}
         </div>
       </div>
     </div>

@@ -14,7 +14,7 @@ import { RxCross2 } from "react-icons/rx";
 import Swal from "sweetalert2";
 
 const Category: React.FC = () => {
-  const { data: CategoriesData, isLoading, refetch } = useGetCategoriesQuery();
+  const { data: categoriesData, isLoading, refetch } = useGetCategoriesQuery();
 
   const [createCategory] = useCreateCategoryMutation();
 
@@ -91,7 +91,7 @@ const Category: React.FC = () => {
 
   const [selectedValue, setSelectedValue] = useState<string>("");
   const handleEditCategory = (id: string) => {
-    const filtered: any = CategoriesData?.data?.filter(
+    const filtered: any = categoriesData?.data?.filter(
       (item) => item._id === id
     );
 
@@ -144,9 +144,9 @@ const Category: React.FC = () => {
       {/* show all category  */}
       <div className="flex-[6] overflow-x-auto">
         <h1 className="text-lg font-semibold mb-2">All Categories</h1>
-        {CategoriesData ? (
+        {categoriesData ? (
           <CategoryList
-            categories={CategoriesData.data as Category[]} // Convert ICategory[] to Category[]
+            categories={categoriesData.data as Category[]} // Convert ICategory[] to Category[]
             handleEditCategory={handleEditCategory}
             handleDeleteCategory={handleDeleteCategory}
           />

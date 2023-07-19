@@ -19,7 +19,7 @@ export const warehouseApi = createApi({
   reducerPath: "warehouseApi",
   baseQuery: fetchBaseQuery({ baseUrl: `${process.env.API_URL}` }),
   endpoints: (builder) => ({
-    getwarehouses: builder.query<IWarehouses, void>({
+    getWarehouses: builder.query<IWarehouses, void>({
       query: () => `/api/v1/warehouse/`,
     }),
     createWarehouse: builder.mutation<IWarehouse, Partial<IWarehouse>>({
@@ -34,7 +34,7 @@ export const warehouseApi = createApi({
       // Update the cache after successful creation
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         await queryFulfilled; // Wait for the query to be fulfilled
-        await dispatch(warehouseApi.endpoints.getwarehouses.initiate()); // Fetch the updated category list
+        await dispatch(warehouseApi.endpoints.getWarehouses.initiate()); // Fetch the updated category list
       },
     }),
     deleteWarehouse: builder.mutation({
@@ -60,7 +60,7 @@ export const warehouseApi = createApi({
 });
 
 export const {
-  useGetwarehousesQuery,
+  useGetWarehousesQuery,
   useDeleteWarehouseMutation,
   useCreateWarehouseMutation,
   useUpdateWarehouseMutation,
