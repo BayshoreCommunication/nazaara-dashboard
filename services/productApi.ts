@@ -3,33 +3,30 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export interface IProducts {
   status: string;
   total: number;
-  data: IProducts[];
+  data: IProduct[];
 }
 
 export interface IProduct {
-  _id: string;
-  sku: string;
-  slug: string;
   productName: string;
   regularPrice: number;
   salePrice: number;
-  variant: IVariant[];
   size: string[];
+  variant: [IVariant];
   description: string;
   category: string;
   subCategory: string;
   promotion: string;
   status: string;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
 }
 
 export interface IVariant {
   color: string;
-  quantity: number;
   imageUrl: string[];
-  _id: string;
+  warehouse: [IWarehouse];
+}
+export interface IWarehouse {
+  warehouseName: string;
+  stock: number;
 }
 
 export const productsApi = createApi({
@@ -52,10 +49,10 @@ export const productsApi = createApi({
         },
       }),
       // Update the cache after successful creation
-      async onQueryStarted(_, { dispatch, queryFulfilled }) {
-        await queryFulfilled; // Wait for the query to be fulfilled
-        await dispatch(productsApi.endpoints.getProducts.initiate()); // Fetch the updated category list
-      },
+      // async onQueryStarted(_, { dispatch, queryFulfilled }) {
+      //   await queryFulfilled; // Wait for the query to be fulfilled
+      //   await dispatch(productsApi.endpoints.getProducts.initiate()); // Fetch the updated category list
+      // },
     }),
     updateProduct: builder.mutation<
       IProduct,
