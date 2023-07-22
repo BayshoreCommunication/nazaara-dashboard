@@ -9,7 +9,6 @@ import Image from "next/image";
 
 const ImageUpload: FC = () => {
   const routerSearch = useSearchParams();
-  const router = useRouter();
   const [images, setImages] = useState([]);
   const maxNumber = 10;
 
@@ -79,7 +78,6 @@ const ImageUpload: FC = () => {
                       Remove All
                     </button>
                   </div>
-
                   {imageList.map((image: any, index: any) => (
                     <div key={index} className="image-item">
                       <Image
