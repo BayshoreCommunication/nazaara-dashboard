@@ -595,7 +595,7 @@ const AddProduct: React.FC = () => {
           </div>
           <div className="flex justify-end gap-x-3">
             <button
-              className="bg-secondary py-1 px-4 rounded-md text-white"
+              className="bg-secondary py-1 px-4 rounded-md text-white mt-3"
               type="submit"
             >
               Add New Product
