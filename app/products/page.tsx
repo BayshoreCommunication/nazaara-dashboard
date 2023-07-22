@@ -33,7 +33,7 @@ const Products = () => {
             <AiOutlineShoppingCart size={18} color="gray" />
             <span className="font-medium text-lg">Products</span>
           </div>
-          <Link href="products/add-product">
+          <Link href="/products/add-product">
             <UtilityBtn name="Add Product" icon={<BsPlus color="white" />} />
           </Link>
         </div>
@@ -71,9 +71,19 @@ const Products = () => {
                   <td>{countstok(elem.variant)}</td>
                   <td>
                     <div>
-                      <button className="text-[#5B94FC]">Image</button>
+                      <Link
+                        href={{
+                          pathname: "/products/image-upload",
+                          query: { id: `${elem._id}` },
+                        }}
+                        className="text-[#5B94FC]"
+                      >
+                        Image
+                      </Link>
                       <span className="text-[#3b7ffd]"> | </span>
-                      <button className="text-[#5B94FC]">Edit</button>
+                      <Link href="#" className="text-[#5B94FC]">
+                        Edit
+                      </Link>
                     </div>
                     <button className="text-[#5B94FC]">Quick View</button>
                   </td>

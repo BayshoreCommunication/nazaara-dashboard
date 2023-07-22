@@ -1,11 +1,13 @@
 "use client";
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import ImageUploading from "react-images-uploading";
 import { SlCloudUpload } from "react-icons/sl";
 import { IoIosRemoveCircleOutline } from "react-icons/io";
 import Image from "next/image";
 
 const ImageUpload: React.FC = () => {
+  const routerSearch = useSearchParams();
   const [images, setImages] = useState([]);
   const maxNumber = 10;
 
@@ -13,6 +15,8 @@ const ImageUpload: React.FC = () => {
     // data for submit
     setImages(imageList);
   };
+
+  console.log("first", routerSearch.get("id"));
 
   return (
     <div className="container">

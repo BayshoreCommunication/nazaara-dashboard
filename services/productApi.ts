@@ -7,6 +7,7 @@ export interface IProducts {
 }
 
 export interface IProduct {
+  _id: string;
   productName: string;
   regularPrice: number;
   salePrice: number;
@@ -17,6 +18,9 @@ export interface IProduct {
   subCategory: string;
   promotion: string;
   status: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
 }
 
 export interface IVariant {
