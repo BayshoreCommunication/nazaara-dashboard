@@ -10,12 +10,12 @@ import {
   useGetSubCategoriesQuery,
   useUpdateSubCategoryMutation,
 } from "@/services/subcategory";
-import React, { useState, ChangeEvent, FormEvent, useRef } from "react";
+import { FC, useState, ChangeEvent, FormEvent, useRef } from "react";
 import toast from "react-hot-toast";
 import { RxCross2 } from "react-icons/rx";
 import Swal from "sweetalert2";
 
-const SubCategory: React.FC = () => {
+const SubCategory: FC = () => {
   //   const { data: subcategories, isLoading, refetch } = useGetCategoriesQuery();
   const {
     data: subcategories,

@@ -81,7 +81,13 @@ const Products = () => {
                         Image
                       </Link>
                       <span className="text-[#3b7ffd]"> | </span>
-                      <Link href="#" className="text-[#5B94FC]">
+                      <Link
+                        href={{
+                          pathname: "/products/update-product",
+                          query: { id: `${elem._id}` },
+                        }}
+                        className="text-[#5B94FC]"
+                      >
                         Edit
                       </Link>
                     </div>

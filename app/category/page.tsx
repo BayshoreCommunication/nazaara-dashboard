@@ -8,12 +8,12 @@ import {
   useDeleteCategoryMutation,
   useUpdateCategoryMutation,
 } from "@/services/categoryApi";
-import React, { useState, ChangeEvent, FormEvent, useRef } from "react";
+import { FC, useState, ChangeEvent, FormEvent, useRef } from "react";
 import toast from "react-hot-toast";
 import { RxCross2 } from "react-icons/rx";
 import Swal from "sweetalert2";
 
-const Category: React.FC = () => {
+const Category: FC = () => {
   const { data: categoriesData, isLoading, refetch } = useGetCategoriesQuery();
 
   const [createCategory] = useCreateCategoryMutation();

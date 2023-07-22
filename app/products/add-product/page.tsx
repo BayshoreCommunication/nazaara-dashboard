@@ -1,9 +1,9 @@
 "use client";
 import Editor from "@/components/Editor";
-import { ChangeEvent, useState, FormEvent } from "react";
+import { FC, ChangeEvent, useState, FormEvent } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { IProducts, useCreateProductMutation } from "@/services/productApi";
+import { useCreateProductMutation } from "@/services/productApi";
 import { useGetCategoriesQuery } from "@/services/categoryApi";
 import { useGetSubCategoriesQuery } from "@/services/subcategory";
 import { useGetPromotionsQuery } from "@/services/promotionApi";
@@ -57,7 +57,7 @@ const options = [
   { value: "XXL", label: "XXL" },
 ];
 
-const AddProduct: React.FC = () => {
+const AddProduct: FC = () => {
   let selectedOption;
   const router = useRouter();
 
