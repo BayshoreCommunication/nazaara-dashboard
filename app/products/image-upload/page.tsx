@@ -1,6 +1,6 @@
 "use client";
 import { FC, useMemo, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useGetProductByIdQuery } from "@/services/productApi";
 import ImageUploading from "react-images-uploading";
 import { SlCloudUpload } from "react-icons/sl";
@@ -9,6 +9,7 @@ import Image from "next/image";
 
 const ImageUpload: FC = () => {
   const routerSearch = useSearchParams();
+  const router = useRouter();
   const [images, setImages] = useState([]);
   const maxNumber = 10;
 
@@ -30,15 +31,18 @@ const ImageUpload: FC = () => {
   }, [productIsLoading, product]);
 
   if (!productIsLoading) {
-    console.log("first", singleProduct.data.variant);
+    console.log("first", singleProduct?.data);
   }
 
   return (
     <div className="container">
       <h1 className="text-2xl font-bold mb-3">Add Image</h1>
       <div className="flex flex-col gap-y-5">
-        {singleProduct.data.variant.map((elem: any) => (
-          <div className="bg-basic rounded-lg px-6 py-3 flex flex-col gap-y-4">
+        {singleProduct?.data.variant.map((elem: any, index: number) => (
+          <div
+            key={index}
+            className="bg-basic rounded-lg px-6 py-3 flex flex-col gap-y-4"
+          >
             <h4 className="text-lg font-bold">{elem.color}</h4>
             <ImageUploading
               multiple
