@@ -40,7 +40,7 @@ export const productsApi = createApi({
     getProducts: builder.query<IProducts, void>({
       query: () => `/api/v1/product`,
     }),
-    getProductById: builder.query<IProduct, string>({
+    getProductById: builder.query<IProducts, string>({
       query: (id: string) => `/api/v1/product/${id}`,
     }),
     createProduct: builder.mutation<IProduct, Partial<IProduct>>({
