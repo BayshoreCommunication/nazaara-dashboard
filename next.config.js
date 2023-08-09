@@ -9,6 +9,9 @@ const nextConfig = {
     API_KEY: process.env.API_KEY,
     API_SECRET: process.env.API_SECRET,
   },
+  images: {
+    domains: ["anzara.s3.amazonaws.com"],
+  },
 };
 
 module.exports = nextConfig;

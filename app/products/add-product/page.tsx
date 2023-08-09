@@ -1,6 +1,13 @@
 "use client";
 import Editor from "@/components/Editor";
-import { FC, ChangeEvent, useState, FormEvent } from "react";
+import {
+  FC,
+  ChangeEvent,
+  useState,
+  FormEvent,
+  useMemo,
+  useEffect,
+} from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useCreateProductMutation } from "@/services/productApi";
@@ -9,6 +16,8 @@ import { useGetSubCategoriesQuery } from "@/services/subcategory";
 import { useGetPromotionsQuery } from "@/services/promotionApi";
 import { useGetwarehousesQuery } from "@/services/warehouseApi";
 import dynamic from "next/dynamic";
+import { useSearchParams } from "next/navigation";
+import { TErpData, TResult } from "@/types/types";
 const Select = dynamic(() => import("react-select"), {
   ssr: false,
 });
@@ -279,6 +288,32 @@ const AddProduct: FC = () => {
       toast.error("Something went wrong!", { duration: 3000 });
     }
   };
+
+  const searchParams = useSearchParams();
+  const search = searchParams.get("data");
+  console.log("params data", search);
+
+  const [erpData, setErpData] = useState<TResult>();
+  const getData = async () => {
+    try {
+      const response = await fetch(
+        "https://www.erp.anzaralifestyle.com/api/product/Details/7565"
+      );
+      const data = await response.json();
+      setErpData(data);
+    } catch (err) {
+      console.log("error", err);
+    }
+  };
+
+  const memoizedGetData = useMemo(() => getData, []);
+
+  useEffect(() => {
+    memoizedGetData();
+  }, [memoizedGetData]);
+
+  erpData && console.log("first", erpData);
+
   return (
     <div className="container">
       <h1 className="text-2xl font-bold mb-3">Add Product</h1>

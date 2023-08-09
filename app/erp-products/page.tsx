@@ -49,7 +49,7 @@ const ErpProducts = () => {
   erpData &&
     console.log(
       "first",
-      erpData.results.map((elem) => elem.Color)
+      erpData.results.map((elem) => elem)
     );
 
   return !erpData ? (
@@ -74,7 +74,6 @@ const ErpProducts = () => {
                 <th>Category</th>
                 <th>Selling Price</th>
                 <th>Stock</th>
-                <th>Status</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -83,7 +82,7 @@ const ErpProducts = () => {
                 <tr key={index}>
                   <td>
                     <Image
-                      src="/images/container.png"
+                      src={elem.ProductImage[0].photo}
                       alt="nazara main logo"
                       width={248}
                       height={248}
@@ -92,38 +91,84 @@ const ErpProducts = () => {
                   </td>
                   <td>{elem.title}</td>
                   <td>{elem.Deatils.map((el) => el.main_category)}</td>
-                  <td>{elem.selling_price}</td>
-                  <td>{elem.quantity}</td>
-                  <td></td>
                   <td>
-                    <div>
-                      <Link
-                        href={{
-                          pathname: "/erp-products/image-upload",
-                          query: { id: `${elem.id}` },
-                        }}
-                        className="text-[#5B94FC]"
-                      >
-                        Image
-                      </Link>
-                      <span className="text-[#3b7ffd]"> | </span>
-                      <Link
-                        href={{
-                          pathname: "/products/update-product",
-                          query: { id: `${elem.id}` },
-                        }}
-                        className="text-[#5B94FC]"
-                      >
-                        Edit
-                      </Link>
-                    </div>
-                    <button className="text-[#5B94FC]">Quick View</button>
+                    <span className="text-xl">৳</span>
+                    {Math.floor(Number(elem.selling_price))}
+                  </td>
+                  <td>{elem.quantity}</td>
+                  <td>
+                    <Link
+                      // href="/products/add-product"
+                      href={`/products/add-product?data=${elem.id}`}
+                      className="text-sm bg-secondary px-3 py-1 text-white rounded-lg"
+                    >
+                      Add Product
+                    </Link>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
+        <ul className="flex -space-x-px text-sm justify-center mt-4">
+          <li>
+            <Link
+              href="#"
+              className="flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-200 bg-secondary border border-gray-100 rounded-l-lg hover:bg-secondary-hover hover:text-gray-100"
+            >
+              Previous
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="#"
+              className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
+            >
+              1
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="#"
+              className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
+            >
+              2
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="#"
+              // aria-current="page"
+              className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
+            >
+              3
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="#"
+              className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
+            >
+              4
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="#"
+              className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
+            >
+              5
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="#"
+              className="flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-200 bg-secondary border border-gray-100 rounded-e-lg hover:bg-secondary-hover hover:text-gray-100"
+            >
+              Next
+            </Link>
+          </li>
+        </ul>
       </div>
     </div>
   );
