@@ -19,9 +19,11 @@ const Login = () => {
         password,
       })
       .then((response) => {
-        setCookie("token", response.data.token, { maxAge: 60 * 60 * 24 });
+        setCookie("token", response.data.token, {
+          maxAge: 1 * 20 * 60 * 60 * 1000,
+        });
         setCookie("adminCredential", JSON.stringify(response.data.user), {
-          maxAge: 60 * 60 * 24,
+          maxAge: 1 * 20 * 60 * 60 * 1000,
         });
         router.push("/");
       })

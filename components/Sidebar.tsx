@@ -59,6 +59,12 @@ const Sidebar = () => {
     },
     {
       _id: "104",
+      title: "ERP Products",
+      link: "/erp-products",
+      icon: <BsFillBoxFill size={18} />,
+    },
+    {
+      _id: "104",
       title: "Products",
       link: "/products",
       icon: <BsFillBoxFill size={18} />,

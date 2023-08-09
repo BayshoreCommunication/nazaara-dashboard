@@ -1,5 +1,6 @@
 "use client";
 import UtilityBtn from "@/components/UtilityBtn";
+import Loader from "@/components/loader";
 import { useGetProductsQuery } from "@/services/productApi";
 import { TErpData } from "@/types/types";
 import Image from "next/image";
@@ -8,7 +9,7 @@ import { useEffect, useMemo, useState } from "react";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { BsPlus } from "react-icons/bs";
 
-const Products = () => {
+const ErpProducts = () => {
   const { data: productsData, isLoading: productsLoading } =
     useGetProductsQuery();
 
@@ -51,17 +52,16 @@ const Products = () => {
       erpData.results.map((elem) => elem.Color)
     );
 
-  return (
+  return !erpData ? (
+    <Loader height="h-[85vh]" />
+  ) : (
     <div>
       <div className="container">
         <div className="flex items-center justify-between mb-3">
           <div className="flex gap-2 items-center">
             <AiOutlineShoppingCart size={18} color="gray" />
-            <span className="font-medium text-lg">Products</span>
+            <span className="font-medium text-lg">ERP Products</span>
           </div>
-          <Link href="/products/add-product">
-            <UtilityBtn name="Add Product" icon={<BsPlus color="white" />} />
-          </Link>
         </div>
         {/* product component  */}
         <div className="overflow-x-auto">
@@ -70,16 +70,16 @@ const Products = () => {
             <thead className="">
               <tr>
                 <th>Image</th>
-                <th>Product Name</th>
+                <th>Title</th>
                 <th>Category</th>
-                <th>Product Code</th>
-                <th>Price</th>
+                <th>Selling Price</th>
                 <th>Stock</th>
+                <th>Status</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody>
-              {productsData?.data.map((elem, index) => (
+              {erpData?.results.map((elem, index) => (
                 <tr key={index}>
                   <td>
                     <Image
@@ -90,17 +90,17 @@ const Products = () => {
                       className="w-[70px] h-[70px]"
                     />
                   </td>
-                  <td>{elem.productName}</td>
-                  <td>{elem.category}</td>
-                  <td>{elem.subCategory}</td>
-                  <td>{elem.salePrice}</td>
-                  <td>{countstok(elem.variant)}</td>
+                  <td>{elem.title}</td>
+                  <td>{elem.Deatils.map((el) => el.main_category)}</td>
+                  <td>{elem.selling_price}</td>
+                  <td>{elem.quantity}</td>
+                  <td></td>
                   <td>
                     <div>
                       <Link
                         href={{
-                          pathname: "/products/image-upload",
-                          query: { id: `${elem._id}` },
+                          pathname: "/erp-products/image-upload",
+                          query: { id: `${elem.id}` },
                         }}
                         className="text-[#5B94FC]"
                       >
@@ -110,7 +110,7 @@ const Products = () => {
                       <Link
                         href={{
                           pathname: "/products/update-product",
-                          query: { id: `${elem._id}` },
+                          query: { id: `${elem.id}` },
                         }}
                         className="text-[#5B94FC]"
                       >
@@ -129,4 +129,4 @@ const Products = () => {
   );
 };
 
-export default Products;
+export default ErpProducts;
