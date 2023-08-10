@@ -7,7 +7,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { AiOutlineShoppingCart } from "react-icons/ai";
-import { BsPlus } from "react-icons/bs";
 
 const ErpProducts = () => {
   const { data: productsData, isLoading: productsLoading } =
@@ -31,7 +30,8 @@ const ErpProducts = () => {
   const getData = async () => {
     try {
       const response = await fetch(
-        "https://erp.anzaralifestyle.com/api/product/Details/?format=json&page=10&page_size=10"
+        // "https://erp.anzaralifestyle.com/api/product/Details/?format=json&page=10&page_size=10"
+        "https://testapi2.theicthub.com/api/product/Details/?format=json&page=10&page_size=10"
       );
       const data = await response.json();
       setErpData(data);
@@ -98,8 +98,7 @@ const ErpProducts = () => {
                   <td>{elem.quantity}</td>
                   <td>
                     <Link
-                      // href="/products/add-product"
-                      href={`/products/add-product?data=${elem.id}`}
+                      href={`/erp-products/${elem.id}`}
                       className="text-sm bg-secondary px-3 py-1 text-white rounded-lg"
                     >
                       Add Product

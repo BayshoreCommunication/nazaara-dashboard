@@ -16,8 +16,7 @@ import { useGetSubCategoriesQuery } from "@/services/subcategory";
 import { useGetPromotionsQuery } from "@/services/promotionApi";
 import { useGetwarehousesQuery } from "@/services/warehouseApi";
 import dynamic from "next/dynamic";
-import { useSearchParams } from "next/navigation";
-import { TErpData, TResult } from "@/types/types";
+import { ErpIdProps, TErpData, TResult } from "@/types/types";
 const Select = dynamic(() => import("react-select"), {
   ssr: false,
 });
@@ -66,7 +65,10 @@ const options = [
   { value: "XXL", label: "XXL" },
 ];
 
-const AddProduct: FC = () => {
+const AddProduct: FC<ErpIdProps> = ({ params }) => {
+  const singleProductId = params.productID;
+  //
+  console.log("first", singleProductId);
   let selectedOption;
   const router = useRouter();
 
@@ -289,15 +291,11 @@ const AddProduct: FC = () => {
     }
   };
 
-  const searchParams = useSearchParams();
-  const search = searchParams.get("data");
-  console.log("params data", search);
-
-  const [erpData, setErpData] = useState<TResult>();
+  const [erpData, setErpData] = useState();
   const getData = async () => {
     try {
       const response = await fetch(
-        "https://www.erp.anzaralifestyle.com/api/product/Details/7565"
+        `https://testapi2.theicthub.com/api/product/Details/${singleProductId}`
       );
       const data = await response.json();
       setErpData(data);
