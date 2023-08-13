@@ -5,7 +5,7 @@ import { useGetProductsQuery } from "@/services/productApi";
 import { TErpData } from "@/types/types";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 
 const ErpProducts = () => {
@@ -26,31 +26,133 @@ const ErpProducts = () => {
     return totalStock;
   };
 
+  //pagination
+  const pageSize = 10;
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const url = `https://erp.anzaralifestyle.com/api/product/Details/?format=json&page=${currentPage}&page_size=${pageSize}`;
+
+  // let correctPage = currentPage - 1;
+
   const [erpData, setErpData] = useState<TErpData>();
-  const getData = async () => {
+  const getData = useCallback(async () => {
     try {
-      const response = await fetch(
-        // "https://erp.anzaralifestyle.com/api/product/Details/?format=json&page=10&page_size=10"
-        "https://testapi2.theicthub.com/api/product/Details/?format=json&page=10&page_size=10"
-      );
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Token ${process.env.AUTH_TOKEN}`,
+        },
+      });
       const data = await response.json();
+      // console.log("The Data IS=>", data.results);
       setErpData(data);
     } catch (err) {
       console.log("error", err);
     }
-  };
-
-  const memoizedGetData = useMemo(() => getData, []);
+  }, [url]);
 
   useEffect(() => {
-    memoizedGetData();
-  }, [memoizedGetData]);
+    getData();
+  }, [getData, url]);
 
   erpData &&
     console.log(
-      "first",
-      erpData.results.map((elem) => elem)
+      "first-hola",
+      // erpData.results.map((elem) => elem)
+      erpData
     );
+
+  //pagination
+  const totalPages = Math.ceil(erpData?.count! / pageSize);
+  console.log("total pages", totalPages);
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePageClick = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+      getData();
+    }
+  };
+
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    const ellipsis = (
+      <button className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 border border-gray-300">
+        ...
+      </button>
+    );
+
+    const maxButtonsToShow = 5; // Number of buttons to show at a time
+    const halfMaxButtons = Math.floor(maxButtonsToShow / 2);
+
+    let startPage = currentPage - halfMaxButtons;
+    let endPage = currentPage + halfMaxButtons;
+
+    if (startPage < 1) {
+      startPage = 1;
+      endPage = Math.min(totalPages, maxButtonsToShow);
+    }
+
+    if (endPage > totalPages) {
+      endPage = totalPages;
+      startPage = Math.max(1, totalPages - maxButtonsToShow + 1);
+    }
+
+    if (startPage > 1) {
+      pageNumbers.push(
+        <button
+          key={1}
+          className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 border border-gray-300"
+          onClick={() => handlePageClick(1)}
+        >
+          1
+        </button>
+      );
+      if (startPage > 2) {
+        pageNumbers.push(ellipsis);
+      }
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(
+        <button
+          key={i}
+          className={`flex items-center justify-center px-3 h-8 leading-tight text-gray-500 border border-gray-300 ${
+            currentPage === i ? "bg-secondary text-white" : ""
+          }`}
+          onClick={() => handlePageClick(i)}
+        >
+          {i}
+        </button>
+      );
+    }
+
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) {
+        pageNumbers.push(ellipsis);
+      }
+      pageNumbers.push(
+        <button
+          key={totalPages}
+          className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 border border-gray-300"
+          onClick={() => handlePageClick(totalPages)}
+        >
+          {totalPages}
+        </button>
+      );
+    }
+
+    return pageNumbers;
+  };
 
   return !erpData ? (
     <Loader height="h-[85vh]" />
@@ -82,7 +184,7 @@ const ErpProducts = () => {
                 <tr key={index}>
                   <td>
                     <Image
-                      src={elem.ProductImage[0].photo}
+                      src={elem?.ProductImage[0]?.photo}
                       alt="nazara main logo"
                       width={248}
                       height={248}
@@ -111,61 +213,30 @@ const ErpProducts = () => {
         </div>
         <ul className="flex -space-x-px text-sm justify-center mt-4">
           <li>
-            <Link
-              href="#"
-              className="flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-200 bg-secondary border border-gray-100 rounded-l-lg hover:bg-secondary-hover hover:text-gray-100"
+            <button
+              onClick={handlePreviousPage}
+              disabled={currentPage === 1}
+              className={`flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-200 border border-gray-100 rounded-l-lg hover:text-gray-100 ${
+                currentPage === 1 ? "bg-secondary-hover" : "bg-secondary"
+              }`}
             >
               Previous
-            </Link>
+            </button>
           </li>
+
+          <li className="flex">{renderPageNumbers()}</li>
           <li>
-            <Link
-              href="#"
-              className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
-            >
-              1
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="#"
-              className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
-            >
-              2
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="#"
-              // aria-current="page"
-              className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
-            >
-              3
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="#"
-              className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
-            >
-              4
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="#"
-              className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
-            >
-              5
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="#"
-              className="flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-200 bg-secondary border border-gray-100 rounded-e-lg hover:bg-secondary-hover hover:text-gray-100"
+            <button
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+              className={`flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-200 border border-gray-100 rounded-e-lg hover:text-gray-100 ${
+                currentPage === totalPages
+                  ? "bg-secondary-hover"
+                  : "bg-secondary"
+              }`}
             >
               Next
-            </Link>
+            </button>
           </li>
         </ul>
       </div>

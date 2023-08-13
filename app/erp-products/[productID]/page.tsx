@@ -68,7 +68,7 @@ const options = [
 const AddProduct: FC<ErpIdProps> = ({ params }) => {
   const singleProductId = params.productID;
   //
-  console.log("first", singleProductId);
+  console.log("erp product id", singleProductId);
   let selectedOption;
   const router = useRouter();
 
@@ -295,9 +295,15 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
   const getData = async () => {
     try {
       const response = await fetch(
-        `https://testapi2.theicthub.com/api/product/Details/${singleProductId}`
+        `https://erp.anzaralifestyle.com/api/product/Details/${singleProductId}/?format=json`,
+        {
+          headers: {
+            Authorization: `Token ${process.env.AUTH_TOKEN}`,
+          },
+        }
       );
       const data = await response.json();
+      console.log("Abdullah Isa is the King: ", data);
       setErpData(data);
     } catch (err) {
       console.log("error", err);
@@ -310,7 +316,7 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
     memoizedGetData();
   }, [memoizedGetData]);
 
-  erpData && console.log("first", erpData);
+  console.log("single product data", erpData);
 
   return (
     <div className="container">

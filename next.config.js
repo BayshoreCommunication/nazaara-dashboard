@@ -2,6 +2,7 @@
 const nextConfig = {
   env: {
     API_URL: process.env.API_URL,
+    AUTH_TOKEN: process.env.AUTH_TOKEN,
     COOKIE_NAME: process.env.COOKIE_NAME,
     JWT_SECRET: process.env.JWT_SECRET,
     CLOUDINARY_URL: process.env.CLOUDINARY_URL,
