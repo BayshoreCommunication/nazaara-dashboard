@@ -1,49 +1,17 @@
+import { TProduct, TProducts } from "@/types/types";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
-export interface IProducts {
-  status: string;
-  total: number;
-  data: IProduct[];
-}
-
-export interface IProduct {
-  _id: string;
-  productName: string;
-  regularPrice: number;
-  salePrice: number;
-  size: string[];
-  variant: [IVariant];
-  description: string;
-  category: string;
-  subCategory: string;
-  promotion: string;
-  status: string;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
-}
-
-export interface IVariant {
-  color: string;
-  imageUrl: string[];
-  warehouse: [IWarehouse];
-}
-export interface IWarehouse {
-  warehouseName: string;
-  stock: number;
-}
 
 export const productsApi = createApi({
   reducerPath: "productsApi",
   baseQuery: fetchBaseQuery({ baseUrl: `${process.env.API_URL}` }),
   endpoints: (builder) => ({
-    getProducts: builder.query<IProducts, void>({
+    getProducts: builder.query<TProducts, void>({
       query: () => `/api/v1/product`,
     }),
-    getProductById: builder.query<IProducts, string>({
+    getProductById: builder.query<TProducts, string>({
       query: (id: string) => `/api/v1/product/${id}`,
     }),
-    createProduct: builder.mutation<IProduct, Partial<IProduct>>({
+    createProduct: builder.mutation<TProduct, Partial<TProduct>>({
       query: (payload) => ({
         url: "/api/v1/product",
         method: "POST",
@@ -59,8 +27,8 @@ export const productsApi = createApi({
       // },
     }),
     updateProduct: builder.mutation<
-      IProduct,
-      { id: string; payload: Partial<IProduct> }
+      TProduct,
+      { id: string; payload: Partial<TProduct> }
     >({
       query: ({ id, payload }) => ({
         url: `/api/v1/product/${id}`,

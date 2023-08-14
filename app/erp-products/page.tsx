@@ -9,29 +9,10 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 
 const ErpProducts = () => {
-  const { data: productsData, isLoading: productsLoading } =
-    useGetProductsQuery();
-
-  const countstok = (variants: any[]) => {
-    // Initialize the total stock count for the current product variant to 0
-    let totalStock = 0;
-
-    // Loop through each variant
-    for (const variant of variants) {
-      // Loop through each warehouse for the current variant and add the stock value to the totalStock
-      for (const warehouse of variant.warehouse) {
-        totalStock += warehouse.stock;
-      }
-    }
-    return totalStock;
-  };
-
   //pagination
   const pageSize = 10;
   const [currentPage, setCurrentPage] = useState<number>(1);
   const url = `https://erp.anzaralifestyle.com/api/product/Details/?format=json&page=${currentPage}&page_size=${pageSize}`;
-
-  // let correctPage = currentPage - 1;
 
   const [erpData, setErpData] = useState<TErpData>();
   const getData = useCallback(async () => {
@@ -42,7 +23,6 @@ const ErpProducts = () => {
         },
       });
       const data = await response.json();
-      // console.log("The Data IS=>", data.results);
       setErpData(data);
     } catch (err) {
       console.log("error", err);
@@ -53,16 +33,8 @@ const ErpProducts = () => {
     getData();
   }, [getData, url]);
 
-  erpData &&
-    console.log(
-      "first-hola",
-      // erpData.results.map((elem) => elem)
-      erpData
-    );
-
   //pagination
   const totalPages = Math.ceil(erpData?.count! / pageSize);
-  console.log("total pages", totalPages);
 
   const handlePreviousPage = () => {
     if (currentPage > 1) {
