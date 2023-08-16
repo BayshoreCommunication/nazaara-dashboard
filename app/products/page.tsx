@@ -45,11 +45,11 @@ const Products = () => {
     memoizedGetData();
   }, [memoizedGetData]);
 
-  erpData &&
-    console.log(
-      "first",
-      erpData.results.map((elem) => elem.Color)
-    );
+  // erpData &&
+  //   console.log(
+  //     "first",
+  //     erpData?.results?.map((elem) => elem.Color)
+  //   );
 
   return (
     <div>
@@ -79,7 +79,7 @@ const Products = () => {
               </tr>
             </thead>
             <tbody>
-              {productsData?.data.map((elem, index) => (
+              {productsData?.data?.map((elem, index) => (
                 <tr key={index}>
                   <td>
                     <Image
