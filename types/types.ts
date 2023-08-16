@@ -155,3 +155,37 @@ export type TParent = {
   key: number;
   value: number;
 };
+
+// =============== Product Types ============ /
+
+export type TProducts = {
+  status: string;
+  total: number;
+  data: TProduct[];
+};
+
+export type TProduct = {
+  _id?: string;
+  erpId: number;
+  sku?: string;
+  slug?: string;
+  productName: string;
+  regularPrice: number;
+  salePrice?: number;
+  size: string[];
+  variant: [TVariant];
+  stock: number;
+  description: string;
+  category: string;
+  subCategory: string;
+  promotion?: string;
+  status: string;
+  createdAt?: string;
+  updatedAt?: string;
+  __v?: number;
+};
+
+export type TVariant = {
+  color: string;
+  imageUrl: string[];
+};

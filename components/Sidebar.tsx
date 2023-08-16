@@ -131,9 +131,9 @@ const Sidebar = () => {
   return (
     <div className="flex-1 h-[93.5vh] sticky top-0">
       <div className="pl-6 pt-6 flex flex-col gap-2">
-        {datas.map((data) => (
+        {datas.map((data, index) => (
           <Link
-            key={data?._id}
+            key={index}
             href={data?.link}
             className={`flex gap-4 items-center pl-3 py-2 rounded-lg ${
               isActiveLink(data?.link) ? "bg-secondary text-basic" : "bg-basic"

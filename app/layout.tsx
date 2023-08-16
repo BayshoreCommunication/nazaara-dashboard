@@ -29,14 +29,14 @@ export default function RootLayout({
         })
         .then((response) => {
           if (response.data.status != "success") {
-            router.push("/nazara-admin");
+            router.push("/nazaara-admin");
           }
         })
         .catch((error) => {
           console.log(error);
         });
     } else {
-      router.push("/nazara-admin");
+      router.push("/nazaara-admin");
     }
   }, []);
 
@@ -50,7 +50,7 @@ export default function RootLayout({
         <Provider store={store}>
           <Toaster position="top-center" reverseOrder={false} />
           <>
-            {routerPath === "/nazara-admin" ? (
+            {routerPath === "/nazaara-admin" ? (
               children
             ) : (
               <>

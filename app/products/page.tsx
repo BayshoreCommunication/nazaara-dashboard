@@ -45,12 +45,6 @@ const Products = () => {
     memoizedGetData();
   }, [memoizedGetData]);
 
-  // erpData &&
-  //   console.log(
-  //     "first",
-  //     erpData?.results?.map((elem) => elem.Color)
-  //   );
-
   return (
     <div>
       <div className="container">
