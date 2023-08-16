@@ -12,7 +12,6 @@ const Products = () => {
     useGetProductsQuery();
 
   console.log("data", productsData?.product);
-
   return productsLoading ? (
     <Loader height="h-[85vh]" />
   ) : (
