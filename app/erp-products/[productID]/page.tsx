@@ -58,7 +58,7 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
     regularPrice: 0,
     salePrice: 0,
     size: [],
-    variant: [{ color: "", imageUrl: [] }],
+    variant: [],
     stock: 0,
     description: "",
     category: "",
@@ -84,7 +84,7 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
         regularPrice: data ? Number(data.selling_price) : 0,
         salePrice: 0,
         size: [],
-        variant: [{ color: "", imageUrl: [] }],
+        variant: [],
         stock: data ? Number(data.quantity) : 0,
         description: "",
         category: data
@@ -92,7 +92,7 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
           : "",
         subCategory: data ? data.category : "",
         promotion: "",
-        status: "",
+        status: formData.status,
       });
     } catch (err) {
       console.log("error", err);
@@ -184,28 +184,31 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    // Perform any form validation or data processing here
-    const data: any = await createProduct(formData);
-    // refetch();
-    if (data.data.status === "success") {
-      router.push("//erp-products");
-      toast.success("New Product Created", { duration: 3000 });
-      // Reset form fields
-      setFormData({
-        erpId: 0,
-        productName: "",
-        regularPrice: 0,
-        salePrice: 0,
-        size: [],
-        variant: [{ color: "", imageUrl: [] }],
-        stock: 0,
-        description: "",
-        category: "",
-        subCategory: "",
-        promotion: "",
-        status: "",
-      });
-    } else {
+    try {
+      const data: any = await createProduct(formData);
+      // refetch();
+      if (data.data.status === "success") {
+        router.push("/erp-products");
+        toast.success("New Product Created", { duration: 3000 });
+        // Reset form fields
+        setFormData({
+          erpId: 0,
+          productName: "",
+          regularPrice: 0,
+          salePrice: 0,
+          size: [],
+          variant: [],
+          stock: 0,
+          description: "",
+          category: "",
+          subCategory: "",
+          promotion: "",
+          status: "",
+        });
+      } else {
+        toast.error("Failed to create new product!", { duration: 3000 });
+      }
+    } catch {
       toast.error("Something went wrong!", { duration: 3000 });
     }
   };
@@ -223,6 +226,9 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
         <form onSubmit={handleSubmit}>
           <div className="bg-basic rounded-lg px-6 py-3 flex flex-col gap-y-4">
             <h4 className="text-lg font-bold">Product Information</h4>
+            <p>
+              <b>Erp ID:</b> {formData.erpId}
+            </p>
             <div className="flex flex-col gap-4 items-start">
               <div className="w-full bg-gray-100 py-3 px-5 flex flex-col gap-y-3 rounded-lg">
                 <div className="grid grid-cols-3 gap-4 items-start">
@@ -344,6 +350,7 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
                           className="rounded-e-lg p-2 border border-gray-400 focus:outline-none text-gray-500 w-full"
                           name="salePrice"
                           type="number"
+                          value={formData.salePrice}
                           min={0}
                           placeholder="Enter selling Price"
                           onChange={(event) => {
@@ -360,13 +367,13 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
                         <select
                           className="w-full border border-gray-400 rounded-sm p-2 focus:outline-none text-gray-500"
                           name="status"
+                          value={formData.status}
                           onChange={(event) => {
                             handleChange(event);
                           }}
                         >
-                          <option value="">Choose one</option>
-                          <option value="publish">Publish</option>
                           <option value="draft">Draft</option>
+                          <option value="publish">Publish</option>
                         </select>
                       </div>
                     </div>

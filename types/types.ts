@@ -161,7 +161,11 @@ export type TParent = {
 export type TProducts = {
   status: string;
   total: number;
-  data: TProduct[];
+  totalPages: number;
+  currentPage: number;
+  previousPage: any;
+  nextPage: number;
+  product: TProduct[];
 };
 
 export type TProduct = {
@@ -173,7 +177,7 @@ export type TProduct = {
   regularPrice: number;
   salePrice?: number;
   size: string[];
-  variant: [TVariant];
+  variant: TVariant[];
   stock: number;
   description: string;
   category: string;
@@ -186,6 +190,7 @@ export type TProduct = {
 };
 
 export type TVariant = {
+  _id?: string;
   color: string;
   imageUrl: string[];
 };

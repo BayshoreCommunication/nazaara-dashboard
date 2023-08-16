@@ -144,6 +144,7 @@ const ErpProducts = () => {
             <thead className="">
               <tr>
                 <th>Image</th>
+                <th>ERP ID</th>
                 <th>Title</th>
                 <th>Category</th>
                 <th>Selling Price</th>
@@ -163,6 +164,7 @@ const ErpProducts = () => {
                       className="w-[70px] h-[70px]"
                     />
                   </td>
+                  <td>{elem.id}</td>
                   <td>{elem.title}</td>
                   <td>{elem.Deatils.map((el) => el.main_category)}</td>
                   <td>

@@ -3,7 +3,7 @@ import { contactsApi } from "@/services/contactApi";
 import { categoriesApi } from "@/services/categoryApi";
 import { usersApi } from "@/services/userApi";
 import { productsApi } from "@/services/productApi";
-import  productSlice  from "@/store/slice/productSlice";
+import productSlice from "@/store/slice/productSlice";
 import { promotionsApi } from "@/services/promotionApi";
 import { warehouseApi } from "@/services/warehouseApi";
 import { subCategoriesApi } from "@/services/subcategory";
@@ -23,5 +23,12 @@ export const store = configureStore({
   // Adding the api middleware enables caching, invalidation, polling,
   // and other useful features of `rtk-query`.
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(subCategoriesApi.middleware).concat(warehouseApi.middleware).concat(promotionsApi.middleware).concat(contactsApi.middleware).concat(categoriesApi.middleware).concat(usersApi.middleware).concat(productsApi.middleware),
+    getDefaultMiddleware()
+      .concat(subCategoriesApi.middleware)
+      .concat(warehouseApi.middleware)
+      .concat(promotionsApi.middleware)
+      .concat(contactsApi.middleware)
+      .concat(categoriesApi.middleware)
+      .concat(usersApi.middleware)
+      .concat(productsApi.middleware),
 });
