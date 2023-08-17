@@ -128,26 +128,30 @@ const Sidebar = () => {
     return path.startsWith(link);
   };
 
+  console.log("datasssss", datas);
   return (
     <div className="flex-1 h-[93.5vh] sticky top-0">
       <div className="pl-6 pt-6 flex flex-col gap-2">
         {datas.map((data, index) => (
-          <Link
-            key={index}
-            href={data?.link}
-            className={`flex gap-4 items-center pl-3 py-2 rounded-lg ${
-              isActiveLink(data?.link) ? "bg-secondary text-basic" : "bg-basic"
-            }`}
-          >
-            <p
-              className={`${
-                isActiveLink(data?.link) ? "text-white" : "text-gray-500"
+          <div key={index}>
+            <Link
+              href={data?.link}
+              className={`flex gap-4 items-center pl-3 py-2 rounded-lg ${
+                isActiveLink(data?.link)
+                  ? "bg-secondary text-basic"
+                  : "bg-basic"
               }`}
             >
-              {data?.icon}
-            </p>
-            <p className="font-semibold">{data?.title}</p>
-          </Link>
+              <p
+                className={`${
+                  isActiveLink(data?.link) ? "text-white" : "text-gray-500"
+                }`}
+              >
+                {data?.icon}
+              </p>
+              <p className="font-semibold">{data?.title}</p>
+            </Link>
+          </div>
         ))}
       </div>
     </div>
