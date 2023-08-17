@@ -17,6 +17,7 @@
     "autoprefixer": "10.4.14",
     "axios": "^1.4.0",
     "chart.js": "^4.3.0",
+    "cloudinary": "^1.40.0",
     "cookies-next": "^2.1.2",
     "daisyui": "^3.1.0",
     "eslint": "8.42.0",
