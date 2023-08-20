@@ -10,8 +10,6 @@ import { BsPlus } from "react-icons/bs";
 const Products = () => {
   const { data: productsData, isLoading: productsLoading } =
     useGetProductsQuery();
-
-  console.log("data", productsData?.product);
   return productsLoading ? (
     <Loader height="h-[85vh]" />
   ) : (

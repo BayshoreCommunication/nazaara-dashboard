@@ -200,6 +200,16 @@ export type TVariant = {
   imageUrl: string[];
 };
 
+export type TProductErpIdData = {
+  status: string;
+  result: TProductErpId[];
+};
+
+export type TProductErpId = {
+  _id: string;
+  erpId: number;
+};
+
 // ============================= Image Urls ============================= //
 
 export type TImageUrl = {

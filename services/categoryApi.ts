@@ -7,12 +7,12 @@ export interface ICategory {
 }
 
 export interface IData {
-  _id: string;
+  _id?: string;
   name: string;
   status: string;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
+  createdAt?: string;
+  updatedAt?: string;
+  __v?: number;
 }
 
 export const categoriesApi = createApi({

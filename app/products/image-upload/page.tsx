@@ -11,7 +11,7 @@ import { IoIosRemoveCircleOutline } from "react-icons/io";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import Loader from "@/components/loader";
-import { TImageUrl } from "@/types/types";
+import { TImageUrl, TProduct } from "@/types/types";
 import axios from "axios";
 
 const ImageUpload: FC = () => {
@@ -55,32 +55,51 @@ const ImageUpload: FC = () => {
     });
   };
 
-  console.log(variant);
-
   const handleUpdateOnClick = async (event: any) => {
     event.preventDefault();
     const postOnCloudinary = variant?.map((elem) =>
       elem.imageUrl.map((el: TImageUrl) => el)
     );
 
-    // images upload on cloudinary
+    const updatedVariants: any = await Promise.all(
+      postOnCloudinary.map(async (elem: any, variantIndex: number) => {
+        const getResponseUrl = await Promise.all(
+          elem.map(async (imageFile: any) => {
+            const formData = new FormData();
+            formData.append("file", imageFile.file);
+            formData.append(
+              "upload_preset",
+              process.env.UPLOAD_PRESET as string
+            );
+            const response = await axios.post(
+              process.env.API_BASE_URL as string,
+              formData
+            );
+            return response.data.secure_url;
+          })
+        );
+        return {
+          color: product?.data.variant[variantIndex].color, // Associate the color with the variant
+          imageUrl: getResponseUrl.map((el: any) => el),
+        };
+      })
+    );
 
-    const imagesUpload = postOnCloudinary.map(async (elem: any) => {
-      // console.log("test data", elem);
-      const getResponseUrl = await Promise.all(
-        elem.map(async (imageFile: any) => {
-          const formData = new FormData();
-          formData.append("file", imageFile.file);
-          formData.append("upload_preset", process.env.UPLOAD_PRESET as string);
-          const response = await axios.post(
-            process.env.API_BASE_URL as string,
-            formData
-          );
-          return response.data.secure_url;
-        })
-      );
-      console.log("first test", getResponseUrl);
-    });
+    try {
+      const mutationData: any = await updateProduct({
+        id: productId,
+        payload: { variant: updatedVariants },
+      });
+      if (mutationData.data.status === "success") {
+        toast.success("Image updated successfully.", { duration: 3000 });
+        router.push("/products");
+      } else {
+        toast.error("Something went wrong!", { duration: 3000 });
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Upload failed!", { duration: 3000 });
+    }
   };
 
   return productIsLoading ? (

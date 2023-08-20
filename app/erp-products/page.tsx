@@ -1,7 +1,7 @@
 "use client";
 import UtilityBtn from "@/components/UtilityBtn";
 import Loader from "@/components/loader";
-import { useGetProductsQuery } from "@/services/productApi";
+import { useGetProductErpIdQuery } from "@/services/productApi";
 import { TErpData } from "@/types/types";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,6 +9,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 
 const ErpProducts = () => {
+  const { data: productsErpId } = useGetProductErpIdQuery();
   //pagination
   const pageSize = 10;
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -153,35 +154,47 @@ const ErpProducts = () => {
               </tr>
             </thead>
             <tbody>
-              {erpData?.results.map((elem, index) => (
-                <tr key={index}>
-                  <td>
-                    <Image
-                      src={elem?.ProductImage[0]?.photo}
-                      alt="nazara main logo"
-                      width={248}
-                      height={248}
-                      className="w-[70px] h-[70px]"
-                    />
-                  </td>
-                  <td>{elem.id}</td>
-                  <td>{elem.title}</td>
-                  <td>{elem.Deatils.map((el) => el.main_category)}</td>
-                  <td>
-                    <span className="text-xl">৳</span>
-                    {Math.floor(Number(elem.selling_price))}
-                  </td>
-                  <td>{elem.quantity}</td>
-                  <td>
-                    <Link
-                      href={`/erp-products/${elem.id}`}
-                      className="text-sm bg-secondary px-3 py-1 text-white rounded-lg"
-                    >
-                      Add Product
-                    </Link>
-                  </td>
-                </tr>
-              ))}
+              {erpData?.results.map((elem, index) => {
+                const checkdata = productsErpId?.result.filter(
+                  (el) => el.erpId === elem.id
+                )[0];
+                return (
+                  <tr
+                    key={index}
+                    className={`${checkdata != undefined && "bg-gray-300"}`}
+                  >
+                    <td>
+                      <Image
+                        src={elem?.ProductImage[0]?.photo}
+                        alt="nazara main logo"
+                        width={248}
+                        height={248}
+                        className="w-[70px] h-[70px]"
+                      />
+                    </td>
+                    <td>{elem.id}</td>
+                    <td>{elem.title}</td>
+                    <td>{elem.Deatils.map((el) => el.main_category)}</td>
+                    <td>
+                      <span className="text-xl">৳</span>
+                      {Math.floor(Number(elem.selling_price))}
+                    </td>
+                    <td>{elem.quantity}</td>
+                    <td>
+                      <Link
+                        href={`${
+                          checkdata === undefined
+                            ? `/erp-products/${elem.id}`
+                            : `/erp-products/#`
+                        }`}
+                        className="text-sm bg-secondary px-3 py-1 text-white rounded-lg"
+                      >
+                        Add Product
+                      </Link>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
