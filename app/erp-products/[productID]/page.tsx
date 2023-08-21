@@ -188,7 +188,7 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
       const data: any = await createProduct(formData);
       // refetch();
       if (data.data.status === "success") {
-        router.push("/erp-products");
+        router.push("/products");
         toast.success("New Product Created", { duration: 3000 });
         // Reset form fields
         setFormData({
@@ -212,10 +212,6 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
       toast.error("Something went wrong!", { duration: 3000 });
     }
   };
-
-  // erpData && console.log("single data", erpData);
-
-  console.log("formData", formData);
 
   return !erpData ? (
     <Loader height="h-[85vh]" />

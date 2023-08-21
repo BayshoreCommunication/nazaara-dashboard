@@ -127,8 +127,6 @@ const Sidebar = () => {
     }
     return path.startsWith(link);
   };
-
-  console.log("datasssss", datas);
   return (
     <div className="flex-1 h-[93.5vh] sticky top-0">
       <div className="pl-6 pt-6 flex flex-col gap-2">
