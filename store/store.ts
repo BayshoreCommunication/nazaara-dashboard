@@ -7,6 +7,7 @@ import productSlice from "@/store/slice/productSlice";
 import { promotionsApi } from "@/services/promotionApi";
 import { warehouseApi } from "@/services/warehouseApi";
 import { subCategoriesApi } from "@/services/subcategory";
+import { customizationApi } from "@/services/customizationApi";
 
 export const store = configureStore({
   reducer: {
@@ -18,6 +19,7 @@ export const store = configureStore({
     [promotionsApi.reducerPath]: promotionsApi.reducer,
     [warehouseApi.reducerPath]: warehouseApi.reducer,
     [subCategoriesApi.reducerPath]: subCategoriesApi.reducer,
+    [customizationApi.reducerPath]: customizationApi.reducer,
     products: productSlice,
   },
   // Adding the api middleware enables caching, invalidation, polling,
@@ -30,5 +32,6 @@ export const store = configureStore({
       .concat(contactsApi.middleware)
       .concat(categoriesApi.middleware)
       .concat(usersApi.middleware)
+      .concat(customizationApi.middleware)
       .concat(productsApi.middleware),
 });
