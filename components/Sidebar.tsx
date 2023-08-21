@@ -3,6 +3,7 @@ import { RxDashboard } from "react-icons/rx";
 import { FaUserAlt, FaWarehouse } from "react-icons/fa";
 import { SiGoogleanalytics } from "react-icons/si";
 import { AiOutlineShoppingCart } from "react-icons/ai";
+import { IoTicketOutline } from "react-icons/io5";
 import { usePathname } from "next/navigation";
 import {
   BsFillBoxFill,
@@ -50,6 +51,12 @@ const Sidebar = () => {
       title: "Category",
       link: "/category",
       icon: <MdCategory size={18} />,
+    },
+    {
+      _id: "203",
+      title: "Coupons",
+      link: "/coupons",
+      icon: <IoTicketOutline size={18} />,
     },
     {
       _id: "204",

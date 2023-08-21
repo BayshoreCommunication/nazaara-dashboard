@@ -1,5 +1,5 @@
 "use client";
-import { FC, useState, FormEvent } from "react";
+import { FC, useState, FormEvent, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import {
   useGetProductByIdQuery,
@@ -22,7 +22,7 @@ const ImageUpload: FC = () => {
   ]);
   const routerSearch = useSearchParams();
   const router = useRouter();
-  const maxNumber = 10;
+  const maxNumber = 6;
 
   const productId: any = routerSearch.get("id");
   if (productId === "" || productId === null) {
@@ -32,11 +32,18 @@ const ImageUpload: FC = () => {
   const { data: product, isLoading: productIsLoading } =
     useGetProductByIdQuery(productId);
 
-  // update image
+  //update innitial variant state
+  useEffect(() => {
+    if (product?.data && product.data.variant) {
+      const updateVariantState = product.data.variant.map((elem: any) => ({
+        imageUrl: elem.imageUrl.map((url: string) => ({ data_url: url })),
+      }));
+      setVariant(updateVariantState);
+    }
+  }, [product]);
+
+  // update image mutation
   const [updateProduct] = useUpdateProductMutation();
-  // const handleUpdateCategorySubmit = async (event: FormEvent) => {
-  //   event.preventDefault();
-  // };
 
   const onChangeHandle = (imageList: any, variantIndex: number) => {
     // data for submit

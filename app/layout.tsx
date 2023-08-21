@@ -3,12 +3,13 @@ import { useCallback, useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import "./globals.css";
 import Sidebar from "@/components/Sidebar";
-import { store } from "../store/store";
+import { setupStore } from "../store/store";
 import { Provider } from "react-redux";
 import { Toaster } from "react-hot-toast";
 import { useRouter, usePathname } from "next/navigation";
 import { getCookie } from "cookies-next";
 import axios from "axios";
+const store = setupStore();
 
 export default function RootLayout({
   children,

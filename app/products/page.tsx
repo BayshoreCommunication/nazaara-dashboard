@@ -10,18 +10,14 @@ import { BsPlus } from "react-icons/bs";
 const Products = () => {
   const { data: productsData, isLoading: productsLoading } =
     useGetProductsQuery();
+
   return productsLoading ? (
     <Loader height="h-[85vh]" />
   ) : (
     <div className="container">
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex gap-2 items-center">
-          <AiOutlineShoppingCart size={18} color="gray" />
-          <span className="font-medium text-lg">Products</span>
-        </div>
-        <Link href="/products/add-product">
-          <UtilityBtn name="Add Product" icon={<BsPlus color="white" />} />
-        </Link>
+      <div className="flex gap-2 items-center mb-2">
+        <AiOutlineShoppingCart size={18} color="gray" />
+        <span className="font-medium text-lg">Products</span>
       </div>
       {/* product component  */}
       <div className="overflow-x-auto">
@@ -30,6 +26,7 @@ const Products = () => {
           <thead className="">
             <tr>
               <th>Image</th>
+              <th>Erp ID</th>
               <th>Product Name</th>
               <th>Category</th>
               <th>Sub Category</th>
@@ -50,6 +47,7 @@ const Products = () => {
                     className="w-[70px] h-[70px]"
                   />
                 </td>
+                <td>{elem.erpId}</td>
                 <td>{elem.productName}</td>
                 <td>{elem.category}</td>
                 <td>{elem.subCategory}</td>

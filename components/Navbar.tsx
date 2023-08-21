@@ -12,7 +12,7 @@ const Navbar = () => {
   const handleLogOut = async (event: any) => {
     deleteCookie("token");
     deleteCookie("adminCredential");
-    routerForPush.push("/nazara-admin");
+    routerForPush.push("/nazaara-admin");
   };
 
   return (
@@ -33,7 +33,7 @@ const Navbar = () => {
           <AiOutlineBell color="gray" size={26} />
           <div>
             <Image
-              src="/images/nj_milon.jpg"
+              src="https://res.cloudinary.com/nazaara/image/upload/v1692621035/users/login_c43wh2.png"
               alt="nazara main logo"
               width={600}
               height={600}
