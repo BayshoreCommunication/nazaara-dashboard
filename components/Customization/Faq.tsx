@@ -3,9 +3,9 @@ import {
   useGetCustomizationByIdQuery,
   useUpdateCustomizationMutation,
 } from "@/services/customizationApi";
-import PrimaryButton from "../PrimaryButton";
 import { IFaq } from "@/types/uiCustomization";
 import { toast } from "react-hot-toast";
+import Swal from "sweetalert2";
 
 const Faq = () => {
   const { data, isLoading } = useGetCustomizationByIdQuery(
@@ -29,14 +29,16 @@ const Faq = () => {
   const handleFormSubmit = async (e: any) => {
     try {
       e.preventDefault();
-      const updatedCategory = await updateCustomization({
+      const updatedCategory: any = await updateCustomization({
         id: "64d9fb77f3a7ce9915b44b6f",
-        payload: formData,
+        payload: { faq: formData },
       });
 
-      if (updatedCategory) {
+      if (updatedCategory.data.success) {
+        // Show a success toast message here
         toast.success("Faq updated successfully!", { duration: 3000 });
       }
+      // console.log("updatedcategory", updatedCategory);
     } catch (error) {
       toast.error("Error occured!", { duration: 3000 });
       console.error(error);
@@ -44,7 +46,7 @@ const Faq = () => {
 
     // console.log("update processed");
     // Here you can access the formData and send it to the database
-    console.log("frontend formDAta", formData);
+    // console.log("frontend formDAta", formData);
   };
 
   // A function to handle the input or textarea change
@@ -58,8 +60,27 @@ const Faq = () => {
   };
 
   const handleRemoveField = (indexToRemove: number) => {
-    const newFormData = formData.filter((_, index) => index !== indexToRemove);
-    setFormData(newFormData);
+    Swal.fire({
+      title: "Are you sure you want to remove?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, remove it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        Swal.fire(
+          "Deleted!",
+          "Your faq has been deleted. Make sure you update the customization",
+          "success"
+        );
+        const newFormData = formData.filter(
+          (_, index) => index !== indexToRemove
+        );
+        setFormData(newFormData);
+      }
+    });
   };
 
   const handleAddNewField = () => {
@@ -85,6 +106,7 @@ const Faq = () => {
                     Query: {index + 1}
                   </label>
                   <button
+                    type="button"
                     onClick={() => handleRemoveField(index)}
                     className="bg-secondary rounded-md text-white px-3 pt-0.5 pb-1 text-sm mb-1"
                   >
@@ -100,6 +122,11 @@ const Faq = () => {
                   required
                   // Use the handleChange function to update the state when the input value changes
                   onChange={(e) => handleChange(index, "title", e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                    }
+                  }}
                 />
               </div>
               <div>
@@ -126,6 +153,7 @@ const Faq = () => {
         {/* <PrimaryButton type="submit" label="Update" /> */}
         <div className="flex justify-end gap-2">
           <button
+            type="button"
             onClick={handleAddNewField}
             className="bg-secondary rounded-lg text-white px-4 py-1"
           >

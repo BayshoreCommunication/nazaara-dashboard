@@ -7,6 +7,7 @@ const nextConfig = {
     JWT_SECRET: process.env.JWT_SECRET,
     API_BASE_URL: process.env.API_BASE_URL,
     UPLOAD_PRESET: process.env.UPLOAD_PRESET,
+    OTHER_PRESET: process.env.OTHER_PRESET,
     CLOUD_NAME: process.env.CLOUD_NAME,
     API_KEY: process.env.API_KEY,
     API_SECRET: process.env.API_SECRET,
