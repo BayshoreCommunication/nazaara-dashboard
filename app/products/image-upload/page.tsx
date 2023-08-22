@@ -72,17 +72,21 @@ const ImageUpload: FC = () => {
       postOnCloudinary.map(async (elem: any, variantIndex: number) => {
         const getResponseUrl = await Promise.all(
           elem.map(async (imageFile: any) => {
-            const formData = new FormData();
-            formData.append("file", imageFile.file);
-            formData.append(
-              "upload_preset",
-              process.env.UPLOAD_PRESET as string
-            );
-            const response = await axios.post(
-              process.env.API_BASE_URL as string,
-              formData
-            );
-            return response.data.secure_url;
+            if (imageFile.file) {
+              const formData = new FormData();
+              formData.append("file", imageFile.file);
+              formData.append(
+                "upload_preset",
+                process.env.UPLOAD_PRESET as string
+              );
+              const response = await axios.post(
+                process.env.API_BASE_URL as string,
+                formData
+              );
+              return response.data.secure_url;
+            } else {
+              return imageFile.data_url;
+            }
           })
         );
         return {
