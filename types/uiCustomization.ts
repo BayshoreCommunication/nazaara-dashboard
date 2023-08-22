@@ -7,14 +7,14 @@ export interface ICustomization {
 export interface IData {
   bannerSection: IBannerSection;
   aboutUs: IAboutUs;
-  _id: string;
+  _id?: string;
   heroLeftSlider: IHeroLeftSlider[];
   heroRightSlider: IHeroRightSlider[];
   deliveryPartnerImages: string[];
   faq: IFaq[];
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
+  createdAt?: string;
+  updatedAt?: string;
+  __v?: number;
 }
 
 export interface IBannerSection {

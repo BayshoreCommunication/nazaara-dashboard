@@ -109,6 +109,8 @@ const ImageUpload: FC = () => {
     }
   };
 
+  console.log("variant", variant[0]?.imageUrl);
+
   return productIsLoading ? (
     <Loader height="h-[85vh]" />
   ) : (
