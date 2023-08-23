@@ -29,8 +29,11 @@ const ImageUpload: FC = () => {
     router.back();
   }
 
-  const { data: product, isLoading: productIsLoading } =
-    useGetProductByIdQuery(productId);
+  const {
+    data: product,
+    isLoading: productIsLoading,
+    refetch,
+  } = useGetProductByIdQuery(productId);
 
   //update innitial variant state
   useEffect(() => {
@@ -101,6 +104,7 @@ const ImageUpload: FC = () => {
         id: productId,
         payload: { variant: updatedVariants },
       });
+      refetch();
       if (mutationData.data.status === "success") {
         toast.success("Image updated successfully.", { duration: 3000 });
         router.push("/products");
@@ -112,8 +116,6 @@ const ImageUpload: FC = () => {
       toast.error("Upload failed!", { duration: 3000 });
     }
   };
-
-  console.log("variant", variant[0]?.imageUrl);
 
   return productIsLoading ? (
     <Loader height="h-[85vh]" />

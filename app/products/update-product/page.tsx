@@ -50,8 +50,11 @@ const UpdateProduct: FC = () => {
   if (singleProductId === "" || singleProductId === null) {
     router.back();
   }
-  const { data: productsData, isLoading: productsLoading } =
-    useGetProductByIdQuery(singleProductId);
+  const {
+    data: productsData,
+    isLoading: productsLoading,
+    refetch,
+  } = useGetProductByIdQuery(singleProductId);
 
   const [formData, setFormData] = useState<TProduct>({
     erpId: 0,
@@ -161,6 +164,7 @@ const UpdateProduct: FC = () => {
         id: singleProductId,
         payload: formData,
       });
+      refetch();
       if (mutationData.data.status === "success") {
         router.push("/products");
         toast.success("Product updated sucessfully.", { duration: 3000 });
@@ -203,7 +207,7 @@ const UpdateProduct: FC = () => {
     <Loader height="h-[85vh]" />
   ) : (
     <div className="container">
-      <h1 className="text-2xl font-bold mb-3">Add Product</h1>
+      <h1 className="text-2xl font-bold mb-3">Update Product</h1>
       <div className="flex flex-col gap-y-5">
         <form onSubmit={handleSubmit}>
           <div className="bg-basic rounded-lg px-6 py-3 flex flex-col gap-y-4">

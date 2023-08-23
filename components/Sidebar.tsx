@@ -53,12 +53,6 @@ const Sidebar = () => {
       icon: <MdCategory size={18} />,
     },
     {
-      _id: "203",
-      title: "Coupons",
-      link: "/coupons",
-      icon: <IoTicketOutline size={18} />,
-    },
-    {
       _id: "204",
       title: "SubCategory",
       link: "/subcategory",

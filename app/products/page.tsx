@@ -54,28 +54,27 @@ const Products = () => {
                 <td>{elem.salePrice}</td>
                 <td>{elem.stock}</td>
                 <td>
-                  <div>
+                  <div className="flex gap-2">
                     <Link
                       href={{
                         pathname: "/products/image-upload",
                         query: { id: `${elem._id}` },
                       }}
-                      className="text-[#5B94FC]"
+                      className="text-white bg-red-800 py-2 px-3 rounded-md shadow-md"
                     >
                       Image
                     </Link>
-                    <span className="text-[#3b7ffd]"> | </span>
                     <Link
                       href={{
                         pathname: "/products/update-product",
                         query: { id: `${elem._id}` },
                       }}
-                      className="text-[#5B94FC]"
+                      className="text-white bg-red-800 py-2 px-3 rounded-md shadow-md"
                     >
-                      Edit
+                      Update
                     </Link>
                   </div>
-                  <button className="text-[#5B94FC]">Quick View</button>
+                  {/* <button className="text-[#5B94FC]">Quick View</button> */}
                 </td>
               </tr>
             ))}
