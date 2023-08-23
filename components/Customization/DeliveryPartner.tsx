@@ -2,11 +2,9 @@ import {
   useGetCustomizationByIdQuery,
   useUpdateCustomizationMutation,
 } from "@/services/customizationApi";
-import { ICustomization, IData } from "@/types/uiCustomization";
 import axios from "axios";
-import { url } from "inspector";
 import Image from "next/image";
-import React, { MouseEvent, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { IoIosRemoveCircleOutline } from "react-icons/io";
 import { SlCloudUpload } from "react-icons/sl";
@@ -23,8 +21,6 @@ const DeliveryPartner = () => {
 
   const [images, setImages] = useState<{ data_url: string }[]>([]);
   const maxNumber = 20;
-
-  // useMemo
 
   const onChangeHandle = (imageList: any) => {
     // data for submit
@@ -74,18 +70,6 @@ const DeliveryPartner = () => {
     } catch (error) {
       console.error("Update failed", error);
     }
-  };
-
-  const handleImageUpdate = (index: number, updatedImage: any) => {
-    const updatedImages = [...images];
-    updatedImages[index] = updatedImage;
-    setImages(updatedImages);
-  };
-
-  const handleImageRemove = (index: number) => {
-    const updatedImages = [...images];
-    updatedImages.splice(index, 1);
-    setImages(updatedImages);
   };
 
   return (
