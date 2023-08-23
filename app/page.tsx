@@ -1,56 +1,56 @@
-"use client";
-import { AiOutlineShoppingCart } from "react-icons/ai";
-import { BiCategory } from "react-icons/bi";
-import { BsChatSquareTextFill, BsFillBoxFill } from "react-icons/bs";
-import { TbTruckDelivery } from "react-icons/tb";
-import AreaChart from "@/components/AreaChart";
-import PieChart from "@/components/PieChart";
-import RecentOrder from "@/components/home/RecentOrder";
-import RecentCustomer from "@/components/home/RecentCustomer";
-import Product from "@/components/Product";
-import { useGetContactByIDQuery } from "@/services/contactApi";
-import { useEffect, useState } from "react";
+'use client'
+import { AiOutlineShoppingCart } from 'react-icons/ai'
+import { BiCategory } from 'react-icons/bi'
+import { BsChatSquareTextFill, BsFillBoxFill } from 'react-icons/bs'
+import { TbTruckDelivery } from 'react-icons/tb'
+import AreaChart from '@/components/AreaChart'
+import PieChart from '@/components/PieChart'
+import RecentOrder from '@/components/home/RecentOrder'
+import RecentCustomer from '@/components/home/RecentCustomer'
+import Product from '@/components/Product'
+import { useGetContactByIDQuery } from '@/services/contactApi'
+import { useEffect, useState } from 'react'
 
 interface CardDataItem {
-  icon: JSX.Element;
-  text: string;
-  bgColor: string;
-  value: number;
+  icon: JSX.Element
+  text: string
+  bgColor: string
+  value: number
 }
 
 const Home = (): JSX.Element => {
   const cardData: CardDataItem[] = [
     {
       icon: <BiCategory size={24} />,
-      text: "Total Category",
-      bgColor: "bg-[#FC8D68]",
+      text: 'Total Category',
+      bgColor: 'bg-[#FC8D68]',
       value: 8,
     },
     {
       icon: <AiOutlineShoppingCart size={24} />,
-      text: "New Order",
-      bgColor: "bg-secondary",
+      text: 'New Order',
+      bgColor: 'bg-secondary',
       value: 5,
     },
     {
       icon: <TbTruckDelivery size={24} />,
-      text: "Ready to Deliver",
-      bgColor: "bg-warning",
+      text: 'Ready to Deliver',
+      bgColor: 'bg-warning',
       value: 2,
     },
     {
       icon: <BsFillBoxFill size={24} />,
-      text: "Available Product",
-      bgColor: "bg-[#77CFBB]",
+      text: 'Available Product',
+      bgColor: 'bg-[#77CFBB]',
       value: 3,
     },
     {
       icon: <BsChatSquareTextFill size={24} />,
-      text: "Appointment",
-      bgColor: "bg-[#766EDA]",
+      text: 'Appointment',
+      bgColor: 'bg-[#766EDA]',
       value: 4,
     },
-  ];
+  ]
 
   const {
     data: datas,
@@ -59,9 +59,9 @@ const Home = (): JSX.Element => {
     isFetching,
     isSuccess,
     isUninitialized,
-  } = useGetContactByIDQuery("64731c5526d071ac04063cfc");
+  } = useGetContactByIDQuery('64731c5526d071ac04063cfc')
 
-  datas != undefined && console.log("data", datas);
+  datas != undefined && console.log('data', datas)
 
   return (
     <div className="container">
@@ -104,7 +104,7 @@ const Home = (): JSX.Element => {
         <Product />
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Home;
+export default Home
