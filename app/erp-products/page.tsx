@@ -5,7 +5,7 @@ import { useGetProductErpIdQuery } from "@/services/productApi";
 import { TErpData } from "@/types/types";
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 
 const ErpProducts = () => {
@@ -157,7 +157,7 @@ const ErpProducts = () => {
             <tbody>
               {erpData?.results.map((elem, index) => {
                 const checkdata = productsErpId?.result.filter(
-                  (el) => el.erpId === elem.id
+                  (el: any) => el.erpId === elem.id
                 )[0];
                 console.log("check data here", checkdata);
 
