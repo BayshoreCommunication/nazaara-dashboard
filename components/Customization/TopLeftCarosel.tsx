@@ -21,47 +21,24 @@ const TopLeftCarosel = () => {
 
   const customizeData = data?.data?.heroLeftSlider;
 
-  // Use a state variable to store the form data
-  const [formData, setFormData] = useState<IHeroLeftSlider[]>([]);
-
-  // Update the state when the data is loaded
-  useEffect(() => {
-    if (customizeData) {
-      setFormData(customizeData);
-    }
-  }, [customizeData]);
-
-  const handleFormSubmit = async (e: any) => {
-    try {
-      e.preventDefault();
-      const updatedCategory: any = await updateCustomization({
-        id: "64d9fb77f3a7ce9915b44b6f",
-        payload: { heroLeftSlider: formData },
-      });
-
-      if (updatedCategory.data.success) {
-        // Show a success toast message here
-        toast.success("Faq updated successfully!", { duration: 3000 });
-      }
-      // console.log("updatedcategory", updatedCategory);
-    } catch (error) {
-      toast.error("Error occured!", { duration: 3000 });
-      console.error(error);
-    }
-
-    // console.log("update processed");
-    // Here you can access the formData and send it to the database
-    // console.log("frontend formDAta", formData);
-  };
+  const [images, setImages] = useState<
+    {
+      image: string;
+      bottomHeading: string;
+      mainHeading: string;
+      topHeading: string;
+      file?: any;
+    }[]
+  >([]); // Changed the type to array
 
   // A function to handle the input or textarea change
   const handleChange = (index: number, key: string, value: string) => {
     // Make a copy of the formData array
-    const newFormData = [...formData];
+    const newImages = [...images];
     // Update the object at the given index with the new value
-    newFormData[index] = { ...newFormData[index], [key]: value };
+    newImages[index] = { ...newImages[index], [key]: value };
     // Set the state with the updated array
-    setFormData(newFormData);
+    setImages(newImages);
   };
 
   const handleRemoveField = (indexToRemove: number) => {
@@ -80,39 +57,26 @@ const TopLeftCarosel = () => {
           "Your faq has been deleted. Make sure you update the customization",
           "success"
         );
-        const newFormData = formData.filter(
-          (_, index) => index !== indexToRemove
-        );
-        setFormData(newFormData);
+        const newImages = images.filter((_, index) => index !== indexToRemove);
+        setImages(newImages);
       }
     });
   };
 
   const handleAddNewField = () => {
-    const newField: IHeroLeftSlider = {
+    const newField: any = {
       topHeading: "",
       mainHeading: "",
       image: "",
       bottomHeading: "",
-      _id: "",
     };
-    setFormData([...formData, newField]);
+    setImages([...images, newField]);
   };
-
-  const [images, setImages] = useState<
-    {
-      data_url: string;
-      bottomHeading: string;
-      mainHeading: string;
-      topHeading: string;
-      file?: any;
-    }[]
-  >([]); // Changed the type to array
 
   useEffect(() => {
     if (customizeData) {
       const updateImageState = customizeData.map((url: any) => ({
-        data_url: url.image,
+        image: url.image,
         bottomHeading: url.bottomHeading,
         mainHeading: url.mainHeading,
         topHeading: url.topHeading,
@@ -124,16 +88,14 @@ const TopLeftCarosel = () => {
   const onChangeHandle = (imageList: any, index: number) => {
     // Create a copy of the existing images array
     const updatedImages = [...images];
-
     // Update the element at the specified index with new data
     updatedImages[index] = {
-      data_url: imageList[0].data_url, // Use the data_url property
+      image: imageList[0].image, // Use the image property
       file: imageList[0].file, // Use the file property
       bottomHeading: updatedImages[index].bottomHeading, // Preserve other properties
       mainHeading: updatedImages[index].mainHeading,
       topHeading: updatedImages[index].topHeading,
     };
-
     // Set the updated images array back to the state
     setImages(updatedImages);
   };
@@ -141,9 +103,8 @@ const TopLeftCarosel = () => {
   const handleUpdateOnClick = async (event: any) => {
     event.preventDefault();
     // images upload on cloudinary
-
-    const imagesUpload = await Promise.all(
-      images?.map(async (image: any) => {
+    const imagesAndDataUpload = await Promise.all(
+      images?.map(async (image: any, index: number) => {
         if (image.file) {
           const formData = new FormData();
           formData.append("file", image.file);
@@ -152,31 +113,46 @@ const TopLeftCarosel = () => {
             process.env.API_BASE_URL as string,
             formData
           );
-          return response.data.secure_url;
+          return {
+            image: response.data.secure_url, // Use the image property
+            bottomHeading: images[index].bottomHeading, // Preserve other properties
+            mainHeading: images[index].mainHeading,
+            topHeading: images[index].topHeading,
+          };
         } else {
-          return image.data_url;
+          return {
+            image: images[index].image, // Use the image property
+            bottomHeading: images[index].bottomHeading, // Preserve other properties
+            mainHeading: images[index].mainHeading,
+            topHeading: images[index].topHeading,
+          };
         }
       })
     );
-    console.log("test", imagesUpload);
-    // try {
-    //   const updatedDeliveryPartner: any = await updateCustomization({
-    //     id: "64d9fb77f3a7ce9915b44b6f",
-    //     payload: { deliveryPartnerImages: imagesUpload },
-    //   });
-    //   if (updatedDeliveryPartner) {
-    //     // Show a success toast message here
-    //     toast.success("Delivery updated successfully!", { duration: 3000 });
-    //   }
-    // } catch (error) {
-    //   console.error("Update failed", error);
-    // }
+    console.log("Allah Vorosa", imagesAndDataUpload);
+    try {
+      const updatedTopLeftCarosel: any = await updateCustomization({
+        id: "64d9fb77f3a7ce9915b44b6f",
+        payload: { heroLeftSlider: imagesAndDataUpload },
+      });
+
+      if (updatedTopLeftCarosel.data.success) {
+        // Show a success toast message here
+        toast.success("Top Left Carosel Updated Successfully!", {
+          duration: 3000,
+        });
+      }
+    } catch (error) {
+      toast.error("Error occured! Please fill all the field correctly.", {
+        duration: 3000,
+      });
+      console.error(error);
+    }
   };
 
-  console.log("Images", images);
   return (
     <div className="mt-4">
-      <form onSubmit={handleFormSubmit}>
+      <div>
         {!isLoading &&
           images.map((data, index) => (
             <div
@@ -212,7 +188,7 @@ const TopLeftCarosel = () => {
                     required
                     // Use the handleChange function to update the state when the input value changes
                     onChange={(e) =>
-                      handleChange(index, "title", e.target.value)
+                      handleChange(index, "topHeading", e.target.value)
                     }
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
@@ -231,13 +207,13 @@ const TopLeftCarosel = () => {
                   <input
                     type="text"
                     id={`mainHeading_${index}`}
-                    value={data.topHeading}
+                    value={data.mainHeading}
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="Write a question"
                     required
                     // Use the handleChange function to update the state when the input value changes
                     onChange={(e) =>
-                      handleChange(index, "title", e.target.value)
+                      handleChange(index, "mainHeading", e.target.value)
                     }
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
@@ -262,7 +238,7 @@ const TopLeftCarosel = () => {
                     required
                     // Use the handleChange function to update the state when the input value changes
                     onChange={(e) =>
-                      handleChange(index, "title", e.target.value)
+                      handleChange(index, "bottomHeading", e.target.value)
                     }
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
@@ -276,17 +252,9 @@ const TopLeftCarosel = () => {
                   <ImageUploading
                     value={[images[index]]}
                     onChange={(e) => onChangeHandle(e, index)}
-                    dataURLKey="data_url"
+                    dataURLKey="image"
                   >
-                    {({
-                      imageList,
-                      onImageUpload,
-                      onImageRemoveAll,
-                      onImageUpdate,
-                      onImageRemove,
-                      isDragging,
-                      dragProps,
-                    }) => (
+                    {({ imageList, onImageUpdate }) => (
                       <div className="upload__image-wrapper">
                         {imageList.map((image: any, index: number) => (
                           <div
@@ -294,7 +262,7 @@ const TopLeftCarosel = () => {
                             className="image-item flex flex-col items-end w-max"
                           >
                             <Image
-                              src={image["data_url"]}
+                              src={image["image"]}
                               alt="product_image"
                               width={300}
                               height={200}
@@ -331,7 +299,7 @@ const TopLeftCarosel = () => {
             Update
           </button>
         </div>
-      </form>
+      </div>
     </div>
   );
 };
