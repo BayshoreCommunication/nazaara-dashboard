@@ -135,9 +135,6 @@ const DiscountForm: FC<CategoryFormProps> = ({
           id="minimumPurchaseAmount"
           type="file"
           name="minimumPurchaseAmount"
-          //   value={discountData.minimumPurchaseAmount}
-          //   min={0}
-          //   onChange={handleChange}
           required
           placeholder="Enter minimum purchase amount"
         />
