@@ -194,7 +194,7 @@ const ErpProducts = () => {
                           href={`/erp-products/${elem.id}`}
                           className="text-sm bg-secondary px-3 py-1 text-white rounded-lg"
                         >
-                          Add Product
+                          Upload Product
                         </Link>
                       ) : (
                         <p className="text-sm bg-gray-500 px-3 py-1 text-white rounded-lg w-max cursor-not-allowed">

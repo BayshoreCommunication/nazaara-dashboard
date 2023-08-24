@@ -160,7 +160,10 @@ const Products: any = () => {
                 <td>{elem.productName}</td>
                 <td>{elem.category}</td>
                 <td>{elem.subCategory}</td>
-                <td>{elem.salePrice}</td>
+                <td>
+                  <span className="text-xl">৳</span>
+                  {elem.salePrice}
+                </td>
                 <td>{elem.stock}</td>
                 <td
                   className={`font-medium ${
