@@ -1,18 +1,6 @@
-// import React from "react";
-
-// const Discount = () => {
-//   return (
-//     <div className="font-bold text-3xl h-screen flex justify-center items-center">
-//       <h1>page under construction to head of design</h1>
-//     </div>
-//   );
-// };
-
-// export default Discount;
-
 "use client";
-import CategoryForm from "@/components/Category/CategoryFrom";
-import CategoryList from "@/components/Category/CategoryList";
+import DiscountForm from "@/components/discount/DiscountForm";
+import DiscountList from "@/components/discount/DiscountList";
 import Loader from "@/components/loader";
 import {
   useGetCategoriesQuery,
@@ -31,34 +19,50 @@ const Discount: FC = () => {
   const [createCategory] = useCreateCategoryMutation();
 
   //handle form for creating new category
-  interface IFormData {
+  interface IDiscountData {
     _id?: string;
     name: string;
+    expires?: Date;
+    freeShipping: Boolean;
+    discountType: string;
+    discountOff: number;
+    minimumPurchaseAmount: number;
+    image: string;
     status: string;
   }
 
-  interface Category {
+  interface ICategory {
     _id: string;
     name: string;
     status: string;
   }
 
   //crate category start
-  const [formData, setFormData] = useState<IFormData>({
+  const [discountData, setDiscountData] = useState<IDiscountData>({
     name: "",
+    freeShipping: true,
+    discountType: "",
+    discountOff: 0,
+    minimumPurchaseAmount: 0,
+    image: "",
     status: "",
   });
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     // Perform any form validation or data processing here
-    const data = await createCategory(formData);
+    const data = await createCategory(discountData);
     refetch();
     if (data) {
       toast.success("New Category Created", { duration: 3000 });
       // Reset form fields
-      setFormData({
+      setDiscountData({
         name: "",
+        freeShipping: true,
+        discountType: "",
+        discountOff: 0,
+        minimumPurchaseAmount: 0,
+        image: "",
         status: "",
       });
     }
@@ -68,8 +72,8 @@ const Discount: FC = () => {
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    setFormData({
-      ...formData,
+    setDiscountData({
+      ...discountData,
       [event.target.name]: event.target.value,
     });
   };
@@ -157,8 +161,8 @@ const Discount: FC = () => {
       <div className="flex-[6] overflow-x-auto">
         <h1 className="text-lg font-semibold mb-2">All Coupon</h1>
         {categoriesData ? (
-          <CategoryList
-            categories={categoriesData.data as Category[]} // Convert ICategory[] to Category[]
+          <DiscountList
+            categories={categoriesData.data as ICategory[]} // Convert ICategory[] to Category[]
             handleEditCategory={handleEditCategory}
             handleDeleteCategory={handleDeleteCategory}
           />
@@ -170,10 +174,10 @@ const Discount: FC = () => {
       {/* add new category  */}
       <div className="flex-[3]">
         <h1 className="text-lg font-semibold mb-2">Add Coupon</h1>
-        <CategoryForm
+        <DiscountForm
           handleSubmit={handleSubmit}
           handleChange={handleChange}
-          formData={formData}
+          discountData={discountData}
         />
       </div>
 
