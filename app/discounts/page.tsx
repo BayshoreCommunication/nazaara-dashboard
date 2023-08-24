@@ -40,7 +40,7 @@ const Discount: FC = () => {
   //crate category start
   const [discountData, setDiscountData] = useState<IDiscountData>({
     name: "",
-    freeShipping: true,
+    freeShipping: false,
     discountType: "",
     discountOff: 0,
     minimumPurchaseAmount: 0,
@@ -69,12 +69,12 @@ const Discount: FC = () => {
   };
   //crate category end
 
-  const handleChange = (
-    event: ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  const handleChange = (event: any) => {
     setDiscountData({
       ...discountData,
-      [event.target.name]: event.target.value,
+      [event.target.name]: event.target.files[0]
+        ? event.target.files[0]
+        : event.target.value,
     });
   };
 
@@ -154,6 +154,8 @@ const Discount: FC = () => {
   };
 
   if (isLoading) return <Loader height="h-[90vh]" />;
+
+  // console.log("test", discountData);
 
   return (
     <div className="flex gap-10 container">
