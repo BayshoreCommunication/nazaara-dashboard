@@ -29,10 +29,11 @@ export const productsApi = createApi({
         },
       }),
       // Update the cache after successful creation
-      // async onQueryStarted(_, { dispatch, queryFulfilled }) {
-      //   await queryFulfilled; // Wait for the query to be fulfilled
-      //   await dispatch(productsApi.endpoints.getProducts.initiate()); // Fetch the updated category list
-      // },
+      async onQueryStarted(data: any, { dispatch, queryFulfilled }) {
+        await queryFulfilled; // Wait for the query to be fulfilled
+        await dispatch(productsApi.endpoints.getProductById.initiate(data._id)); // Fetch the updated category
+        await dispatch(productsApi.endpoints.getProducts.initiate()); // Fetch the updated category list
+      },
     }),
     updateProduct: builder.mutation<
       TProduct,
