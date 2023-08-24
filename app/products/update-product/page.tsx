@@ -73,7 +73,7 @@ const UpdateProduct: FC = () => {
     category: "",
     subCategory: "",
     promotion: "",
-    status: "draft",
+    status: "",
   });
 
   const handleChange = (
@@ -202,6 +202,8 @@ const UpdateProduct: FC = () => {
     value: el,
     label: el,
   }));
+
+  // console.log("formData", formData);
 
   return productsLoading ? (
     <Loader height="h-[85vh]" />
@@ -356,7 +358,7 @@ const UpdateProduct: FC = () => {
                           }}
                         >
                           <option value="draft">Draft</option>
-                          <option value="publish">Publish</option>
+                          <option value="published">Publish</option>
                         </select>
                       </div>
                     </div>
@@ -424,7 +426,7 @@ const UpdateProduct: FC = () => {
               className="bg-secondary py-1 px-4 rounded-md text-white mt-3"
               type="submit"
             >
-              Add New Product
+              Update Product
             </button>
             {/* <button
           className="bg-warning py-1 px-4 rounded-md text-white"

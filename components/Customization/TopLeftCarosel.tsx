@@ -3,12 +3,10 @@ import {
   useGetCustomizationByIdQuery,
   useUpdateCustomizationMutation,
 } from "@/services/customizationApi";
-import { IFaq, IHeroLeftSlider } from "@/types/uiCustomization";
 import { toast } from "react-hot-toast";
 import Swal from "sweetalert2";
 import Image from "next/image";
 import { SlCloudUpload } from "react-icons/sl";
-import { IoIosRemoveCircleOutline } from "react-icons/io";
 import axios from "axios";
 import ImageUploading from "react-images-uploading";
 
@@ -29,7 +27,7 @@ const TopLeftCarosel = () => {
       topHeading: string;
       file?: any;
     }[]
-  >([]); // Changed the type to array
+  >([]);
 
   // A function to handle the input or textarea change
   const handleChange = (index: number, key: string, value: string) => {
