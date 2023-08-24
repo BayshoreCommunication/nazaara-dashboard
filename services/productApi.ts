@@ -10,8 +10,11 @@ export const productsApi = createApi({
   reducerPath: "productsApi",
   baseQuery: fetchBaseQuery({ baseUrl: `${process.env.API_URL}` }),
   endpoints: (builder) => ({
-    getProducts: builder.query<TProducts, void>({
-      query: () => `/api/v1/product`,
+    getProducts: builder.query<TProducts, { page: number; limit: number }>({
+      query: ({ page, limit }) => {
+        // use page and limit values here
+        return { url: "/api/v1/product", params: { page, limit } };
+      },
     }),
     getProductErpId: builder.query<TProductErpIdData, void>({
       query: () => `/api/v1/product/erpid`,
