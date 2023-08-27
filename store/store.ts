@@ -9,6 +9,7 @@ import { promotionsApi } from "@/services/promotionApi";
 import { warehouseApi } from "@/services/warehouseApi";
 import { subCategoriesApi } from "@/services/subcategory";
 import { customizationApi } from "@/services/customizationApi";
+import { couponsApi } from "@/services/couponApi";
 
 const rootReducer = combineReducers({
   [contactsApi.reducerPath]: contactsApi.reducer,
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
   [warehouseApi.reducerPath]: warehouseApi.reducer,
   [subCategoriesApi.reducerPath]: subCategoriesApi.reducer,
   [customizationApi.reducerPath]: customizationApi.reducer,
+  [couponsApi.reducerPath]: couponsApi.reducer,
   products: productSlice,
 });
 
@@ -35,7 +37,8 @@ export const setupStore = (preloadedState?: PreloadedState<RootState>) => {
         .concat(categoriesApi.middleware)
         .concat(usersApi.middleware)
         .concat(productsApi.middleware)
-        .concat(customizationApi.middleware),
+        .concat(customizationApi.middleware)
+        .concat(couponsApi.middleware),
     preloadedState,
   });
 };
