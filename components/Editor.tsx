@@ -60,10 +60,10 @@ const Editor = (props: any) => {
   };
 
   useEffect(() => {
-    if (props.formData.description) {
-      setText(props.formData.description);
+    if (props.formData?.description) {
+      setText(props.formData?.description);
     }
-  }, [props.formData.description]);
+  }, [props.formData?.description]);
 
   // console.log("tt", );
 

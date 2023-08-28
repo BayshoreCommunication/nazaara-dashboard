@@ -43,8 +43,8 @@ const Navbar = () => {
           <div className="group relative">
             <div className="text-gray-500 flex items-center">
               <div>
-                <p className="text-[#11142D] text-sm">Ahad Islam</p>
-                <p className="text-xs">ahadislam@email.com</p>
+                <p className="text-[#11142D] text-sm">Nazaara Official</p>
+                <p className="text-xs">nazaaraOfficial@email.com</p>
               </div>
               <FaAngleDown
                 size={20}

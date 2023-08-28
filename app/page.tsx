@@ -9,7 +9,6 @@ import RecentOrder from "@/components/home/RecentOrder";
 import RecentCustomer from "@/components/home/RecentCustomer";
 import Product from "@/components/Product";
 import { useGetContactByIDQuery } from "@/services/contactApi";
-import { useEffect, useState } from "react";
 
 interface CardDataItem {
   icon: JSX.Element;

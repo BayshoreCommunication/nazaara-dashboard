@@ -13,12 +13,21 @@ const PieChart: React.FC = () => {
     const fetchApexCharts = async () => {
       const ApexCharts = await import("apexcharts");
       const options = {
-        series: [44, 55, 13, 43, 22],
+        series: [4, 8, 1, 1, 1, 1, 1, 1],
         chart: {
           width: 480,
           type: "pie",
         },
-        labels: ["Team A", "Team B", "Team C", "Team D", "Team E"],
+        labels: [
+          `BRIDAL GOWN ${4}`,
+          `BRIDAL LEHENGA ${8}`,
+          `BRIDAL SHARARA ${1}`,
+          `DESIGNER WEAR ${1}`,
+          `DUPATTA ${1}`,
+          `JACKET ${1}`,
+          `PARTY GOWN ${1}`,
+          `SAREE ${1}`,
+        ],
         responsive: [
           {
             breakpoint: 480,
