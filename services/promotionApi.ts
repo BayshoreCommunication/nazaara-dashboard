@@ -3,7 +3,6 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export interface IPromotions {
   status: string;
   data: IPromotion[];
-  refetch?: any;
 }
 
 export interface IPromotion {

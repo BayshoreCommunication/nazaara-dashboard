@@ -15,6 +15,7 @@ import {
   MdCategory,
   MdDiscount,
   MdOutlineDashboardCustomize,
+  MdUnsubscribe,
 } from "react-icons/md";
 import { TbSpeakerphone } from "react-icons/tb";
 import Link from "next/link";
@@ -100,12 +101,12 @@ const Sidebar = () => {
       link: "/subcategory",
       icon: <MdCategory size={18} />,
     },
-    // {
-    //   _id: "109",
-    //   title: "Appointment",
-    //   link: "/appointment",
-    //   icon: <BsChatRightText size={18} />,
-    // },
+    {
+      _id: "109",
+      title: "Subscriber",
+      link: "/subscribers",
+      icon: <MdUnsubscribe size={18} />,
+    },
     {
       _id: "110",
       title: "Customization",

@@ -28,6 +28,7 @@ const DiscountList: FC<CouponListProps> = ({
           <th>Coupon Name</th>
           <th>Discount</th>
           <th>Expires At</th>
+          <th>Free Shipping</th>
           <th>Status</th>
           <th>Actions</th>
         </tr>
@@ -35,11 +36,19 @@ const DiscountList: FC<CouponListProps> = ({
       <tbody>
         {coupons.map((data, index) => {
           const date = new Date(data.expires);
+          const currentDate = new Date();
+          console.log("current date", currentDate);
+
+          const isExpired = date < currentDate;
           const day = date.getDate().toString().padStart(2, "0");
           const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Months are 0-indexed
           const year = date.getFullYear();
 
           const formattedDate = `${day}/${month}/${year}`;
+          const status = isExpired ? "expired" : data.status;
+          // const status = isExpired ? true : false;
+          console.log("statsusssf", data.freeShipping);
+
           return (
             <tr key={data._id}>
               <td>{index + 1}</td>
@@ -51,10 +60,19 @@ const DiscountList: FC<CouponListProps> = ({
               <td>{formattedDate}</td>
               <td
                 className={`font-medium ${
-                  data.status === "draft" ? "text-red-600" : "text-green-600"
+                  data.freeShipping ? "text-green-500" : "text-red-500"
                 }`}
               >
-                {data.status}
+                {data.freeShipping ? "true" : "false"}
+              </td>
+              <td
+                className={`font-medium ${
+                  data.status === "draft" || status === "expired"
+                    ? "text-red-600"
+                    : "text-green-600"
+                }`}
+              >
+                {status}
               </td>
               <td>
                 <div className="flex">

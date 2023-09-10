@@ -14,6 +14,7 @@ import { useCreateProductMutation } from "@/services/productApi";
 import dynamic from "next/dynamic";
 import { ErpIdProps, TProduct, TResult } from "@/types/types";
 import Loader from "@/components/loader";
+import { useGetPromotionsQuery } from "@/services/promotionApi";
 const Select = dynamic(() => import("react-select"), {
   ssr: false,
 });
@@ -32,6 +33,7 @@ const customStyles = {
 //form Data type for creating new product
 
 const options = [
+  { value: "customizable", label: "Customizable" },
   { value: "34", label: "34" },
   { value: "36", label: "36" },
   { value: "38", label: "38" },
@@ -213,6 +215,8 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
     }
   };
 
+  const { data: promotionData } = useGetPromotionsQuery();
+
   return !erpData ? (
     <Loader height="h-[85vh]" />
   ) : (
@@ -302,16 +306,21 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
                       <label className="font-medium" htmlFor="promotion">
                         Promotion
                       </label>
-                      <input
-                        className="block w-full rounded-lg p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
-                        value={formData.promotion}
+                      <select
+                        className="w-full border border-gray-400 rounded-sm p-2 focus:outline-none text-gray-500"
                         name="promotion"
-                        type="text"
-                        placeholder="Enter product name."
+                        value={formData.promotion}
                         onChange={(event) => {
                           handleChange(event);
                         }}
-                      />
+                      >
+                        {promotionData &&
+                          promotionData.data.map((data, i) => (
+                            <option value={data.name} key={i}>
+                              {data.name}
+                            </option>
+                          ))}
+                      </select>
                     </div>
                     <div>
                       <label className="font-medium" htmlFor="regular_price">

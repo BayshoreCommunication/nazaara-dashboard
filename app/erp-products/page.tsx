@@ -159,7 +159,7 @@ const ErpProducts = () => {
                 const checkdata = productsErpId?.result.filter(
                   (el: any) => el.erpId === elem.id
                 )[0];
-                console.log("check data here", checkdata);
+                // console.log("check data here", checkdata);
 
                 return (
                   <tr
