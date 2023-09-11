@@ -61,6 +61,7 @@ const UpdateProduct: FC = () => {
   const [formData, setFormData] = useState<TProduct>({
     erpId: 0,
     productName: "",
+    purchasePrice: 0,
     regularPrice: 0,
     salePrice: 0,
     size: [],
@@ -174,6 +175,7 @@ const UpdateProduct: FC = () => {
         setFormData({
           erpId: 0,
           productName: "",
+          purchasePrice: 0,
           regularPrice: 0,
           salePrice: 0,
           size: [],

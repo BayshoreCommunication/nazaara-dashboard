@@ -40,3 +40,11 @@
   min-height: 40px !important;
   border-color: #a8a8a8 !important;
 }
+
+/* Remove the spinner arrows from number input fields */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+}

@@ -179,8 +179,10 @@ export type TProduct = {
   sku?: string;
   slug?: string;
   productName: string;
+  purchasePrice: number;
   regularPrice: number;
   salePrice?: number;
+  preOrder?: string;
   size: string[];
   variant: TVariant[];
   stock: number;
