@@ -4,7 +4,7 @@ import CustomerViewProfileDrawer from "../CustomerViewProfileDrawer";
 
 const RecentCustomer = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const toggleDrawer = () => {
+  const toggleDrawer = (id: string) => {
     setIsOpen((prevState) => !prevState);
   };
   return (
@@ -18,7 +18,7 @@ const RecentCustomer = () => {
             <th>Action</th>
           </tr>
         </thead>
-        <tbody>
+        {/* <tbody>
           <tr>
             <td>Anarkoli Dress</td>
             <td>01393933939</td>
@@ -28,47 +28,14 @@ const RecentCustomer = () => {
               </button>
             </td>
           </tr>
-          <tr>
-            <td>Anarkoli Dress</td>
-            <td>01393933939</td>
-            <td className="flex gap-2">
-              <button onClick={toggleDrawer} className="text-[#5B94FC]">
-                View Profile
-              </button>
-            </td>
-          </tr>
-          <tr>
-            <td>Anarkoli Dress</td>
-            <td>01393933939</td>
-            <td className="flex gap-2">
-              <button onClick={toggleDrawer} className="text-[#5B94FC]">
-                View Profile
-              </button>
-            </td>
-          </tr>
-          <tr>
-            <td>Anarkoli Dress</td>
-            <td>01393933939</td>
-            <td className="flex gap-2">
-              <button onClick={toggleDrawer} className="text-[#5B94FC]">
-                View Profile
-              </button>
-            </td>
-          </tr>
-          <tr>
-            <td>Anarkoli Dress</td>
-            <td>01393933939</td>
-            <td className="flex gap-2">
-              <button className="text-blue-500">View Profile</button>
-            </td>
-          </tr>
-        </tbody>
+        </tbody> */}
       </table>
-      <CustomerViewProfileDrawer
+      {/* <CustomerViewProfileDrawer
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         toggleDrawer={toggleDrawer}
-      />
+        selectedCustomerId={selectedCustomerId}
+      /> */}
     </div>
   );
 };

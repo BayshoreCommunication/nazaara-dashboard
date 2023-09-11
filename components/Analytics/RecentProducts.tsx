@@ -7,7 +7,7 @@ import Loader from "../loader";
 
 const RecentProducts = () => {
   const { data: productsData, isLoading: productsLoading } =
-    useGetProductsQuery();
+    useGetProductsQuery({ page: 1, limit: 5 });
 
   return productsLoading ? (
     <Loader height="h-[85vh]" />

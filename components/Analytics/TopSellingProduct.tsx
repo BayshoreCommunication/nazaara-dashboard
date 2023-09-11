@@ -4,12 +4,15 @@ import React from "react";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { useGetProductsQuery } from "@/services/productApi";
 import Image from "next/image";
+import Loader from "../loader";
 
 const TopSellingProduct = () => {
   const { data: productsData, isLoading: productsLoading } =
-    useGetProductsQuery();
+    useGetProductsQuery({ page: 1, limit: 5 });
 
-  return (
+  return productsLoading ? (
+    <Loader height="h-[85vh]" />
+  ) : (
     <div className="container">
       <div className="flex items-center justify-between mb-3">
         <div className="flex gap-2 items-center">

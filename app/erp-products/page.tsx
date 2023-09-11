@@ -5,7 +5,7 @@ import { useGetProductErpIdQuery } from '@/services/productApi'
 import { TErpData } from '@/types/types'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { AiOutlineShoppingCart } from 'react-icons/ai'
 
 const ErpProducts = () => {
@@ -150,6 +150,7 @@ const ErpProducts = () => {
                 <th>Category</th>
                 <th>Selling Price</th>
                 <th>Stock</th>
+                <th>Status</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -158,10 +159,12 @@ const ErpProducts = () => {
                 const checkdata = productsErpId?.result.filter(
                   (el: any) => el.erpId === elem.id,
                 )[0]
+                // console.log("check data here", checkdata);
+
                 return (
                   <tr
                     key={index}
-                    className={`${checkdata != undefined && 'bg-gray-300'}`}
+                    // className={`${checkdata != undefined && "bg-gray-300"}`}
                   >
                     <td>
                       <Image
@@ -180,17 +183,24 @@ const ErpProducts = () => {
                       {Math.floor(Number(elem.selling_price))}
                     </td>
                     <td>{elem.quantity}</td>
+                    {checkdata != undefined ? (
+                      <td className="text-green-500 font-medium">stored</td>
+                    ) : (
+                      <td className="text-red-500 font-medium">not stored</td>
+                    )}
                     <td>
-                      <Link
-                        href={`${
-                          checkdata === undefined
-                            ? `/erp-products/${elem.id}`
-                            : `/erp-products/#`
-                        }`}
-                        className="text-sm bg-secondary px-3 py-1 text-white rounded-lg"
-                      >
-                        Add Product
-                      </Link>
+                      {checkdata === undefined ? (
+                        <Link
+                          href={`/erp-products/${elem.id}`}
+                          className="text-sm bg-secondary px-3 py-1 text-white rounded-lg"
+                        >
+                          Upload Product
+                        </Link>
+                      ) : (
+                        <p className="text-sm bg-gray-500 px-3 py-1 text-white rounded-lg w-max cursor-not-allowed">
+                          Already Added
+                        </p>
+                      )}
                     </td>
                   </tr>
                 )

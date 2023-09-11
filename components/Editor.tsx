@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import "react-quill/dist/quill.snow.css";
 import dynamic from "next/dynamic";
 
@@ -26,7 +26,7 @@ const modules = {
       { indent: "+1" },
     ],
     [{ align: ["", "center", "right", "justify"] }],
-    ["link", "image"],
+    ["link"], // ["link", "image"],
     ["clean", "code"],
   ],
 };
@@ -45,7 +45,7 @@ const formats = [
   "indent",
   "align",
   "link",
-  "image",
+  // "image",
   "code",
 ];
 
@@ -58,6 +58,14 @@ const Editor = (props: any) => {
       ["description"]: value,
     });
   };
+
+  useEffect(() => {
+    if (props.formData?.description) {
+      setText(props.formData?.description);
+    }
+  }, [props.formData?.description]);
+
+  // console.log("tt", );
 
   return (
     <div className="quill-content">

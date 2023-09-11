@@ -15,6 +15,7 @@ import {
   MdCategory,
   MdDiscount,
   MdOutlineDashboardCustomize,
+  MdUnsubscribe,
 } from "react-icons/md";
 import { TbSpeakerphone } from "react-icons/tb";
 import Link from "next/link";
@@ -47,16 +48,10 @@ const Sidebar = () => {
       icon: <AiOutlineShoppingCart size={18} />,
     },
     {
-      _id: "203",
-      title: "Category",
-      link: "/category",
-      icon: <MdCategory size={18} />,
-    },
-    {
-      _id: "204",
-      title: "SubCategory",
-      link: "/subcategory",
-      icon: <MdCategory size={18} />,
+      _id: "105",
+      title: "Transactions",
+      link: "/transactions",
+      icon: <BsFillFileEarmarkSpreadsheetFill size={18} />,
     },
     {
       _id: "104",
@@ -71,22 +66,16 @@ const Sidebar = () => {
       icon: <BsFillBoxFill size={18} />,
     },
     {
-      _id: "105",
-      title: "Transactions",
-      link: "/transactions",
-      icon: <BsFillFileEarmarkSpreadsheetFill size={18} />,
-    },
-    {
-      _id: "106",
-      title: "Promotions",
-      link: "/promotions",
-      icon: <TbSpeakerphone size={18} />,
-    },
-    {
       _id: "107",
       title: "Discounts",
       link: "/discounts",
       icon: <MdDiscount size={18} />,
+    },
+    {
+      _id: "108",
+      title: "Contacts",
+      link: "/contacts",
+      icon: <BsChatLeftText size={18} />,
     },
     {
       _id: "207",
@@ -95,16 +84,28 @@ const Sidebar = () => {
       icon: <FaWarehouse size={18} />,
     },
     {
-      _id: "108",
-      title: "Message",
-      link: "/message",
-      icon: <BsChatLeftText size={18} />,
+      _id: "106",
+      title: "Promotions",
+      link: "/promotions",
+      icon: <TbSpeakerphone size={18} />,
+    },
+    {
+      _id: "203",
+      title: "Category",
+      link: "/category",
+      icon: <MdCategory size={18} />,
+    },
+    {
+      _id: "204",
+      title: "SubCategory",
+      link: "/subcategory",
+      icon: <MdCategory size={18} />,
     },
     {
       _id: "109",
-      title: "Appointment",
-      link: "/appointment",
-      icon: <BsChatRightText size={18} />,
+      title: "Subscriber",
+      link: "/subscribers",
+      icon: <MdUnsubscribe size={18} />,
     },
     {
       _id: "110",

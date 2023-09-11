@@ -1,12 +1,12 @@
 "use client";
 import React, { useState } from "react";
 import { FaMinus, FaPlus } from "react-icons/fa";
-import TopLeftCarosel from "./TopLeftCarosel";
 import TopRightCarosel from "./TopRightCarosel";
 import Banner from "./Banner";
 import DeliveryPartner from "./DeliveryPartner";
 import Faq from "./Faq";
 import AboutUs from "./AboutUs";
+import TopLeftCarosel from "./TopLeftCarosel";
 
 const buttonList = [
   { _id: "100", title: "TopLeftCarosel", component: TopLeftCarosel },

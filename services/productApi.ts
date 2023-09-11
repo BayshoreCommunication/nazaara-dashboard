@@ -10,8 +10,11 @@ export const productsApi = createApi({
   reducerPath: "productsApi",
   baseQuery: fetchBaseQuery({ baseUrl: `${process.env.API_URL}` }),
   endpoints: (builder) => ({
-    getProducts: builder.query<TProducts, void>({
-      query: () => `/api/v1/product`,
+    getProducts: builder.query<TProducts, { page?: number; limit?: number }>({
+      query: ({ page, limit }) => {
+        // use page and limit values here
+        return { url: "/api/v1/product", params: { page, limit } };
+      },
     }),
     getProductErpId: builder.query<TProductErpIdData, void>({
       query: () => `/api/v1/product/erpid`,
@@ -32,7 +35,9 @@ export const productsApi = createApi({
       async onQueryStarted(data: any, { dispatch, queryFulfilled }) {
         await queryFulfilled; // Wait for the query to be fulfilled
         await dispatch(productsApi.endpoints.getProductById.initiate(data._id)); // Fetch the updated category
-        await dispatch(productsApi.endpoints.getProducts.initiate()); // Fetch the updated category list
+        await dispatch(
+          productsApi.endpoints.getProducts.initiate({ page: 1, limit: 10 })
+        ); // Fetch the updated category list
       },
     }),
     updateProduct: builder.mutation<
@@ -51,7 +56,9 @@ export const productsApi = createApi({
       async onQueryStarted(data: any, { dispatch, queryFulfilled }) {
         await queryFulfilled; // Wait for the query to be fulfilled
         await dispatch(productsApi.endpoints.getProductById.initiate(data._id)); // Fetch the updated category
-        await dispatch(productsApi.endpoints.getProducts.initiate()); // Fetch the updated category list
+        await dispatch(
+          productsApi.endpoints.getProducts.initiate({ page: 1, limit: 10 })
+        ); // Fetch the updated category list
       },
     }),
     deleteProduct: builder.mutation({

@@ -21,10 +21,6 @@ export const customizationApi = createApi({
         body: payload,
       }),
       invalidatesTags: ["Customization"],
-      onQueryStarted: ({ id, payload }, { dispatch, queryFulfilled }) => {
-        // console log the payload data here
-        // console.log("payload data", id, payload);
-      },
     }),
   }),
 });

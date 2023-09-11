@@ -1,12 +1,11 @@
 "use client";
 // import component 👇
-import { useState } from "react";
 import { FaTimes } from "react-icons/fa";
 import dynamic from "next/dynamic";
-
 const Drawer = dynamic(() => import("react-modern-drawer"), {
   ssr: false,
 });
+import { useGetUserByIdQuery } from "@/services/userApi";
 
 //import styles 👇
 import "react-modern-drawer/dist/index.css";
@@ -16,20 +15,23 @@ import SecondaryButton from "./SecondaryButton";
 interface IDrawer {
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  toggleDrawer: () => void;
+  toggleDrawer: (id: string) => void;
+  selectedCustomerId: string;
 }
 
 const CustomerViewProfileDrawer: React.FC<IDrawer> = ({
   setIsOpen,
   isOpen,
   toggleDrawer,
+  selectedCustomerId,
 }) => {
+  const { data: singleData } = useGetUserByIdQuery(selectedCustomerId);
   return (
     <>
-      <button onClick={toggleDrawer}>Show</button>
+      {/* <button onClick={toggleDrawer}>Show</button> */}
       <Drawer
         open={isOpen}
-        onClose={toggleDrawer}
+        onClose={() => toggleDrawer(selectedCustomerId)}
         direction="right"
         className=""
         size={800}
@@ -47,11 +49,15 @@ const CustomerViewProfileDrawer: React.FC<IDrawer> = ({
             <div className="flex flex-col gap-y-3">
               <p className="font-medium">Personal</p>
               <div className="flex flex-col gap-y-2">
-                <p>Name: Shanto</p>
-                <p>Phone: 0167240442</p>
-                <p>Email: shanta54@gmail.com </p>
-                <p>Type: Nazara Customer </p>
-                <p>Address: Aftabnogor, Dhaka </p>
+                <p>Name: {singleData?.data.fullName}</p>
+                <p>
+                  Phone:{" "}
+                  {singleData?.data.phone != ""
+                    ? singleData?.data.phone
+                    : "None"}
+                </p>
+                <p>Email: {singleData?.data.email}</p>
+                <p>User Type: {singleData?.data.userType}</p>
               </div>
               <p>Remarks:</p>
               <p>Nazara Invoice No: 100055</p>

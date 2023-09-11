@@ -1,6 +1,6 @@
 "use client";
 import CancelStatus from "@/components/CancelStatus";
-import React, { useState } from "react";
+import { useState } from "react";
 import CompleteStatus from "@/components/CompleteStatus";
 import OrderMeasurement from "@/components/OrderMeasurement";
 import ProcessingStatus from "@/components/ProcessingStatus";
@@ -17,7 +17,7 @@ const Orders = () => {
   console.log(openModal);
 
   return (
-    <div>
+    <>
       <div className="container">
         <div className="flex items-center justify-between mb-3">
           <div className="flex gap-2 items-center">
@@ -233,7 +233,7 @@ const Orders = () => {
         </div>
       </div>
       <OrderMeasurement openModal={openModal} />
-    </div>
+    </>
   );
 };
 

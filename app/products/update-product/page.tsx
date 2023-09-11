@@ -10,6 +10,7 @@ import {
 import dynamic from "next/dynamic";
 import { TProduct } from "@/types/types";
 import Loader from "@/components/loader";
+import { useGetPromotionsQuery } from "@/services/promotionApi";
 const Select = dynamic(() => import("react-select"), {
   ssr: false,
 });
@@ -28,6 +29,7 @@ const customStyles = {
 //form Data type for creating new product
 
 const options = [
+  { value: "customizable", label: "Customizable" },
   { value: "34", label: "34" },
   { value: "36", label: "36" },
   { value: "38", label: "38" },
@@ -59,6 +61,7 @@ const UpdateProduct: FC = () => {
   const [formData, setFormData] = useState<TProduct>({
     erpId: 0,
     productName: "",
+    purchasePrice: 0,
     regularPrice: 0,
     salePrice: 0,
     size: [],
@@ -73,7 +76,7 @@ const UpdateProduct: FC = () => {
     category: "",
     subCategory: "",
     promotion: "",
-    status: "draft",
+    status: "",
   });
 
   const handleChange = (
@@ -172,6 +175,7 @@ const UpdateProduct: FC = () => {
         setFormData({
           erpId: 0,
           productName: "",
+          purchasePrice: 0,
           regularPrice: 0,
           salePrice: 0,
           size: [],
@@ -202,6 +206,10 @@ const UpdateProduct: FC = () => {
     value: el,
     label: el,
   }));
+
+  // console.log("formDatas", formData.promotion);
+
+  const { data: promotionData } = useGetPromotionsQuery();
 
   return productsLoading ? (
     <Loader height="h-[85vh]" />
@@ -289,16 +297,21 @@ const UpdateProduct: FC = () => {
                       <label className="font-medium" htmlFor="promotion">
                         Promotion
                       </label>
-                      <input
-                        className="block w-full rounded-lg p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
-                        value={formData.promotion}
+                      <select
+                        className="w-full border border-gray-400 rounded-sm p-2 focus:outline-none text-gray-500"
                         name="promotion"
-                        type="text"
-                        placeholder="Enter product name."
+                        value={formData.promotion}
                         onChange={(event) => {
                           handleChange(event);
                         }}
-                      />
+                      >
+                        {promotionData &&
+                          promotionData.data.map((data, i) => (
+                            <option value={data.name} key={i}>
+                              {data.name}
+                            </option>
+                          ))}
+                      </select>
                     </div>
                     <div>
                       <label className="font-medium" htmlFor="regular_price">
@@ -356,7 +369,7 @@ const UpdateProduct: FC = () => {
                           }}
                         >
                           <option value="draft">Draft</option>
-                          <option value="publish">Publish</option>
+                          <option value="published">Publish</option>
                         </select>
                       </div>
                     </div>
@@ -424,7 +437,7 @@ const UpdateProduct: FC = () => {
               className="bg-secondary py-1 px-4 rounded-md text-white mt-3"
               type="submit"
             >
-              Add New Product
+              Update Product
             </button>
             {/* <button
           className="bg-warning py-1 px-4 rounded-md text-white"

@@ -14,16 +14,20 @@ import { useCreateProductMutation } from "@/services/productApi";
 import dynamic from "next/dynamic";
 import { ErpIdProps, TProduct, TResult } from "@/types/types";
 import Loader from "@/components/loader";
+import { useGetPromotionsQuery } from "@/services/promotionApi";
 const Select = dynamic(() => import("react-select"), {
   ssr: false,
 });
 
+//for react select
 const customStyles = {
-  control: (provided: any) => ({
+  control: (provided: any, state: any) => ({
     ...provided,
     "& input": {
       height: "auto",
     },
+    borderColor: "gray",
+    padding: 3,
   }),
 };
 
@@ -32,6 +36,7 @@ const customStyles = {
 //form Data type for creating new product
 
 const options = [
+  { value: "customizable", label: "Customizable" },
   { value: "34", label: "34" },
   { value: "36", label: "36" },
   { value: "38", label: "38" },
@@ -55,6 +60,8 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
   const [formData, setFormData] = useState<TProduct>({
     erpId: 0,
     productName: "",
+    sku: "",
+    purchasePrice: 0,
     regularPrice: 0,
     salePrice: 0,
     size: [],
@@ -65,6 +72,7 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
     subCategory: "",
     promotion: "",
     status: "draft",
+    preOrder: "",
   });
 
   const url = `https://erp.anzaralifestyle.com/api/product/Details/${singleProductId}/?format=json`;
@@ -78,30 +86,38 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
       });
       const data = await response.json();
       setErpData(data);
-      setFormData({
-        erpId: data ? data.id : 0,
-        productName: data ? data.title : "",
-        regularPrice: data ? Number(data.selling_price) : 0,
-        salePrice: 0,
-        size: [],
-        variant: [],
-        stock: data ? Number(data.quantity) : 0,
-        description: "",
-        category: data
-          ? data?.Deatils.map((el: any) => el.main_category)[0]
-          : "",
-        subCategory: data ? data.category : "",
-        promotion: "",
-        status: formData.status,
-      });
+      if (data) {
+        setFormData({
+          erpId: data ? data.id : 0,
+          productName: "",
+          sku: data ? data.title : "",
+          regularPrice: data ? Number(data?.selling_price) : 0,
+          purchasePrice: data ? Number(data?.purchase_price) : 0,
+          salePrice: data ? Number(data?.selling_price) : 0,
+          size: [data && data.size],
+          variant: [data.color && { color: data.color, imageUrl: [] }],
+          stock: data ? Number(data.quantity) : 0,
+          description: "",
+          category: data
+            ? data?.Deatils.map((el: any) => el.main_category)[0]
+            : "",
+          subCategory: data ? data.category : "",
+          promotion: "none",
+          status: formData.status,
+          preOrder: "yes",
+        });
+      }
     } catch (err) {
       console.log("error", err);
     }
-  }, [url]);
+  }, [formData.status, url]);
 
   useEffect(() => {
     getData();
-  }, [url]);
+  }, [getData, url]);
+
+  console.log("erp data here", erpData?.color);
+  console.log("form data here", formData);
 
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -119,6 +135,23 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
       });
     }
   };
+  // const handleVariant = (
+  //   event: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  //   index: number
+  // ) => {
+  //   const { name, value } = event.target;
+  //   const updatedVariants = [...formData.variant]; // Create a copy of the variant array
+  //   const updatedVariant = {
+  //     ...updatedVariants[index], // Get the variant object at the specified index
+  //     [name]: value, // Update the specific field of the variant object
+  //   };
+  //   updatedVariants[index] = updatedVariant; // Update the variant object in the array
+
+  //   setFormData((formData: any) => ({
+  //     ...formData,
+  //     variant: updatedVariants, // Update the variant array in the formData
+  //   }));
+  // };
   const handleVariant = (
     event: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
     index: number
@@ -131,24 +164,37 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
     };
     updatedVariants[index] = updatedVariant; // Update the variant object in the array
 
-    setFormData((formData: any) => ({
-      ...formData,
-      variant: updatedVariants, // Update the variant array in the formData
+    setFormData((prevFormData: TProduct) => ({
+      ...prevFormData,
+      variant: updatedVariants,
     }));
   };
 
+  // const addDivField = () => {
+  //   setFormData((prevFormData: any) => ({
+  //     ...prevFormData,
+  //     variant: [
+  //       ...prevFormData.variant,
+  //       {
+  //         color: "", // Set the color to an empty string for the new variant
+  //         imageUrl: [],
+  //       },
+  //     ],
+  //   }));
+  // };
   const addDivField = () => {
-    setFormData((prevFormData: any) => ({
+    setFormData((prevFormData: TProduct) => ({
       ...prevFormData,
       variant: [
         ...prevFormData.variant,
         {
-          color: "",
+          color: "", // Set the color to an empty string for the new variant
           imageUrl: [],
         },
       ],
     }));
   };
+
   const removeDivField = (index: number) => {
     setFormData((prevFormData: any) => {
       const updatedVariants = prevFormData.variant.filter(
@@ -191,20 +237,21 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
         router.push("/products");
         toast.success("New Product Created", { duration: 3000 });
         // Reset form fields
-        setFormData({
-          erpId: 0,
-          productName: "",
-          regularPrice: 0,
-          salePrice: 0,
-          size: [],
-          variant: [],
-          stock: 0,
-          description: "",
-          category: "",
-          subCategory: "",
-          promotion: "",
-          status: "",
-        });
+        // setFormData({
+        //   erpId: 0,
+        //   productName: "",
+        //   purchasePrice: 0,
+        //   regularPrice: 0,
+        //   salePrice: 0,
+        //   size: [],
+        //   variant: [],
+        //   stock: 0,
+        //   description: "",
+        //   category: "",
+        //   subCategory: "",
+        //   promotion: "",
+        //   status: "",
+        // });
       } else {
         toast.error("Failed to create new product!", { duration: 3000 });
       }
@@ -212,6 +259,12 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
       toast.error("Something went wrong!", { duration: 3000 });
     }
   };
+  const defaultValueOptions = formData.size.map((el) => ({
+    value: el,
+    label: el,
+  }));
+
+  const { data: promotionData } = useGetPromotionsQuery();
 
   return !erpData ? (
     <Loader height="h-[85vh]" />
@@ -220,28 +273,40 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
       <h1 className="text-2xl font-bold mb-3">Add Product</h1>
       <div className="flex flex-col gap-y-5">
         <form onSubmit={handleSubmit}>
-          <div className="bg-basic rounded-lg px-6 py-3 flex flex-col gap-y-4">
+          <div className="bg-basic rounded-md px-6 py-3 flex flex-col gap-y-4">
             <h4 className="text-lg font-bold">Product Information</h4>
             <p>
               <b>Erp ID:</b> {formData.erpId}
             </p>
             <div className="flex flex-col gap-4 items-start">
-              <div className="w-full bg-gray-100 py-3 px-5 flex flex-col gap-y-3 rounded-lg">
+              <div className="w-full bg-gray-100 py-3 px-5 flex flex-col gap-y-3 rounded-md">
                 <div className="grid grid-cols-3 gap-4 items-start">
-                  <div className="bg-gray-100 py-3 flex flex-col gap-y-3 rounded-lg">
+                  <div className="bg-gray-100 py-2 flex flex-col gap-y-3 rounded-md">
                     <div>
                       <label className="font-medium" htmlFor="name">
                         Product Name
                       </label>
                       <input
-                        className="block w-full rounded-lg p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
-                        value={formData.productName}
+                        className="block w-full rounded-md p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
                         name="productName"
                         type="text"
-                        placeholder="Enter product name."
-                        onChange={(event) => {
-                          handleChange(event);
-                        }}
+                        placeholder="Enter Product Name"
+                        required
+                        onChange={handleChange}
+                      />
+                    </div>
+                    <div>
+                      <label className="font-medium" htmlFor="name">
+                        Product SKU
+                      </label>
+                      <input
+                        className="block w-full rounded-md p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1 cursor-not-allowed"
+                        value={formData.sku}
+                        name="sku"
+                        type="text"
+                        placeholder="Enter Product SKU"
+                        required
+                        readOnly
                       />
                     </div>
                     <div>
@@ -249,14 +314,13 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
                         Category
                       </label>
                       <input
-                        className="block w-full rounded-lg p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
+                        className="block w-full rounded-md p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
                         value={formData.category}
                         name="category"
                         type="text"
-                        placeholder="Enter product name."
-                        onChange={(event) => {
-                          handleChange(event);
-                        }}
+                        required
+                        placeholder="Enter Category Name"
+                        onChange={handleChange}
                       />
                     </div>
                     <div>
@@ -264,14 +328,13 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
                         Subcategory
                       </label>
                       <input
-                        className="block w-full rounded-lg p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
+                        className="block w-full rounded-md p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
                         value={formData.subCategory}
                         name="subCategory"
                         type="text"
-                        placeholder="Enter product name."
-                        onChange={(event) => {
-                          handleChange(event);
-                        }}
+                        required
+                        placeholder="Enter SubCategory Name"
+                        onChange={handleChange}
                       />
                     </div>
                     <div>
@@ -279,13 +342,16 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
                         Size
                       </label>
                       <Select
-                        // defaultValue={selectedOption}
+                        // className="w-full rounded-md focus:outline-none text-gray-500"
                         onChange={handleSelectionChange}
+                        defaultValue={defaultValueOptions}
                         placeholder="Choose One"
                         styles={customStyles}
+                        required
                         theme={(theme) => ({
                           ...theme,
-                          borderRadius: 3,
+                          borderRadius: 5,
+                          // padding: 3,
                           colors: {
                             ...theme.colors,
                             primary25: "#e6e6e6",
@@ -296,22 +362,65 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
                         isMulti={true}
                       />
                     </div>
+                    <div>
+                      <label className="font-medium" htmlFor="status">
+                        Stock
+                      </label>
+                      <div className="flex items-center mt-1">
+                        <input
+                          className="rounded-md p-2 border border-gray-400 focus:outline-none text-gray-500 w-full cursor-not-allowed"
+                          name="stock"
+                          type="number"
+                          value={formData.stock}
+                          required
+                          readOnly
+                          min={0}
+                          placeholder="Enter Product Stock"
+                        />
+                      </div>
+                    </div>
                   </div>
-                  <div className="bg-gray-100 py-3 flex flex-col gap-y-3 rounded-lg">
+                  <div className="bg-gray-100 py-3 flex flex-col gap-y-3 rounded-md">
                     <div>
                       <label className="font-medium" htmlFor="promotion">
                         Promotion
                       </label>
-                      <input
-                        className="block w-full rounded-lg p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
-                        value={formData.promotion}
+                      <select
+                        className="w-full border border-gray-400 rounded-md p-2 focus:outline-none text-gray-500"
                         name="promotion"
-                        type="text"
-                        placeholder="Enter product name."
-                        onChange={(event) => {
-                          handleChange(event);
-                        }}
-                      />
+                        placeholder="Enter Product Promotion"
+                        value={formData.promotion}
+                        required
+                        onChange={handleChange}
+                      >
+                        <option value="none">No Promotion</option>
+                        {promotionData &&
+                          promotionData.data.map((data, i) => (
+                            <option value={data.name} key={i}>
+                              {data.name}
+                            </option>
+                          ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label className="font-medium" htmlFor="regular_price">
+                        Purchase Price
+                      </label>
+                      <div className="flex items-center mt-1">
+                        <div className="border border-gray-400 bg-gray-100 rounded-sm p-[10px] text-sm text-gray-500 font-medium">
+                          BDT
+                        </div>
+                        <input
+                          className="rounded-e-lg p-2 border border-gray-400 focus:outline-none text-gray-500 w-full cursor-not-allowed"
+                          name="purchasePrice"
+                          type="number"
+                          required
+                          readOnly
+                          value={formData.purchasePrice}
+                          min={0}
+                          placeholder="Enter Purchase Price"
+                        />
+                      </div>
                     </div>
                     <div>
                       <label className="font-medium" htmlFor="regular_price">
@@ -322,15 +431,15 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
                           BDT
                         </div>
                         <input
-                          className="rounded-e-lg p-2 border border-gray-400 focus:outline-none text-gray-500 w-full"
+                          className="rounded-e-lg p-2 border border-gray-400 focus:outline-none text-gray-500 w-full cursor-not-allowed"
                           name="regularPrice"
                           type="number"
+                          required
+                          readOnly
                           value={formData.regularPrice}
                           min={0}
                           placeholder="Enter regular Price"
-                          onChange={(event) => {
-                            handleChange(event);
-                          }}
+                          onChange={handleChange}
                         />
                       </div>
                     </div>
@@ -346,13 +455,29 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
                           className="rounded-e-lg p-2 border border-gray-400 focus:outline-none text-gray-500 w-full"
                           name="salePrice"
                           type="number"
+                          required
                           value={formData.salePrice}
                           min={0}
-                          placeholder="Enter selling Price"
-                          onChange={(event) => {
-                            handleChange(event);
-                          }}
+                          placeholder="Enter Selling Price"
+                          onChange={handleChange}
                         />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="font-medium" htmlFor="status">
+                        Pre-Order
+                      </label>
+                      <div className="flex items-center mt-1">
+                        <select
+                          className="w-full border rounded-md border-gray-400 p-2 focus:outline-none text-gray-500"
+                          name="preOrder"
+                          required
+                          onChange={handleChange}
+                        >
+                          <option value={"yes"}>Yes</option>
+                          <option value={"no"}>No</option>
+                        </select>
                       </div>
                     </div>
                     <div>
@@ -361,12 +486,11 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
                       </label>
                       <div className="flex items-center mt-1">
                         <select
-                          className="w-full border border-gray-400 rounded-sm p-2 focus:outline-none text-gray-500"
+                          className="w-full border border-gray-400 rounded-md p-2 focus:outline-none text-gray-500"
                           name="status"
                           value={formData.status}
-                          onChange={(event) => {
-                            handleChange(event);
-                          }}
+                          required
+                          onChange={handleChange}
                         >
                           <option value="draft">Draft</option>
                           <option value="publish">Publish</option>
@@ -374,16 +498,16 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
                       </div>
                     </div>
                   </div>
-                  <div className="bg-gray-100 py-3 flex flex-col gap-y-3 rounded-lg">
+                  <div className="bg-gray-100 py-3 flex flex-col gap-y-3 rounded-md">
                     <label className="font-medium" htmlFor="promotion">
                       Color Variants
                     </label>
-                    {formData.variant.map((variant, variantIndex) => (
+                    {/* {formData.variant.map((variant, variantIndex) => (
                       <div
                         className="flex gap-2 items-center"
                         key={variantIndex}
                       >
-                        <div className="w-full rounded-lg">
+                        <div className="w-full rounded-md">
                           <div className="flex items-center">
                             <div className="border border-gray-400 bg-gray-100 rounded-sm p-[10px] text-sm text-gray-500 font-medium">
                               Color
@@ -392,7 +516,48 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
                               className="rounded-e-lg p-2 border border-gray-400 focus:outline-none text-gray-500 w-full"
                               name="color"
                               type="text"
-                              placeholder="Enter color"
+                              required
+                              placeholder="Enter Color Name"
+                              value={formData.variant[0].color}
+                              onChange={(event) =>
+                                handleVariant(event, variantIndex)
+                              }
+                            />
+                          </div>
+                        </div>
+                        {variantIndex !== 0 ? (
+                          <div className="w-5 mb-2">
+                            <button
+                              onClick={() => removeDivField(variantIndex)}
+                              className="w-5 h-5 rounded-full border border-sky-400 text-sky-400 flex justify-center items-center"
+                            >
+                              -
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="w-5 mb-2">
+                            <button className="w-5 h-5" />
+                          </div>
+                        )}
+                      </div>
+                    ))} */}
+                    {formData.variant.map((variant, variantIndex) => (
+                      <div
+                        className="flex gap-2 items-center"
+                        key={variantIndex}
+                      >
+                        <div className="w-full rounded-md">
+                          <div className="flex items-center">
+                            <div className="border border-gray-400 bg-gray-100 rounded-sm p-[10px] text-sm text-gray-500 font-medium">
+                              Color
+                            </div>
+                            <input
+                              className="rounded-e-lg p-2 border border-gray-400 focus:outline-none text-gray-500 w-full"
+                              name={`variant[${variantIndex}].color`} // Use the correct name format
+                              type="text"
+                              required
+                              placeholder="Enter Color Name"
+                              value={variant.color}
                               onChange={(event) =>
                                 handleVariant(event, variantIndex)
                               }
@@ -415,6 +580,7 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
                         )}
                       </div>
                     ))}
+
                     <button
                       type="button"
                       onClick={addDivField}
@@ -427,7 +593,7 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
               </div>
             </div>
           </div>
-          <div className="bg-basic rounded-lg px-6 py-3 flex flex-col gap-y-4">
+          <div className="bg-basic rounded-md px-6 py-3 flex flex-col gap-y-4">
             <h4 className="text-lg font-bold">Product Description</h4>
             <Editor setFormData={setFormData} formData={formData} />
           </div>

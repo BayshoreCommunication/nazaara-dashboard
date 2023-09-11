@@ -1,15 +1,14 @@
-'use client'
-import { AiOutlineShoppingCart } from 'react-icons/ai'
-import { BiCategory } from 'react-icons/bi'
-import { BsChatSquareTextFill, BsFillBoxFill } from 'react-icons/bs'
-import { TbTruckDelivery } from 'react-icons/tb'
-import AreaChart from '@/components/AreaChart'
-import PieChart from '@/components/PieChart'
-import RecentOrder from '@/components/home/RecentOrder'
-import RecentCustomer from '@/components/home/RecentCustomer'
-import Product from '@/components/Product'
-import { useGetContactByIDQuery } from '@/services/contactApi'
-import { useEffect, useState } from 'react'
+"use client";
+import { AiOutlineShoppingCart } from "react-icons/ai";
+import { BiCategory } from "react-icons/bi";
+import { BsChatSquareTextFill, BsFillBoxFill } from "react-icons/bs";
+import { TbTruckDelivery } from "react-icons/tb";
+import AreaChart from "@/components/AreaChart";
+import PieChart from "@/components/PieChart";
+import RecentOrder from "@/components/home/RecentOrder";
+import RecentCustomer from "@/components/home/RecentCustomer";
+import Product from "@/components/Product";
+import { useGetContactByIDQuery } from "@/services/contactApi";
 
 interface CardDataItem {
   icon: JSX.Element

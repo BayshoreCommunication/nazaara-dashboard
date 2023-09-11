@@ -1,24 +1,32 @@
 "use client";
 import CustomerViewProfileDrawer from "@/components/CustomerViewProfileDrawer";
+import UtilityBtn from "@/components/UtilityBtn";
+import Loader from "@/components/loader";
 import { useGetUserByIdQuery, useGetUsersQuery } from "@/services/userApi";
 import { useState } from "react";
+import { AiOutlineDownload, AiOutlineShoppingCart } from "react-icons/ai";
 
 const Customers = () => {
+  const [selectedCustomerId, setSelectedCustomerId] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  const toggleDrawer = () => {
+  const toggleDrawer = (id: string) => {
     setIsOpen((prevState) => !prevState);
+    setSelectedCustomerId(id);
   };
 
-  const { data: allCustomersData, isLoading: allCustomersLoading } =
-    useGetUsersQuery();
-  const { data: singleCustomersData, isLoading: singleCustomersLoading } =
-    useGetUserByIdQuery("6472e4d19eb4c3638c5f7e3f");
+  const { data: customersData, isLoading } = useGetUsersQuery();
 
-  allCustomersData && console.log("getsingleData", allCustomersData);
-  singleCustomersData && console.log("getAllData", singleCustomersData);
-
-  return (
+  return isLoading ? (
+    <Loader height="h-[85vh]" />
+  ) : (
     <div className="container">
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex gap-2 items-center">
+          <AiOutlineShoppingCart size={18} color="gray" />
+          <span className="font-medium text-lg">All Customer</span>
+        </div>
+        <UtilityBtn name="Export" icon={<AiOutlineDownload color="white" />} />
+      </div>
       <div className="overflow-x-auto">
         <table className="table bg-basic">
           {/* head */}
@@ -31,135 +39,32 @@ const Customers = () => {
             </tr>
           </thead>
           <tbody>
-            {/* row 1 */}
-            <tr>
-              <td>Nj Milon</td>
-              <td>01303746940</td>
-              <td>njmilon1@gmail.com</td>
-              <td>
-                <button onClick={toggleDrawer} className="text-[#5B94FC]">
-                  View Profile
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>Frelancer Nasim</td>
-              <td>01303746940</td>
-              <td>frelancer@gmail.com</td>
-              <td>
-                <button onClick={toggleDrawer} className="text-[#5B94FC]">
-                  View Profile
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>Nj Milon</td>
-              <td>01303746940</td>
-              <td>njmilon1@gmail.com</td>
-              <td>
-                <button onClick={toggleDrawer} className="text-[#5B94FC]">
-                  View Profile
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>Frelancer Nasim</td>
-              <td>01303746940</td>
-              <td>frelancer@gmail.com</td>
-              <td>
-                <button onClick={toggleDrawer} className="text-[#5B94FC]">
-                  View Profile
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>Nj Milon</td>
-              <td>01303746940</td>
-              <td>njmilon1@gmail.com</td>
-              <td>
-                <button onClick={toggleDrawer} className="text-[#5B94FC]">
-                  View Profile
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>Frelancer Nasim</td>
-              <td>01303746940</td>
-              <td>frelancer@gmail.com</td>
-              <td>
-                <button onClick={toggleDrawer} className="text-[#5B94FC]">
-                  View Profile
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>Nj Milon</td>
-              <td>01303746940</td>
-              <td>njmilon1@gmail.com</td>
-              <td>
-                <button onClick={toggleDrawer} className="text-[#5B94FC]">
-                  View Profile
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>Esha Mia</td>
-              <td>01303746940</td>
-              <td>sha@gmail.com</td>
-              <td>
-                <button onClick={toggleDrawer} className="text-[#5B94FC]">
-                  View Profile
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>Nj Milon</td>
-              <td>01303746940</td>
-              <td>njmilon1@gmail.com</td>
-              <td>
-                <button onClick={toggleDrawer} className="text-[#5B94FC]">
-                  View Profile
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>Head of Design</td>
-              <td>01303746940</td>
-              <td>head@gmail.com</td>
-              <td>
-                <button className="text-[#5B94FC]">View Profile</button>
-              </td>
-            </tr>
-            <tr>
-              <td>Esha Mia</td>
-              <td>01303746940</td>
-              <td>sha@gmail.com</td>
-              <td>
-                <button className="text-[#5B94FC]">View Profile</button>
-              </td>
-            </tr>
-            <tr>
-              <td>Nj Milon</td>
-              <td>01303746940</td>
-              <td>njmilon1@gmail.com</td>
-              <td>
-                <button className="text-[#5B94FC]">View Profile</button>
-              </td>
-            </tr>
-            <tr>
-              <td>Head of Design</td>
-              <td>01303746940</td>
-              <td>head@gmail.com</td>
-              <td>
-                <button className="text-[#5B94FC]">View Profile</button>
-              </td>
-            </tr>
+            {customersData?.data.map((cus, index) => {
+              if (cus.userType === "user") {
+                return (
+                  <tr key={index}>
+                    <td>{cus.fullName}</td>
+                    <td>{cus.phone === "" ? "None" : cus.phone}</td>
+                    <td>{cus.email}</td>
+                    <td>
+                      <button
+                        onClick={() => toggleDrawer(cus._id)}
+                        className="bg-secondary p-2 text-white rounded-md shadow-md"
+                      >
+                        View Details
+                      </button>
+                    </td>
+                  </tr>
+                );
+              }
+            })}
           </tbody>
         </table>
         <CustomerViewProfileDrawer
           isOpen={isOpen}
           setIsOpen={setIsOpen}
           toggleDrawer={toggleDrawer}
+          selectedCustomerId={selectedCustomerId}
         />
       </div>
     </div>

@@ -179,8 +179,10 @@ export type TProduct = {
   sku?: string;
   slug?: string;
   productName: string;
+  purchasePrice: number;
   regularPrice: number;
   salePrice?: number;
+  preOrder?: string;
   size: string[];
   variant: TVariant[];
   stock: number;
@@ -211,9 +213,32 @@ export type TProductErpId = {
 };
 
 // ============================= Image Urls ============================= //
-
 export type TImageUrl = {
   _id?: number;
   data_url: string;
   file: {};
+};
+
+// ============================ Coupons =============================== //
+
+export type TCoupons = {
+  status: string;
+  total: number;
+  data: TCoupon[];
+};
+
+export type TCoupon = {
+  _id?: string;
+  name: string;
+  couponCode?: string;
+  expires: Date;
+  freeShipping: boolean;
+  discountType?: string;
+  discountOff?: number;
+  minimumPurchaseAmount?: number;
+  image: string;
+  status: string;
+  createdAt?: string;
+  updatedAt?: string;
+  __v?: number;
 };
