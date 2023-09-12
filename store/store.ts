@@ -1,17 +1,18 @@
-import { combineReducers, configureStore } from "@reduxjs/toolkit";
-import type { PreloadedState } from "@reduxjs/toolkit";
-import { contactsApi } from "@/services/contactApi";
-import { categoriesApi } from "@/services/categoryApi";
-import { usersApi } from "@/services/userApi";
-import { productsApi } from "@/services/productApi";
-import productSlice from "@/store/slice/productSlice";
-import { promotionsApi } from "@/services/promotionApi";
-import { warehouseApi } from "@/services/warehouseApi";
-import { subCategoriesApi } from "@/services/subcategory";
-import { customizationApi } from "@/services/customizationApi";
-import { couponsApi } from "@/services/couponApi";
-import { subscribeApi } from "@/services/subscriberApi";
-import { hiringApi } from "@/services/hiringApi";
+import { combineReducers, configureStore } from '@reduxjs/toolkit'
+import type { PreloadedState } from '@reduxjs/toolkit'
+import { contactsApi } from '@/services/contactApi'
+import { categoriesApi } from '@/services/categoryApi'
+import { usersApi } from '@/services/userApi'
+import { productsApi } from '@/services/productApi'
+import productSlice from '@/store/slice/productSlice'
+import { promotionsApi } from '@/services/promotionApi'
+import { warehouseApi } from '@/services/warehouseApi'
+import { subCategoriesApi } from '@/services/subcategory'
+import { customizationApi } from '@/services/customizationApi'
+import { couponsApi } from '@/services/couponApi'
+import { subscribeApi } from '@/services/subscriberApi'
+import { hiringApi } from '@/services/hiringApi'
+import { erpApi } from '@/services/erpApi'
 
 const rootReducer = combineReducers({
   [contactsApi.reducerPath]: contactsApi.reducer,
@@ -25,8 +26,9 @@ const rootReducer = combineReducers({
   [couponsApi.reducerPath]: couponsApi.reducer,
   [subscribeApi.reducerPath]: subscribeApi.reducer,
   [hiringApi.reducerPath]: hiringApi.reducer,
+  [erpApi.reducerPath]: erpApi.reducer,
   products: productSlice,
-});
+})
 
 export const setupStore = (preloadedState?: PreloadedState<RootState>) => {
   return configureStore({
@@ -44,11 +46,12 @@ export const setupStore = (preloadedState?: PreloadedState<RootState>) => {
         .concat(customizationApi.middleware)
         .concat(subscribeApi.middleware)
         .concat(hiringApi.middleware)
-        .concat(couponsApi.middleware),
+        .concat(couponsApi.middleware)
+        .concat(erpApi.middleware),
     preloadedState,
-  });
-};
+  })
+}
 
-export type RootState = ReturnType<typeof rootReducer>;
-export type AppStore = ReturnType<typeof setupStore>;
-export type AppDispatch = AppStore["dispatch"];
+export type RootState = ReturnType<typeof rootReducer>
+export type AppStore = ReturnType<typeof setupStore>
+export type AppDispatch = AppStore['dispatch']

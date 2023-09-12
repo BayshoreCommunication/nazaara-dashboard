@@ -1,33 +1,32 @@
-import { ICustomization, IData } from "@/types/uiCustomization";
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 export interface IHiring {
-  success: boolean;
-  message: string;
-  data: IHiringData[];
+  success: boolean
+  message: string
+  data: IHiringData[]
 }
 
 export interface IHiringData {
-  _id: string;
-  title: string;
-  description: string;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
+  _id: string
+  title: string
+  description: string
+  createdAt: string
+  updatedAt: string
+  __v: number
 }
 
 export const hiringApi = createApi({
-  reducerPath: "hiringApi",
+  reducerPath: 'hiringApi',
   baseQuery: fetchBaseQuery({ baseUrl: `${process.env.API_URL}` }),
-  tagTypes: ["Hiring"],
+  tagTypes: ['Hiring'],
   endpoints: (builder) => ({
     getAllHiring: builder.query<IHiring, void>({
       query: () => `/api/v1/hiring-customization`,
-      providesTags: ["Hiring"],
+      providesTags: ['Hiring'],
     }),
     getHiringById: builder.query<IHiringData, string>({
       query: (id: string) => `/api/v1/hiring-customization/${id}`,
-      providesTags: ["Hiring"],
+      providesTags: ['Hiring'],
     }),
 
     createHiringCustomization: builder.mutation<
@@ -35,14 +34,14 @@ export const hiringApi = createApi({
       Partial<IHiringData>
     >({
       query: (payload) => ({
-        url: "/api/v1/hiring-customization",
-        method: "POST",
+        url: '/api/v1/hiring-customization',
+        method: 'POST',
         body: payload,
         headers: {
-          "Content-type": "application/json; charset=UTF-8",
+          'Content-type': 'application/json; charset=UTF-8',
         },
       }),
-      invalidatesTags: ["Hiring"],
+      invalidatesTags: ['Hiring'],
     }),
 
     updateHiringCustomization: builder.mutation<
@@ -51,20 +50,20 @@ export const hiringApi = createApi({
     >({
       query: ({ id, payload }) => ({
         url: `/api/v1/hiring-customization/${id}`,
-        method: "PATCH",
+        method: 'PATCH',
         body: payload,
       }),
-      invalidatesTags: ["Hiring"],
+      invalidatesTags: ['Hiring'],
     }),
 
     deleteHiringCustomization: builder.mutation({
       query: (id) => ({
         url: `/api/v1/hiring-customization/${id}`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
     }),
   }),
-});
+})
 
 export const {
   useGetAllHiringQuery,
@@ -72,4 +71,4 @@ export const {
   useCreateHiringCustomizationMutation,
   useUpdateHiringCustomizationMutation,
   useDeleteHiringCustomizationMutation,
-} = hiringApi;
+} = hiringApi

@@ -52,7 +52,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             ) : (
               <>
                 <Navbar />
-                <div className="flex gap-x-6">
+                <div className="flex gap-x-6 bg-white">
                   <Sidebar />
                   <main className="flex-[6] bg-primary">{children}</main>
                 </div>

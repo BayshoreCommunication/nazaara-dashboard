@@ -1,5 +1,5 @@
-"use client";
-import Editor from "@/components/Editor";
+'use client'
+import Editor from '@/components/Editor'
 import {
   FC,
   ChangeEvent,
@@ -7,75 +7,81 @@ import {
   FormEvent,
   useEffect,
   useCallback,
-} from "react";
-import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
-import { useCreateProductMutation } from "@/services/productApi";
-import dynamic from "next/dynamic";
-import { ErpIdProps, TProduct, TResult } from "@/types/types";
-import Loader from "@/components/loader";
-import { useGetPromotionsQuery } from "@/services/promotionApi";
-const Select = dynamic(() => import("react-select"), {
+} from 'react'
+import toast from 'react-hot-toast'
+import { useRouter } from 'next/navigation'
+import { useCreateProductMutation } from '@/services/productApi'
+import dynamic from 'next/dynamic'
+import { ErpIdProps, TProduct, TResult } from '@/types/types'
+import Loader from '@/components/loader'
+import { useGetPromotionsQuery } from '@/services/promotionApi'
+import { useGetErpDataByIdQuery } from '@/services/erpApi'
+const Select = dynamic(() => import('react-select'), {
   ssr: false,
-});
+})
 
 //for react select
 const customStyles = {
   control: (provided: any, state: any) => ({
     ...provided,
-    "& input": {
-      height: "auto",
+    '& input': {
+      height: 'auto',
     },
-    borderColor: "gray",
+    borderColor: 'gray',
     padding: 3,
   }),
-};
+}
 
 //id to handle multiple variant
 
 //form Data type for creating new product
 
 const options = [
-  { value: "customizable", label: "Customizable" },
-  { value: "34", label: "34" },
-  { value: "36", label: "36" },
-  { value: "38", label: "38" },
-  { value: "40", label: "40" },
-  { value: "42", label: "42" },
-  { value: "44", label: "44" },
-  { value: "46", label: "46" },
-  { value: "XS", label: "XS" },
-  { value: "S", label: "S" },
-  { value: "M", label: "M" },
-  { value: "L", label: "L" },
-  { value: "XL", label: "XL" },
-  { value: "XXL", label: "XXL" },
-];
+  { value: 'customizable', label: 'Customizable' },
+  { value: '34', label: '34' },
+  { value: '36', label: '36' },
+  { value: '38', label: '38' },
+  { value: '40', label: '40' },
+  { value: '42', label: '42' },
+  { value: '44', label: '44' },
+  { value: '46', label: '46' },
+  { value: 'XS', label: 'XS' },
+  { value: 'S', label: 'S' },
+  { value: 'M', label: 'M' },
+  { value: 'L', label: 'L' },
+  { value: 'XL', label: 'XL' },
+  { value: 'XXL', label: 'XXL' },
+]
 
 const AddProduct: FC<ErpIdProps> = ({ params }) => {
-  const singleProductId = params.productID;
-  const [erpData, setErpData] = useState<TResult>();
-  const router = useRouter();
-  const [createProduct] = useCreateProductMutation();
+  const singleProductId = params.productID as number
+  const [erpData, setErpData] = useState<TResult>()
+  const router = useRouter()
+  const [createProduct] = useCreateProductMutation()
   const [formData, setFormData] = useState<TProduct>({
     erpId: 0,
-    productName: "",
-    sku: "",
+    productName: '',
+    sku: '',
     purchasePrice: 0,
     regularPrice: 0,
     salePrice: 0,
     size: [],
     variant: [],
     stock: 0,
-    description: "",
-    category: "",
-    subCategory: "",
-    promotion: "",
-    status: "draft",
-    preOrder: "",
-  });
+    description: '',
+    category: '',
+    subCategory: '',
+    promotion: '',
+    status: 'draft',
+    preOrder: '',
+  })
 
-  const url = `https://erp.anzaralifestyle.com/api/product/Details/${singleProductId}/?format=json`;
+  const url = `https://erp.anzaralifestyle.com/api/product/Details/${singleProductId}/?format=json`
+  const { data: pro2, isLoading: productsLoading } = useGetErpDataByIdQuery({
+    singleProductId,
+  })
+
+  console.log('pro2', pro2)
 
   const getData = useCallback(async () => {
     try {
@@ -83,58 +89,55 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
         headers: {
           Authorization: `Token ${process.env.AUTH_TOKEN}`,
         },
-      });
-      const data = await response.json();
-      setErpData(data);
+      })
+      const data = await response.json()
+      setErpData(data)
       if (data) {
         setFormData({
           erpId: data ? data.id : 0,
-          productName: "",
-          sku: data ? data.title : "",
+          productName: '',
+          sku: data ? data.title : '',
           regularPrice: data ? Number(data?.selling_price) : 0,
           purchasePrice: data ? Number(data?.purchase_price) : 0,
           salePrice: data ? Number(data?.selling_price) : 0,
           size: [data && data.size],
           variant: [data.color && { color: data.color, imageUrl: [] }],
           stock: data ? Number(data.quantity) : 0,
-          description: "",
+          description: '',
           category: data
             ? data?.Deatils.map((el: any) => el.main_category)[0]
-            : "",
-          subCategory: data ? data.category : "",
-          promotion: "none",
+            : '',
+          subCategory: data ? data.category : '',
+          promotion: 'none',
           status: formData.status,
-          preOrder: "yes",
-        });
+          preOrder: 'yes',
+        })
       }
     } catch (err) {
-      console.log("error", err);
+      console.log('error', err)
     }
-  }, [formData.status, url]);
+  }, [formData.status, url])
 
   useEffect(() => {
-    getData();
-  }, [getData, url]);
-
-  console.log("erp data here", erpData?.color);
-  console.log("form data here", formData);
+    getData()
+  }, [getData, url])
 
   const handleChange = (
-    event: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    event: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     setFormData({
       ...formData,
       [event.target.name]: event.target.value,
-    });
-  };
+    })
+  }
   const handleSelectionChange = (option: any | null) => {
     if (option) {
       setFormData({
         ...formData,
-        ["size"]: option.map((elem: any) => elem.value),
-      });
+        ['size']: option.map((elem: any) => elem.value),
+      })
     }
-  };
+  }
   // const handleVariant = (
   //   event: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   //   index: number
@@ -154,21 +157,21 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
   // };
   const handleVariant = (
     event: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-    index: number
+    index: number,
   ) => {
-    const { name, value } = event.target;
-    const updatedVariants = [...formData.variant]; // Create a copy of the variant array
+    const { name, value } = event.target
+    const updatedVariants = [...formData.variant] // Create a copy of the variant array
     const updatedVariant = {
       ...updatedVariants[index], // Get the variant object at the specified index
       [name]: value, // Update the specific field of the variant object
-    };
-    updatedVariants[index] = updatedVariant; // Update the variant object in the array
+    }
+    updatedVariants[index] = updatedVariant // Update the variant object in the array
 
     setFormData((prevFormData: TProduct) => ({
       ...prevFormData,
       variant: updatedVariants,
-    }));
-  };
+    }))
+  }
 
   // const addDivField = () => {
   //   setFormData((prevFormData: any) => ({
@@ -188,24 +191,24 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
       variant: [
         ...prevFormData.variant,
         {
-          color: "", // Set the color to an empty string for the new variant
+          color: '', // Set the color to an empty string for the new variant
           imageUrl: [],
         },
       ],
-    }));
-  };
+    }))
+  }
 
   const removeDivField = (index: number) => {
     setFormData((prevFormData: any) => {
       const updatedVariants = prevFormData.variant.filter(
-        (_: any, i: number) => i !== index
-      );
+        (_: any, i: number) => i !== index,
+      )
       return {
         ...prevFormData,
         variant: updatedVariants,
-      };
-    });
-  };
+      }
+    })
+  }
 
   // const handleClear = () => {
   //   setFormData({
@@ -229,13 +232,13 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
   // };
 
   const handleSubmit = async (event: FormEvent) => {
-    event.preventDefault();
+    event.preventDefault()
     try {
-      const data: any = await createProduct(formData);
+      const data: any = await createProduct(formData)
       // refetch();
-      if (data.data.status === "success") {
-        router.push("/products");
-        toast.success("New Product Created", { duration: 3000 });
+      if (data.data.status === 'success') {
+        router.push('/products')
+        toast.success('New Product Created', { duration: 3000 })
         // Reset form fields
         // setFormData({
         //   erpId: 0,
@@ -253,18 +256,18 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
         //   status: "",
         // });
       } else {
-        toast.error("Failed to create new product!", { duration: 3000 });
+        toast.error('Failed to create new product!', { duration: 3000 })
       }
     } catch {
-      toast.error("Something went wrong!", { duration: 3000 });
+      toast.error('Something went wrong!', { duration: 3000 })
     }
-  };
+  }
   const defaultValueOptions = formData.size.map((el) => ({
     value: el,
     label: el,
-  }));
+  }))
 
-  const { data: promotionData } = useGetPromotionsQuery();
+  const { data: promotionData } = useGetPromotionsQuery()
 
   return !erpData ? (
     <Loader height="h-[85vh]" />
@@ -354,8 +357,8 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
                           // padding: 3,
                           colors: {
                             ...theme.colors,
-                            primary25: "#e6e6e6",
-                            primary: "rgb(156 163 175/1)",
+                            primary25: '#e6e6e6',
+                            primary: 'rgb(156 163 175/1)',
                           },
                         })}
                         options={options}
@@ -475,8 +478,8 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
                           required
                           onChange={handleChange}
                         >
-                          <option value={"yes"}>Yes</option>
-                          <option value={"no"}>No</option>
+                          <option value={'yes'}>Yes</option>
+                          <option value={'no'}>No</option>
                         </select>
                       </div>
                     </div>
@@ -614,7 +617,7 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
         </form>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default AddProduct;
+export default AddProduct

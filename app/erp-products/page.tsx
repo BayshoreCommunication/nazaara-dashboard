@@ -1,6 +1,7 @@
 'use client'
 import UtilityBtn from '@/components/UtilityBtn'
 import Loader from '@/components/loader'
+import { useGetAllErpDataQuery } from '@/services/erpApi'
 import { useGetProductErpIdQuery } from '@/services/productApi'
 import { TErpData } from '@/types/types'
 import Image from 'next/image'
@@ -10,11 +11,16 @@ import { AiOutlineShoppingCart } from 'react-icons/ai'
 
 const ErpProducts = () => {
   const { data: productsErpId } = useGetProductErpIdQuery()
+
   //pagination
   const pageSize = 10
   const [currentPage, setCurrentPage] = useState<number>(1)
   const url = `https://erp.anzaralifestyle.com/api/product/Details/?format=json&page=${currentPage}&page_size=${pageSize}`
-
+  const { data: pro, isLoading: proLoading } = useGetAllErpDataQuery({
+    page: currentPage,
+    page_size: pageSize,
+  })
+  console.log('pro', pro?.results)
   const [erpData, setErpData] = useState<TErpData>()
   const getData = useCallback(async () => {
     try {
