@@ -35,7 +35,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     } else {
       router.push('/nazaara-admin')
     }
-  }, [])
+  }, [router])
 
   useEffect(() => {
     isLoggedIn()

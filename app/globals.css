@@ -7,9 +7,14 @@
     @apply w-[96%] my-6 mx-auto;
   }
 }
+@layer base {
+  body {
+    @apply dark:bg-gray-800 bg-white;
+  }
+}
 
 .login-bg {
-  background-image: url("/images/login-bg1.png");
+  background-image: url('/images/login-bg1.png');
   background-size: cover;
   background-position: center;
 }
@@ -42,8 +47,8 @@
 }
 
 /* Remove the spinner arrows from number input fields */
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
   -webkit-appearance: none;
   appearance: none;
   margin: 0;
