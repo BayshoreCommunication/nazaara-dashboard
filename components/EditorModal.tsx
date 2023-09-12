@@ -49,7 +49,7 @@ const formats = [
   "code",
 ];
 
-const Editor = (props: any) => {
+const EditorForModal = (props: any) => {
   const [text, setText] = useState("");
   const handleChange = (value: string) => {
     setText(value);
@@ -82,4 +82,4 @@ const Editor = (props: any) => {
   );
 };
 
-export default Editor;
+export default EditorForModal;
