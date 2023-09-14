@@ -46,16 +46,6 @@ const HiringForm: React.FC<any> = ({
         <label className="font-medium" htmlFor="desc">
           Job Description:
         </label>
-        {/* <textarea
-          className="block w-full p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
-          id="desc"
-          type="text"
-          name="description" // Changed to "description"
-          //   value={formData.description}
-          onChange={handleChange}
-          required
-          placeholder="Enter Job Description"
-        /> */}
         <Editor setFormData={setFormData} formData={formData} />
       </div>
       <div className="mb-2">

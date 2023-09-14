@@ -54,13 +54,15 @@ const HiringList: React.FC<CategoryListProps> = ({
                 <td>
                   <div className="flex">
                     <label
-                      onClick={() => handleEditCategory(data._id)}
+                      onClick={() => handleEditCategory(data._id as string)}
                       className="cursor-pointer"
                       htmlFor="modal-handle"
                     >
                       <TbEdit color="green" size={20} />
                     </label>
-                    <button onClick={() => handleDeleteCategory(data._id)}>
+                    <button
+                      onClick={() => handleDeleteCategory(data._id as string)}
+                    >
                       <MdDelete color="red" size={20} />
                     </button>
                   </div>

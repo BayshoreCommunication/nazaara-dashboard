@@ -28,7 +28,7 @@ const ReactQuill = dynamic(() => import("react-quill"), {
 
 const Category: FC = () => {
   const { data: hiringsData, isLoading, refetch } = useGetAllHiringQuery();
-  const [createCategory] = useCreateHiringCustomizationMutation();
+  const [createHiringCustomization] = useCreateHiringCustomizationMutation();
 
   //handle form for creating new category
   // interface IFormData {
@@ -39,7 +39,7 @@ const Category: FC = () => {
   // }
 
   const [formData, setFormData] = useState<IHiringData>({
-    _id: "",
+    // _id: "",
     title: "",
     description: "",
     status: "",
@@ -49,12 +49,12 @@ const Category: FC = () => {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    const data = await createCategory(formData);
+    const data = await createHiringCustomization(formData);
     refetch();
     if (data) {
       toast.success("New Hiring Created", { duration: 3000 });
       setFormData({
-        _id: "",
+        // _id: "",
         title: "",
         description: "",
         status: "",

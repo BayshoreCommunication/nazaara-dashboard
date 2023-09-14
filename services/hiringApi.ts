@@ -7,13 +7,13 @@ export interface IHiring {
 }
 
 export interface IHiringData {
-  _id: string;
+  _id?: string;
   title: string;
   description: string;
   status: string;
-  // createdAt: string;
-  // updatedAt: string;
-  // __v: number;
+  createdAt?: string;
+  updatedAt?: string;
+  __v?: number;
 }
 
 export const hiringApi = createApi({
