@@ -31,14 +31,15 @@ const Category: FC = () => {
   const [createCategory] = useCreateHiringCustomizationMutation();
 
   //handle form for creating new category
-  interface IFormData {
-    _id?: string;
-    title: string;
-    description: string;
-    status: string;
-  }
+  // interface IFormData {
+  //   _id?: string;
+  //   title: string;
+  //   description: string;
+  //   status: string;
+  // }
 
-  const [formData, setFormData] = useState<IFormData>({
+  const [formData, setFormData] = useState<IHiringData>({
+    _id: "",
     title: "",
     description: "",
     status: "",
@@ -53,6 +54,7 @@ const Category: FC = () => {
     if (data) {
       toast.success("New Hiring Created", { duration: 3000 });
       setFormData({
+        _id: "",
         title: "",
         description: "",
         status: "",
@@ -93,7 +95,7 @@ const Category: FC = () => {
   };
 
   //edit modal
-  const [filteredData, setFilteredData] = useState<IFormData>({
+  const [filteredData, setFilteredData] = useState<IHiringData>({
     _id: "",
     title: "",
     description: "",
@@ -102,15 +104,28 @@ const Category: FC = () => {
 
   const [selectedValue, setSelectedValue] = useState<string>("");
 
+  // const handleEditCategory = (id: string) => {
+  //   const filtered = hiringsData?.data?.find((item) => item._id === id);
+
+  //   setFilteredData(filtered);
+  //   setSelectedValue(filtered?.status || "");
+  //   setIsOpen(true);
+
+  //   // Set the Quill editor content with the description of the selected category
+  //   setText(filtered?.description || "");
+  // };
+
   const handleEditCategory = (id: string) => {
-    const filtered: any = hiringsData?.data?.find((item) => item._id === id);
+    const filtered = hiringsData?.data?.find((item) => item._id === id);
 
-    setFilteredData(filtered);
-    setSelectedValue(filtered?.status || "");
-    setIsOpen(true);
+    if (filtered) {
+      setFilteredData(filtered);
+      setSelectedValue(filtered.status || "");
+      setIsOpen(true);
 
-    // Set the Quill editor content with the description of the selected category
-    setText(filtered?.description || "");
+      // Set the Quill editor content with the description of the selected category
+      setText(filtered.description || "");
+    }
   };
 
   const [isOpen, setIsOpen] = useState(false);
@@ -119,6 +134,37 @@ const Category: FC = () => {
   const [updateCategory] = useUpdateHiringCustomizationMutation();
   const nameRef = useRef<HTMLInputElement>(null);
   const statusRef = useRef<HTMLSelectElement>(null);
+
+  // const handleUpdateCategorySubmit = async (event: React.FormEvent) => {
+  //   event.preventDefault();
+
+  //   if (nameRef.current && statusRef.current) {
+  //     const formData: any = {
+  //       title: nameRef.current.value,
+  //       description: text,
+  //       status: statusRef.current.value,
+  //     };
+  //     const { title, description, status } = formData;
+
+  //     try {
+  //       const updatedData = { title, description, status };
+  //       const updatedCategory = await updateCategory({
+  //         // id: filteredData[0]?._id,
+  //         id: filteredData?._id,
+  //         payload: updatedData,
+  //       }).unwrap();
+
+  //       if (updatedCategory) {
+  //         toast.success("Hiring updated!", { duration: 3000 });
+  //         refetch();
+  //         setIsOpen(false);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error updating hiring:", error);
+  //       toast.error("Failed to update hiring.");
+  //     }
+  //   }
+  // };
 
   const handleUpdateCategorySubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -134,7 +180,7 @@ const Category: FC = () => {
       try {
         const updatedData = { title, description, status };
         const updatedCategory = await updateCategory({
-          id: filteredData[0]?._id,
+          id: filteredData._id, // Corrected this line
           payload: updatedData,
         }).unwrap();
 
@@ -211,7 +257,7 @@ const Category: FC = () => {
         <h1 className="text-lg font-semibold mb-2">All Hirings</h1>
         {hiringsData ? (
           <HiringList
-            categories={hiringsData.data}
+            hirings={hiringsData.data}
             handleEditCategory={handleEditCategory}
             handleDeleteCategory={handleDeleteCategory}
           />
