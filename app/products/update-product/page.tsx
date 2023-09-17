@@ -79,6 +79,13 @@ const UpdateProduct: FC = () => {
     status: "",
   });
 
+  useEffect(() => {
+    if (productsData?.data && productsData.data.variant) {
+      const updateVariantState = productsData.data;
+      setFormData(updateVariantState);
+    }
+  }, [productsData]);
+
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -195,12 +202,12 @@ const UpdateProduct: FC = () => {
     }
   };
 
-  useEffect(() => {
-    if (productsData?.data && productsData.data.variant) {
-      const updateVariantState = productsData.data;
-      setFormData(updateVariantState);
-    }
-  }, [productsData]);
+  // useEffect(() => {
+  //   if (productsData?.data && productsData.data.variant) {
+  //     const updateVariantState = productsData.data;
+  //     setFormData(updateVariantState);
+  //   }
+  // }, [productsData]);
 
   const defaultValueOptions = formData.size.map((el) => ({
     value: el,

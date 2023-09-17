@@ -18,7 +18,7 @@ export const erpApi = createApi({
         }
       },
     }),
-    getErpDataById: builder.query<TResult, { singleProductId?: number }>({
+    getErpDataById: builder.query<any, { singleProductId?: number }>({
       query: ({ singleProductId }) => {
         return {
           url: `/api/product/Details/${singleProductId}/?format=json`,
