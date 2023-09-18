@@ -212,6 +212,20 @@ export type TProductErpId = {
   erpId: number;
 };
 
+
+export type TProductCategory = {
+  status: string;
+  length: number;
+  newData: TCategoryItem[];
+};
+
+export type TCategoryItem = {
+  category: string;
+  count: number;
+  url: string;
+};
+
+
 // ============================= Image Urls ============================= //
 export type TImageUrl = {
   _id?: number;

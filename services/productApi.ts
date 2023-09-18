@@ -1,5 +1,6 @@
 import {
   TProduct,
+  TProductCategory,
   TProductErpIdData,
   TProductGetOne,
   TProducts,
@@ -15,6 +16,9 @@ export const productsApi = createApi({
         // use page and limit values here
         return { url: "/api/v1/product", params: { page, limit } };
       },
+    }),
+    getProductsCategories: builder.query<TProductCategory, void>({
+      query: () => "/api/v1/product/categories",
     }),
     getProductErpId: builder.query<TProductErpIdData, void>({
       query: () => `/api/v1/product/erpid`,
@@ -72,6 +76,7 @@ export const productsApi = createApi({
 
 export const {
   useGetProductsQuery,
+  useGetProductsCategoriesQuery,
   useGetProductErpIdQuery,
   useGetProductByIdQuery,
   useCreateProductMutation,
