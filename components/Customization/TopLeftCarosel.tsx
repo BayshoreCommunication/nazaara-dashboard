@@ -127,7 +127,6 @@ const TopLeftCarosel = () => {
         }
       })
     );
-    // console.log("Allah Vorosa", imagesAndDataUpload);
     try {
       const updatedTopLeftCarosel: any = await updateCustomization({
         id: "64d9fb77f3a7ce9915b44b6f",
