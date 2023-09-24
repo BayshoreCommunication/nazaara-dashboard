@@ -182,7 +182,7 @@ const OrderUpdate = () => {
             </div>
           </div>
           {/* middle part  */}
-          <div className="bg-gray-200 px-5 py-3 rounded-lg flex flex-col gap-y-4">
+          {/* <div className="bg-gray-200 px-5 py-3 rounded-lg flex flex-col gap-y-4">
             <div>
               <p className="text-lg font-medium">
                 Enter barcode or product code to add new product
@@ -231,7 +231,7 @@ const OrderUpdate = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
           {/* end part  */}
           <div className="px-6">
             <p className="text-lg font-medium mb-4">History</p>
