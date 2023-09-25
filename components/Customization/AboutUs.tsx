@@ -39,6 +39,10 @@ const AboutUsComponent = () => {
 
   const customizeData: IAboutUsData | undefined = data?.data?.aboutUs;
 
+  const [topHeading, setTopHeading] = useState(customizeData?.topHeading || "");
+  const [middleText, setMiddleText] = useState(customizeData?.secondText || "");
+  const [lastText, setLastText] = useState(customizeData?.thirdText || "");
+
   const [images, setImages] = useState<
     IAboutUsData["otherEmployeesData"] | null
   >(null);
@@ -221,7 +225,7 @@ const AboutUsComponent = () => {
                 placeholder="Write a question"
                 required
                 // Use the handleChange function to update the state when the input value changes
-                onChange={(e) => handleChange(0, "topHeading", e.target.value)}
+                onChange={(e) => setTopHeading(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     e.preventDefault();
@@ -238,14 +242,14 @@ const AboutUsComponent = () => {
               </label>
               <input
                 type="text"
-                id={`topHeading`}
+                id={`middleText`}
                 value={customizeData.secondText}
                 name="middleText"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="Write a question"
                 required
                 // Use the handleChange function to update the state when the input value changes
-                onChange={(e) => handleChange(1, "secondText", e.target.value)}
+                onChange={(e) => setMiddleText(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     e.preventDefault();
@@ -258,18 +262,18 @@ const AboutUsComponent = () => {
                 htmlFor={`LastText`}
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
               >
-                Middle Text
+                Last Text
               </label>
               <input
                 type="text"
-                id={`topHeading`}
+                id={`LastText`}
                 value={customizeData.thirdText}
                 name="LastText"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                 placeholder="Write a question"
                 required
                 // Use the handleChange function to update the state when the input value changes
-                onChange={(e) => handleChange(2, "thirdText", e.target.value)}
+                onChange={(e) => setLastText(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     e.preventDefault();
@@ -339,6 +343,7 @@ const AboutUsComponent = () => {
                 </div>
                 {/* image  */}
                 <div className="bg-basic rounded-lg px-6 py-3 flex flex-col gap-y-4">
+                  {/* // Update CEO data separately */}
                   <ImageUploading
                     value={
                       customizeData.ceoData.image ? [customizeData.ceoData] : []
