@@ -1,12 +1,6 @@
 "use client";
 import Loader from "@/components/loader";
 import {
-  useGetCategoriesQuery,
-  useCreateCategoryMutation,
-  useDeleteCategoryMutation,
-  useUpdateCategoryMutation,
-} from "@/services/categoryApi";
-import {
   useCreateSaleMutation,
   useDeleteSaleMutation,
   useGetSalesQuery,
@@ -35,9 +29,6 @@ const customStyles = {
 };
 
 const NavSale: FC = () => {
-  const { data: categoriesData, isLoading, refetch } = useGetCategoriesQuery();
-  const [createCategory] = useCreateCategoryMutation();
-
   //redux api
   const { data: salesData, isLoading: salesLoading } = useGetSalesQuery();
   const [createSale, { isLoading: createSaleLoading }] =
@@ -154,7 +145,14 @@ const NavSale: FC = () => {
   // const [filteredData, setFilteredData] = useState([
   //   { _id: "", name: "", status: "Publish" },
   // ]);
-  const [filteredData, setFilteredData] = useState({
+  // const [filteredData, setFilteredData] = useState({
+  //   saleTitle: "",
+  //   navCategoryTitle: "",
+  //   productSlug: [""],
+  //   status: "",
+  // });
+  const [filteredData, setFilteredData] = useState<ISale>({
+    _id: "", // Initialize _id with an empty string or null
     saleTitle: "",
     navCategoryTitle: "",
     productSlug: [""],
@@ -163,17 +161,29 @@ const NavSale: FC = () => {
 
   const [selectedValue, setSelectedValue] = useState<string>("");
 
+  // const handleEditSale = (id: string) => {
+  //   const filtered: ISale | undefined = salesData?.saleData?.find(
+  //     (item: ISale) => item?._id === id
+  //   );
+
+  //   if (filtered) {
+  //     setFilteredData(filtered);
+  //     setSelectedValue(filtered.status);
+  //     setIsOpen(true);
+  //   }
+  // };
   const handleEditSale = (id: string) => {
     const filtered: ISale | undefined = salesData?.saleData?.find(
       (item: ISale) => item?._id === id
     );
 
     if (filtered) {
-      setFilteredData(filtered);
+      setFilteredData({ ...filtered, _id: id }); // Set _id here
       setSelectedValue(filtered.status);
       setIsOpen(true);
     }
   };
+
   console.log("filteredData data from handle edit", filteredData);
 
   const [isOpen, setIsOpen] = useState(true);
@@ -182,15 +192,20 @@ const NavSale: FC = () => {
   const handleUpdateCategorySubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      // const updatedData = { saleTitle, categoryTitle, productSlug, status };
-      const updatedSale = await updateSale({
-        id: filteredData?._id,
-        payload: filteredData,
-      }).unwrap();
+      if (filteredData && filteredData._id) {
+        const updatedSale = await updateSale({
+          id: filteredData._id,
+          payload: filteredData,
+        }).unwrap();
 
-      if (updatedSale) {
-        toast.success("NavBar Sale updated!", { duration: 3000 });
-        setIsOpen(false);
+        if (updatedSale) {
+          toast.success("NavBar Sale updated!", { duration: 3000 });
+          setIsOpen(false);
+        }
+      } else {
+        // Handle the case when _id is not defined in filteredData
+        console.error("Error: _id is not defined in filteredData");
+        // You can display an error message or handle this case as needed
       }
     } catch (error) {
       console.error("Error updating sale:", error);
