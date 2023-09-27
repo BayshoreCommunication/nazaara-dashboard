@@ -8,6 +8,7 @@ import Faq from "./Faq";
 import AboutUs from "./AboutUs";
 import TopLeftCarosel from "./TopLeftCarosel";
 import Hiring from "./Hiring";
+import BestSelling from "./BestSelling";
 
 const buttonList = [
   { _id: "100", title: "TopLeftCarosel", component: TopLeftCarosel },
@@ -17,6 +18,7 @@ const buttonList = [
   { _id: "104", title: "Faq", component: Faq },
   { _id: "105", title: "AboutUs", component: AboutUs },
   { _id: "106", title: "Hiring", component: Hiring },
+  { _id: "107", title: "BestSelling", component: BestSelling },
 ];
 
 const ButtonToggle = () => {
