@@ -1,89 +1,91 @@
-'use client'
-import UtilityBtn from '@/components/UtilityBtn'
-import Loader from '@/components/loader'
-import { useGetAllErpDataQuery } from '@/services/erpApi'
-import { useGetProductErpIdQuery } from '@/services/productApi'
-import { TErpData } from '@/types/types'
-import Image from 'next/image'
-import Link from 'next/link'
-import { useCallback, useEffect, useState } from 'react'
-import { AiOutlineShoppingCart } from 'react-icons/ai'
+"use client";
+import UtilityBtn from "@/components/UtilityBtn";
+import Loader from "@/components/loader";
+import { useGetAllErpDataQuery } from "@/services/erpApi";
+import { useGetProductErpIdQuery } from "@/services/productApi";
+import { TErpData } from "@/types/types";
+import { log } from "console";
+import Image from "next/image";
+import Link from "next/link";
+import { useCallback, useEffect, useState } from "react";
+import { AiOutlineShoppingCart } from "react-icons/ai";
+import { ClimbingBoxLoader } from "react-spinners";
 
 const ErpProducts = () => {
-  const { data: productsErpId } = useGetProductErpIdQuery()
+  const { data: productsErpId } = useGetProductErpIdQuery();
 
   //pagination
-  const pageSize = 10
-  const [currentPage, setCurrentPage] = useState<number>(1)
-  const url = `https://erp.anzaralifestyle.com/api/product/Details/?format=json&page=${currentPage}&page_size=${pageSize}`
+  const pageSize = 10;
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const url = `https://erp.anzaralifestyle.com/api/product/Details/?format=json&page=${currentPage}&page_size=${pageSize}`;
   const { data: pro, isLoading: proLoading } = useGetAllErpDataQuery({
     page: currentPage,
     page_size: pageSize,
-  })
-  console.log('pro', pro?.results)
-  const [erpData, setErpData] = useState<TErpData>()
+  });
+  console.log("pro", pro?.results);
+  const [erpData, setErpData] = useState<TErpData>();
   const getData = useCallback(async () => {
     try {
       const response = await fetch(url, {
         headers: {
           Authorization: `Token ${process.env.AUTH_TOKEN}`,
         },
-      })
-      const data = await response.json()
-      setErpData(data)
+      });
+      const data = await response.json();
+      setErpData(data);
     } catch (err) {
-      console.log('error', err)
+      console.log("error", err);
     }
-  }, [url])
+  }, [url]);
 
   useEffect(() => {
-    getData()
-  }, [getData, url])
+    getData();
+  }, [getData, url]);
 
   //pagination
-  const totalPages = Math.ceil(erpData?.count! / pageSize)
+  const totalPages = Math.ceil(erpData?.count! / pageSize);
 
   const handlePreviousPage = () => {
     if (currentPage > 1) {
-      setCurrentPage(currentPage - 1)
+      setCurrentPage(currentPage - 1);
     }
-  }
+  };
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1)
+      setCurrentPage(currentPage + 1);
     }
-  }
+  };
 
   const handlePageClick = (page: number) => {
     if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page)
-      getData()
+      setCurrentPage(page);
+      getData();
     }
-  }
+  };
 
   const renderPageNumbers = () => {
-    const pageNumbers = []
+    const pageNumbers = [];
     const ellipsis = (
       <button className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 border border-gray-300">
         ...
       </button>
-    )
+    );
 
-    const maxButtonsToShow = 5 // Number of buttons to show at a time
-    const halfMaxButtons = Math.floor(maxButtonsToShow / 2)
+    const maxButtonsToShow = 5; // Number of buttons to show at a time
+    const halfMaxButtons = Math.floor(maxButtonsToShow / 2);
 
-    let startPage = currentPage - halfMaxButtons
-    let endPage = currentPage + halfMaxButtons
+    let startPage = currentPage - halfMaxButtons;
+    let endPage = currentPage + halfMaxButtons;
 
     if (startPage < 1) {
-      startPage = 1
-      endPage = Math.min(totalPages, maxButtonsToShow)
+      startPage = 1;
+      endPage = Math.min(totalPages, maxButtonsToShow);
     }
 
     if (endPage > totalPages) {
-      endPage = totalPages
-      startPage = Math.max(1, totalPages - maxButtonsToShow + 1)
+      endPage = totalPages;
+      startPage = Math.max(1, totalPages - maxButtonsToShow + 1);
     }
 
     if (startPage > 1) {
@@ -94,10 +96,10 @@ const ErpProducts = () => {
           onClick={() => handlePageClick(1)}
         >
           1
-        </button>,
-      )
+        </button>
+      );
       if (startPage > 2) {
-        pageNumbers.push(ellipsis)
+        pageNumbers.push(ellipsis);
       }
     }
 
@@ -106,18 +108,18 @@ const ErpProducts = () => {
         <button
           key={i} // Use 'i' as the key
           className={`flex items-center justify-center px-3 h-8 leading-tight text-gray-500 border border-gray-300 ${
-            currentPage === i ? 'bg-secondary text-white' : ''
+            currentPage === i ? "bg-secondary text-white" : ""
           }`}
           onClick={() => handlePageClick(i)}
         >
           {i}
-        </button>,
-      )
+        </button>
+      );
     }
 
     if (endPage < totalPages) {
       if (endPage < totalPages - 1) {
-        pageNumbers.push(ellipsis)
+        pageNumbers.push(ellipsis);
       }
       pageNumbers.push(
         <button
@@ -126,12 +128,14 @@ const ErpProducts = () => {
           onClick={() => handlePageClick(totalPages)}
         >
           {totalPages}
-        </button>,
-      )
+        </button>
+      );
     }
 
-    return pageNumbers
-  }
+    return pageNumbers;
+  };
+
+  console.log("test data", erpData);
 
   return !erpData ? (
     <Loader height="h-[85vh]" />
@@ -161,10 +165,10 @@ const ErpProducts = () => {
               </tr>
             </thead>
             <tbody>
-              {erpData?.results.map((elem, index) => {
+              {erpData?.results?.map((elem, index) => {
                 const checkdata = productsErpId?.result.filter(
-                  (el: any) => el.erpId === elem.id,
-                )[0]
+                  (el: any) => el.erpId === elem.id
+                )[0];
                 // console.log("check data here", checkdata);
 
                 return (
@@ -209,7 +213,7 @@ const ErpProducts = () => {
                       )}
                     </td>
                   </tr>
-                )
+                );
               })}
             </tbody>
           </table>
@@ -220,7 +224,7 @@ const ErpProducts = () => {
               onClick={handlePreviousPage}
               disabled={currentPage === 1}
               className={`flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-200 border border-gray-100 rounded-l-lg hover:text-gray-100 ${
-                currentPage === 1 ? 'bg-secondary-hover' : 'bg-secondary'
+                currentPage === 1 ? "bg-secondary-hover" : "bg-secondary"
               }`}
             >
               Previous
@@ -234,8 +238,8 @@ const ErpProducts = () => {
               disabled={currentPage === totalPages}
               className={`flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-200 border border-gray-100 rounded-e-lg hover:text-gray-100 ${
                 currentPage === totalPages
-                  ? 'bg-secondary-hover'
-                  : 'bg-secondary'
+                  ? "bg-secondary-hover"
+                  : "bg-secondary"
               }`}
             >
               Next
@@ -244,7 +248,7 @@ const ErpProducts = () => {
         </ul>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ErpProducts
+export default ErpProducts;
