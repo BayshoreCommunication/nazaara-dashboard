@@ -4,12 +4,10 @@ import Loader from "@/components/loader";
 import { useGetAllErpDataQuery } from "@/services/erpApi";
 import { useGetProductErpIdQuery } from "@/services/productApi";
 import { TErpData } from "@/types/types";
-import { log } from "console";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { AiOutlineShoppingCart } from "react-icons/ai";
-import { ClimbingBoxLoader } from "react-spinners";
 
 const ErpProducts = () => {
   const { data: productsErpId } = useGetProductErpIdQuery();
@@ -134,8 +132,6 @@ const ErpProducts = () => {
 
     return pageNumbers;
   };
-
-  console.log("test data", erpData);
 
   return !erpData ? (
     <Loader height="h-[85vh]" />
