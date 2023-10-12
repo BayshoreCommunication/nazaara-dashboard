@@ -1,28 +1,20 @@
+import { TPromotion, TPromotions } from "@/types/types";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
-export interface IPromotions {
-  status: string;
-  data: IPromotion[];
-  refetch?: any;
-}
-
-export interface IPromotion {
-  _id: string;
-  name: string;
-  status: string;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
-}
 
 export const promotionsApi = createApi({
   reducerPath: "promotionsApi",
   baseQuery: fetchBaseQuery({ baseUrl: `${process.env.API_URL}` }),
+  tagTypes: ["Promotion"],
   endpoints: (builder) => ({
-    getPromotions: builder.query<IPromotions, void>({
+    getAllPromotions: builder.query<TPromotions, void>({
       query: () => `/api/v1/promotion`,
+      providesTags: ["Promotion"],
     }),
-    createPromotion: builder.mutation<IPromotion, Partial<IPromotion>>({
+    getAPromotionById: builder.query<TPromotion, string>({
+      query: (id: string) => `/api/v1/promotion/${id}`,
+      providesTags: ["Promotion"],
+    }),
+    createAPromotion: builder.mutation<TPromotion, Partial<TPromotion>>({
       query: (payload) => ({
         url: "/api/v1/promotion",
         method: "POST",
@@ -31,21 +23,11 @@ export const promotionsApi = createApi({
           "Content-type": "application/json; charset=UTF-8",
         },
       }),
-      // Update the cache after successful creation
-      async onQueryStarted(_, { dispatch, queryFulfilled }) {
-        await queryFulfilled; // Wait for the query to be fulfilled
-        await dispatch(promotionsApi.endpoints.getPromotions.initiate()); // Fetch the updated category list
-      },
+      invalidatesTags: ["Promotion"],
     }),
-    deletePromotion: builder.mutation({
-      query: (id) => ({
-        url: `/api/v1/promotion/${id}`,
-        method: "DELETE",
-      }),
-    }),
-    updatePromotion: builder.mutation<
-      IPromotion,
-      { id: string; payload: Partial<IPromotion> }
+    updateAPromotion: builder.mutation<
+      TPromotion,
+      { id: string; payload: Partial<TPromotion> }
     >({
       query: ({ id, payload }) => ({
         url: `/api/v1/promotion/${id}`,
@@ -55,13 +37,22 @@ export const promotionsApi = createApi({
           "Content-type": "application/json; charset=UTF-8",
         },
       }),
+      invalidatesTags: ["Promotion"],
+    }),
+    deleteAPromotion: builder.mutation({
+      query: (id) => ({
+        url: `/api/v1/promotion/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Promotion"],
     }),
   }),
 });
 
 export const {
-  useGetPromotionsQuery,
-  useCreatePromotionMutation,
-  useDeletePromotionMutation,
-  useUpdatePromotionMutation,
+  useCreateAPromotionMutation,
+  useDeleteAPromotionMutation,
+  useGetAPromotionByIdQuery,
+  useGetAllPromotionsQuery,
+  useUpdateAPromotionMutation,
 } = promotionsApi;

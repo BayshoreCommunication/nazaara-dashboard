@@ -212,7 +212,6 @@ export type TProductErpId = {
   erpId: number;
 };
 
-
 export type TProductCategory = {
   status: string;
   length: number;
@@ -224,7 +223,6 @@ export type TCategoryItem = {
   count: number;
   url: string;
 };
-
 
 // ============================= Image Urls ============================= //
 export type TImageUrl = {
@@ -256,3 +254,26 @@ export type TCoupon = {
   updatedAt?: string;
   __v?: number;
 };
+
+// ============================ Promotions =============================== //
+
+export interface TPromotions {
+  status: string;
+  data: TPromotion[];
+}
+
+export interface TPromotion {
+  _id?: string;
+  name: string;
+  promotionOn?: string;
+  categoryName: string;
+  expires: string;
+  freeShipping?: boolean;
+  discountType?: string;
+  discountOff?: number;
+  minimumPurchaseAmount?: number;
+  status: string;
+  createdAt?: string;
+  updatedAt?: string;
+  ___v?: number;
+}

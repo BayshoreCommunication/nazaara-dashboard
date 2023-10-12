@@ -5,7 +5,6 @@ import { categoriesApi } from "@/services/categoryApi";
 import { usersApi } from "@/services/userApi";
 import { productsApi } from "@/services/productApi";
 import productSlice from "@/store/slice/productSlice";
-import { promotionsApi } from "@/services/promotionApi";
 import { warehouseApi } from "@/services/warehouseApi";
 import { subCategoriesApi } from "@/services/subcategory";
 import { customizationApi } from "@/services/customizationApi";
@@ -16,6 +15,7 @@ import { erpApi } from "@/services/erpApi";
 import { orderApi } from "@/services/orderApi";
 import { salesApi } from "@/services/navSaleApi";
 import { bestSellingApi } from "@/services/bestSellingApi";
+import { promotionsApi } from "@/services/promotionApi";
 
 const rootReducer = combineReducers({
   [contactsApi.reducerPath]: contactsApi.reducer,
