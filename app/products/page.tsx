@@ -1,63 +1,62 @@
-'use client'
-import UtilityBtn from '@/components/UtilityBtn'
-import Loader from '@/components/loader'
-import { useGetProductsQuery } from '@/services/productApi'
-import Image from 'next/image'
-import Link from 'next/link'
-import { useState } from 'react'
-import { AiOutlineShoppingCart } from 'react-icons/ai'
+"use client";
+import UtilityBtn from "@/components/UtilityBtn";
+import Loader from "@/components/loader";
+import { useGetProductsQuery } from "@/services/productApi";
+import axios from "axios";
+import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
+import { AiOutlineShoppingCart } from "react-icons/ai";
 
 const Products: any = () => {
-  const [currentPage, setCurrentPage] = useState<number>(1)
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const {
-    data: productsData,
-    isLoading: productsLoading,
-  } = useGetProductsQuery({ page: currentPage, limit: 10 })
+  const { data: productsData, isLoading: productsLoading } =
+    useGetProductsQuery({ page: currentPage, limit: 10 });
 
-  const totalPages = productsData?.totalPages
+  const totalPages = productsData?.totalPages;
 
   const handlePreviousPage = () => {
     if (currentPage > 1) {
-      setCurrentPage(currentPage - 1)
+      setCurrentPage(currentPage - 1);
     }
-  }
+  };
 
   const handleNextPage = () => {
     if (currentPage < totalPages!) {
-      setCurrentPage(currentPage + 1)
+      setCurrentPage(currentPage + 1);
     }
-  }
+  };
 
   const handlePageClick = (page: number) => {
     if (page >= 1 && page <= totalPages!) {
-      setCurrentPage(page)
+      setCurrentPage(page);
       // getData();
     }
-  }
+  };
 
   const renderPageNumbers = () => {
-    const pageNumbers = []
+    const pageNumbers = [];
     const ellipsis = (
       <button className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 border border-gray-300">
         ...
       </button>
-    )
+    );
 
-    const maxButtonsToShow = 5 // Number of buttons to show at a time
-    const halfMaxButtons = Math.floor(maxButtonsToShow / 2)
+    const maxButtonsToShow = 5; // Number of buttons to show at a time
+    const halfMaxButtons = Math.floor(maxButtonsToShow / 2);
 
-    let startPage = currentPage - halfMaxButtons
-    let endPage = currentPage + halfMaxButtons
+    let startPage = currentPage - halfMaxButtons;
+    let endPage = currentPage + halfMaxButtons;
 
     if (startPage < 1) {
-      startPage = 1
-      endPage = Math.min(totalPages!, maxButtonsToShow)
+      startPage = 1;
+      endPage = Math.min(totalPages!, maxButtonsToShow);
     }
 
     if (endPage > totalPages!) {
-      endPage = totalPages!
-      startPage = Math.max(1, totalPages! - maxButtonsToShow + 1)
+      endPage = totalPages!;
+      startPage = Math.max(1, totalPages! - maxButtonsToShow + 1);
     }
 
     if (startPage > 1) {
@@ -68,10 +67,10 @@ const Products: any = () => {
           onClick={() => handlePageClick(1)}
         >
           1
-        </button>,
-      )
+        </button>
+      );
       if (startPage > 2) {
-        pageNumbers.push(ellipsis)
+        pageNumbers.push(ellipsis);
       }
     }
 
@@ -80,18 +79,18 @@ const Products: any = () => {
         <button
           key={i}
           className={`flex items-center justify-center px-3 h-8 leading-tight text-gray-500 border border-gray-300 ${
-            currentPage === i ? 'bg-secondary text-white' : ''
+            currentPage === i ? "bg-secondary text-white" : ""
           }`}
           onClick={() => handlePageClick(i)}
         >
           {i}
-        </button>,
-      )
+        </button>
+      );
     }
 
     if (endPage < totalPages!) {
       if (endPage < totalPages! - 1) {
-        pageNumbers.push(ellipsis)
+        pageNumbers.push(ellipsis);
       }
       pageNumbers.push(
         <button
@@ -100,12 +99,42 @@ const Products: any = () => {
           onClick={() => handlePageClick(totalPages!)}
         >
           {totalPages}
-        </button>,
-      )
+        </button>
+      );
     }
 
-    return pageNumbers
-  }
+    return pageNumbers;
+  };
+
+  //fetch all erp data
+
+  // Create an async function to fetch data
+  // const fetchData = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       "https://erp.anzaralifestyle.com/api/product/Details/?format=json"
+  //     );
+  //     console.log("Fetched data:", response.data);
+  //   } catch (error) {
+  //     console.error("Request error:", error);
+  //   }
+  // };
+
+  const syncErpDataHandler = async () => {
+    try {
+      const response = await axios.get(
+        "https://erp.anzaralifestyle.com/api/product/Details/?format=json",
+        {
+          headers: {
+            Authorization: `Token ${process.env.AUTH_TOKEN}`,
+          },
+        }
+      );
+      console.log("Fetched data:", response.data);
+    } catch (error) {
+      console.error("Request error:", error);
+    }
+  };
 
   return productsLoading ? (
     <Loader height="h-[85vh]" />
@@ -114,6 +143,14 @@ const Products: any = () => {
       <div className="flex gap-2 items-center mb-2">
         <AiOutlineShoppingCart size={18} color="gray" />
         <span className="font-medium text-lg">Products</span>
+      </div>
+      <div className="flex justify-end py-4">
+        <button
+          className="text-white bg-red-800 py-2 px-3 rounded-md shadow-md"
+          onClick={syncErpDataHandler}
+        >
+          Sync with erp data
+        </button>
       </div>
       {/* product component  */}
       <div className="overflow-x-auto">
@@ -165,9 +202,9 @@ const Products: any = () => {
                 <td>{elem.stock}</td>
                 <td
                   className={`font-medium ${
-                    elem.status === 'published'
-                      ? 'text-green-500'
-                      : 'text-red-500'
+                    elem.status === "published"
+                      ? "text-green-500"
+                      : "text-red-500"
                   }`}
                 >
                   {elem.status}
@@ -176,7 +213,7 @@ const Products: any = () => {
                   <div className="flex gap-2">
                     <Link
                       href={{
-                        pathname: '/products/image-upload',
+                        pathname: "/products/image-upload",
                         query: { id: `${elem._id}` },
                       }}
                       className="text-white bg-red-800 py-2 px-3 rounded-md shadow-md"
@@ -185,7 +222,7 @@ const Products: any = () => {
                     </Link>
                     <Link
                       href={{
-                        pathname: '/products/update-product',
+                        pathname: "/products/update-product",
                         query: { id: `${elem._id}` },
                       }}
                       className="text-white bg-red-800 py-2 px-3 rounded-md shadow-md"
@@ -205,7 +242,7 @@ const Products: any = () => {
             onClick={handlePreviousPage}
             disabled={currentPage === 1}
             className={`flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-200 border border-gray-100 rounded-l-lg hover:text-gray-100 ${
-              currentPage === 1 ? 'bg-secondary-hover' : 'bg-secondary'
+              currentPage === 1 ? "bg-secondary-hover" : "bg-secondary"
             }`}
           >
             Previous
@@ -218,7 +255,7 @@ const Products: any = () => {
             onClick={handleNextPage}
             disabled={currentPage === totalPages}
             className={`flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-200 border border-gray-100 rounded-e-lg hover:text-gray-100 ${
-              currentPage === totalPages ? 'bg-secondary-hover' : 'bg-secondary'
+              currentPage === totalPages ? "bg-secondary-hover" : "bg-secondary"
             }`}
           >
             Next
@@ -226,7 +263,7 @@ const Products: any = () => {
         </li>
       </ul>
     </div>
-  )
-}
+  );
+};
 
-export default Products
+export default Products;
