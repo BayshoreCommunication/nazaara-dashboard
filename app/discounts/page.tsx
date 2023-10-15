@@ -182,7 +182,7 @@ const Discount: FC = () => {
         )}
       </div>
 
-      {/* add new category  */}
+      {/* add new coupon  */}
       <div className="flex-[3]">
         <h1 className="text-lg font-semibold mb-2">Add Coupon</h1>
         <DiscountForm

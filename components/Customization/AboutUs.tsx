@@ -27,6 +27,7 @@ interface IAboutUsData {
     userName: string;
     designation: string;
     _id?: string;
+    file?: File;
   }[];
 }
 
@@ -181,10 +182,10 @@ const AboutUsComponent = () => {
         id: "64d9fb77f3a7ce9915b44b6f",
         payload: {
           aboutUs: {
-            ceoData: customizeData.ceoData,
-            topHeading: customizeData.topHeading,
-            secondText: customizeData.secondText,
-            thirdText: customizeData.thirdText,
+            ceoData: customizeData?.ceoData,
+            topHeading: customizeData?.topHeading,
+            secondText: customizeData?.secondText,
+            thirdText: customizeData?.thirdText,
             otherEmployeesData: imagesAndDataUpload,
           },
         },

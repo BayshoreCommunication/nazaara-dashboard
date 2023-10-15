@@ -1,13 +1,28 @@
-import axios from "axios";
+"use client";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AiOutlineBell } from "react-icons/ai";
 import { FaAngleDown, FaAngleUp } from "react-icons/fa";
 import { deleteCookie } from "cookies-next";
+import { getCookie } from "cookies-next";
+import { useEffect, useState } from "react";
 
 const Navbar = () => {
   const routerForPush = useRouter();
+  const [userCredential, setUserCredential] = useState({
+    email: "",
+    fullName: "",
+  });
+
+  const jsonStr = getCookie("adminCredential");
+
+  useEffect(() => {
+    if (jsonStr != null) {
+      const obj = JSON.parse(jsonStr);
+      setUserCredential({ email: obj.email, fullName: obj.fullName });
+    }
+  }, [jsonStr]);
 
   const handleLogOut = async (event: any) => {
     deleteCookie("token");
@@ -15,14 +30,16 @@ const Navbar = () => {
     routerForPush.push("/nazaara-admin");
   };
 
+  // console.log("userCredential", userCredential);
+
   return (
     <div className="">
       <div className="flex items-center bg-basic py-3 pr-9 border-b">
         <div className="flex-1 flex justify-center">
           <Link href="/">
             <Image
-              src="/images/nazara-logo.png"
-              alt="nazara main logo"
+              src="/images/nazaara-logo.png"
+              alt="nazaara main logo"
               width={248}
               height={49}
               className="w-[150px] h-[30px]"
@@ -34,7 +51,7 @@ const Navbar = () => {
           <div>
             <Image
               src="https://res.cloudinary.com/nazaara/image/upload/v1692621035/users/login_c43wh2.png"
-              alt="nazara main logo"
+              alt="nazaara main logo"
               width={600}
               height={600}
               className="w-[36px] h-[36px] rounded-full"
@@ -43,8 +60,10 @@ const Navbar = () => {
           <div className="group relative">
             <div className="text-gray-500 flex items-center">
               <div>
-                <p className="text-[#11142D] text-sm">Nazaara Official</p>
-                <p className="text-xs">nazaaraOfficial@email.com</p>
+                <p className="text-[#11142D] text-sm">
+                  {userCredential.fullName}
+                </p>
+                <p className="text-xs">{userCredential.email}</p>
               </div>
               <FaAngleDown
                 size={20}

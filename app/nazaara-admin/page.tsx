@@ -39,8 +39,8 @@ const Login = () => {
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
             <div className="flex justify-center">
               <Image
-                src="/images/nazara-logo.png"
-                alt="nazara main logo"
+                src="/images/nazaara-logo.png"
+                alt="nazaara main logo"
                 width={248}
                 height={248}
                 className="w-[160px]"

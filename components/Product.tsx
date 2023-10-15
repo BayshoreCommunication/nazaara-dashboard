@@ -23,7 +23,7 @@ const Product = () => {
             <td>
               <Image
                 src="/images/container.png"
-                alt="nazara main logo"
+                alt="nazaara main logo"
                 width={248}
                 height={248}
                 className="w-[70px] h-[70px]"
@@ -47,7 +47,7 @@ const Product = () => {
             <td>
               <Image
                 src="/images/container.png"
-                alt="nazara main logo"
+                alt="nazaara main logo"
                 width={248}
                 height={248}
                 className="w-[70px] h-[70px]"
@@ -71,7 +71,7 @@ const Product = () => {
             <td>
               <Image
                 src="/images/container.png"
-                alt="nazara main logo"
+                alt="nazaara main logo"
                 width={248}
                 height={248}
                 className="w-[70px] h-[70px]"
@@ -95,7 +95,7 @@ const Product = () => {
             <td>
               <Image
                 src="/images/container.png"
-                alt="nazara main logo"
+                alt="nazaara main logo"
                 width={248}
                 height={248}
                 className="w-[70px] h-[70px]"
@@ -119,7 +119,7 @@ const Product = () => {
             <td>
               <Image
                 src="/images/container.png"
-                alt="nazara main logo"
+                alt="nazaara main logo"
                 width={248}
                 height={248}
                 className="w-[70px] h-[70px]"
@@ -143,7 +143,7 @@ const Product = () => {
             <td>
               <Image
                 src="/images/container.png"
-                alt="nazara main logo"
+                alt="nazaara main logo"
                 width={248}
                 height={248}
                 className="w-[70px] h-[70px]"
@@ -167,7 +167,7 @@ const Product = () => {
             <td>
               <Image
                 src="/images/container.png"
-                alt="nazara main logo"
+                alt="nazaara main logo"
                 width={248}
                 height={248}
                 className="w-[70px] h-[70px]"
@@ -191,7 +191,7 @@ const Product = () => {
             <td>
               <Image
                 src="/images/container.png"
-                alt="nazara main logo"
+                alt="nazaara main logo"
                 width={248}
                 height={248}
                 className="w-[70px] h-[70px]"
@@ -215,7 +215,7 @@ const Product = () => {
             <td>
               <Image
                 src="/images/container.png"
-                alt="nazara main logo"
+                alt="nazaara main logo"
                 width={248}
                 height={248}
                 className="w-[70px] h-[70px]"

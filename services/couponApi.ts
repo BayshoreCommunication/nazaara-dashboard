@@ -23,11 +23,6 @@ export const couponsApi = createApi({
           "Content-type": "application/json; charset=UTF-8",
         },
       }),
-      // Update the cache after successful creation
-      // async onQueryStarted(_, { dispatch, queryFulfilled }) {
-      //   await queryFulfilled; // Wait for the query to be fulfilled
-      //   await dispatch(couponsApi.endpoints.getCoupons.initiate()); // Fetch the updated category list
-      // },
       invalidatesTags: ["Coupon"],
     }),
     updateCoupon: builder.mutation<
@@ -43,12 +38,6 @@ export const couponsApi = createApi({
         },
       }),
       invalidatesTags: ["Coupon"],
-      // Update the cache after successful creation
-      // async onQueryStarted(data: any, { dispatch, queryFulfilled }) {
-      //   await queryFulfilled; // Wait for the query to be fulfilled
-      //   await dispatch(couponsApi.endpoints.getCouponById.initiate(data._id)); // Fetch the updated category
-      //   await dispatch(couponsApi.endpoints.getCoupons.initiate()); // Fetch the updated category list
-      // },
     }),
     deleteCoupon: builder.mutation({
       query: (id) => ({
