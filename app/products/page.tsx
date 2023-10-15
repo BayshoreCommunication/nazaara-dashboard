@@ -1,18 +1,25 @@
 "use client";
 import UtilityBtn from "@/components/UtilityBtn";
 import Loader from "@/components/loader";
-import { useGetProductsQuery } from "@/services/productApi";
+import {
+  useGetProductsQuery,
+  useDeleteProductMutation,
+} from "@/services/productApi";
 import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { AiOutlineShoppingCart } from "react-icons/ai";
+import Swal from "sweetalert2";
 
 const Products: any = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const { data: productsData, isLoading: productsLoading } =
-    useGetProductsQuery({ page: currentPage, limit: 10 });
+  const {
+    data: productsData,
+    isLoading: productsLoading,
+    refetch,
+  } = useGetProductsQuery({ page: currentPage, limit: 10 });
 
   const totalPages = productsData?.totalPages;
 
@@ -136,6 +143,28 @@ const Products: any = () => {
     }
   };
 
+  const [deleteProduct] = useDeleteProductMutation();
+
+  const handleDelete = (id: string) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        Swal.fire("Deleted!", "Your product has been deleted.", "success");
+        const productDel = await deleteProduct(id);
+        if (productDel) {
+          refetch(); // Refetch the Product list after deleting a Product
+        }
+      }
+    });
+  };
+
   return productsLoading ? (
     <Loader height="h-[85vh]" />
   ) : (
@@ -229,6 +258,12 @@ const Products: any = () => {
                     >
                       Edit Details
                     </Link>
+                    <button
+                      onClick={() => handleDelete(elem._id as string)}
+                      className="text-white bg-red-800 py-2 px-3 rounded-md shadow-md"
+                    >
+                      Delete
+                    </button>
                   </div>
                 </td>
               </tr>

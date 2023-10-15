@@ -446,12 +446,6 @@ const UpdateProduct: FC = () => {
             >
               Update Product
             </button>
-            {/* <button
-          className="bg-warning py-1 px-4 rounded-md text-white"
-          onClick={handleClear}
-        >
-          Clear All
-        </button> */}
           </div>
         </form>
       </div>
