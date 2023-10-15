@@ -3,13 +3,32 @@ import OutlineButton from "@/components/OutlineButton";
 import PrimaryButton from "@/components/PrimaryButton";
 import UtilityBtn from "@/components/UtilityBtn";
 import axios from "axios";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import {
   AiOutlineDownload,
   AiOutlineShoppingCart,
   AiTwotoneDelete,
 } from "react-icons/ai";
+import Select from "react-select";
 
+const deliveryOptions = [
+  { value: "pending", label: "Pending" },
+  { value: "order_received", label: "Order Received" },
+  { value: "on_process", label: "On Process" },
+  { value: "ready_to_deliver", label: "Ready to Deliver" },
+  { value: "shipped", label: "Shipped" },
+  { value: "delivered", label: "Delivered" },
+];
+
+const paymentStatusOptions = [
+  { value: "pending", label: "Pending" },
+  { value: "partial_request", label: "Partial Request" },
+  { value: "full_request", label: "Full Request" },
+  { value: "partial_successful", label: "Partial Successful" },
+  { value: "full_successful", label: "Full Successful" },
+  { value: "cancel", label: "Cancel" },
+];
 const OrderUpdate = ({ params }: any) => {
   const [orderData, setOrderData] = useState<any>();
   const fetchOrderData = async () => {
@@ -27,7 +46,51 @@ const OrderUpdate = ({ params }: any) => {
     fetchOrderData(); // Call the fetchOrderData function
   }, [params.orderId]);
 
-  console.log("order data", orderData?.quantity);
+  const totalQuantity =
+    orderData &&
+    orderData.product.reduce(
+      (total: any, item: any) => total + item.quantity,
+      0
+    );
+  const totalPrice =
+    orderData &&
+    orderData.product.reduce(
+      (total: any, item: any) => total + item.price,
+      orderData.deliveryCharge
+    );
+
+  console.log("order data", orderData);
+  const [deliveryCharge, setDeliveryCharge] = useState();
+  const [paymentMethod, setPaymentMethod] = useState();
+  const [paymentStatus, setPaymentStatus] = useState<any>(
+    paymentStatusOptions[0]
+  );
+  const [remark, setRemark] = useState();
+  const defaultOption = deliveryOptions.find(
+    (option) => option.value === orderData?.deliveryStatus
+  );
+  const [selectedOption, setSelectedOption] = useState<any>(deliveryOptions[0]);
+  const [shippingAddress, setShippingAddress] = useState({
+    street: "",
+    city: "",
+    country: "",
+  });
+  useEffect(() => {
+    if (orderData) {
+      setDeliveryCharge(orderData.deliveryCharge);
+      setPaymentMethod(orderData.paymentMethod);
+      setSelectedOption(defaultOption);
+      setRemark(orderData.remark);
+
+      // Update each field in the shippingAddress object
+      setShippingAddress({
+        street: orderData.shippingAddress.street,
+        city: orderData.shippingAddress.city,
+        country: orderData.shippingAddress.country,
+      });
+    }
+  }, [orderData]);
+
   return (
     <div className="container">
       {orderData && (
@@ -56,32 +119,34 @@ const OrderUpdate = ({ params }: any) => {
                 </div>
                 <div className="w-full">
                   <p className="font-medium mb-1">Quantity</p>
-                  <p className="text-sm">{orderData.quantity}</p>
+                  <p className="text-sm">{totalQuantity}</p>
                 </div>
                 <div className="w-full">
                   <p className="font-medium mb-1">Total Bill</p>
-                  <p className="text-sm">{orderData.totalCost}</p>
+                  <p className="text-sm">{totalPrice}</p>
                 </div>
                 <div className="w-full">
                   <p className="font-medium mb-1">Payment</p>
-                  <p className="text-sm">10,000</p>
+                  <p className="text-sm">{orderData.totalPay}</p>
                 </div>
                 <div className="w-full">
                   <p className="font-medium mb-1">Due</p>
-                  <p className="text-sm">8,000</p>
+                  <p className="text-sm">{`${(
+                    totalPrice - orderData.totalPay
+                  ).toFixed(2)}`}</p>
                 </div>
                 <div className="w-full">
                   <p className="font-medium mb-1">Discount</p>
-                  <p className="text-sm">2,000</p>
+                  <p className="text-sm">0</p>
                 </div>
-                <div className="w-full">
+                {/* <div className="w-full">
                   <p className="font-medium mb-1">VAT</p>
                   <p className="text-sm">2,000</p>
-                </div>
-                <div className="w-full">
+                </div> */}
+                {/* <div className="w-full">
                   <p className="font-medium mb-1">Coupon</p>
                   <p className="text-sm">PEIEHF</p>
-                </div>
+                </div> */}
               </div>
             </div>
             {/* middel three section  */}
@@ -90,64 +155,29 @@ const OrderUpdate = ({ params }: any) => {
               <div className="flex flex-col gap-y-4">
                 <div className="flex items-center">
                   <label className="w-56" htmlFor="status">
-                    *status:{" "}
+                    *Payment status:{" "}
                   </label>
-                  <select
-                    className="w-full border border-gray-400 rounded-sm p-1"
-                    name="status"
-                    id="status"
-                  >
-                    <option value="red">Factory Received</option>
-                    <option value="red">On the delivery</option>
-                    <option value="red">Factory Received</option>
-                  </select>
-                </div>
-                <div className="flex">
-                  <label className="w-56" htmlFor="status">
-                    *status:{" "}
-                  </label>
-                  <p className="w-full">10%</p>
+                  <div className="w-full">
+                    <Select
+                      defaultValue={paymentStatus}
+                      onChange={setPaymentStatus}
+                      options={paymentStatusOptions}
+                    />
+                  </div>
                 </div>
 
-                <div className="flex items-center">
-                  <label className="w-56" htmlFor="status">
-                    New Payment:
-                  </label>
-                  <input
-                    className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
-                    id="name"
-                    type="text"
-                    placeholder="Input Here"
-                  />
-                </div>
                 <div className="flex items-center">
                   <label className="w-56" htmlFor="payment">
                     Payment Method:
                   </label>
-                  <select
-                    className="w-full border border-gray-400 rounded-sm p-1 text-gray-500"
-                    name="payment"
-                    id="payment"
-                  >
-                    <option value="red">Cash</option>
-                    <option value="red">Online</option>
-                    <option value="red">Crypto</option>
-                  </select>
-                </div>
-
-                <div className="flex items-center">
-                  <label className="w-56" htmlFor="courier">
-                    Courier:
-                  </label>
-                  <select
-                    className="w-full border border-gray-400 rounded-sm p-1 text-gray-500"
-                    name="courier"
-                    id="courier"
-                  >
-                    <option value="red">Cash</option>
-                    <option value="red">Online</option>
-                    <option value="red">Crypto</option>
-                  </select>
+                  <input
+                    className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
+                    id="deliveryCharge"
+                    type="text"
+                    placeholder="Input Here"
+                    value={paymentMethod}
+                    onChange={(e: any) => setPaymentMethod(e.target.value)}
+                  />
                 </div>
 
                 <div className="flex items-center">
@@ -159,32 +189,24 @@ const OrderUpdate = ({ params }: any) => {
                     id="deliveryCharge"
                     type="text"
                     placeholder="Input Here"
-                  />
-                </div>
-                <div className="flex items-center">
-                  <label className="w-56" htmlFor="deliveryCost">
-                    *Delivery Cost:
-                  </label>
-                  <input
-                    className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
-                    id="deliveryCost"
-                    type="text"
-                    placeholder="Input Here"
-                  />
-                </div>
-                <div className="flex items-center">
-                  <label className="w-56" htmlFor="deliveryDate">
-                    *Delivery Date:
-                  </label>
-                  <input
-                    className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
-                    id="deliveryDate"
-                    type="date"
-                    placeholder="Input Here"
+                    value={deliveryCharge}
+                    onChange={(e: any) => setDeliveryCharge(e.target.value)}
                   />
                 </div>
 
                 <div className="flex items-center">
+                  <label className="w-56" htmlFor="deliveryDate">
+                    *Delivery Status:
+                  </label>
+                  <div className="w-full">
+                    <Select
+                      defaultValue={selectedOption}
+                      onChange={setSelectedOption}
+                      options={deliveryOptions}
+                    />
+                  </div>
+                </div>
+                {/* <div className="flex items-center">
                   <label className="w-56" htmlFor="shippingAddress">
                     Shipping Address:
                   </label>
@@ -194,7 +216,7 @@ const OrderUpdate = ({ params }: any) => {
                     type="text"
                     placeholder="Input Here"
                   />
-                </div>
+                </div> */}
                 <div className="flex items-center">
                   <label className="w-56" htmlFor="shippingAddress">
                     Remarks:
@@ -203,62 +225,130 @@ const OrderUpdate = ({ params }: any) => {
                     className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
                     id="shippingAddress"
                     placeholder="Input Here"
+                    value={remark}
+                    onChange={(e: any) => setRemark(e.target.value)}
                   />
                 </div>
               </div>
-              {/* middle part  */}
-              {/* <div className="bg-gray-200 px-5 py-3 rounded-lg flex flex-col gap-y-4">
-            <div>
-              <p className="text-lg font-medium">
-                Enter barcode or product code to add new product
-              </p>
-              <input
-                className="block rounded-sm w-full px-2 py-[3px] border border-gray-400 focus:outline-none text-gray-500 mt-1"
-                type="text"
-                placeholder="Input search text"
-              />
-            </div>
-            <div>
-              <div className="flex gap-2">
-                <p className="flex-[6] font-medium">Product Details</p>
-                <p className="flex-[3] font-medium">Quantity</p>
-                <p className="flex-[3] font-medium">Price</p>
-              </div>
-              <div className="flex items-center gap-2 text-gray-500">
-                <p className="flex-[6] text-sm">1. CT- MR/EEREUID21</p>
-                <input
-                  className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1 flex-[3]"
-                  type="text"
-                  value={1}
-                />
-                <div className="flex flex-[3] gap-2 items-center">
-                  <p>20000</p>
-                  <AiTwotoneDelete color="red" />
-                </div>
-              </div>
-            </div>
-            <div>
-              <div className="flex gap-2">
-                <p className="flex-[6] font-medium">Service Details</p>
-                <p className="flex-[3] font-medium">Quantity</p>
-                <p className="flex-[3] font-medium">Price</p>
-              </div>
-              <div className="flex items-center gap-2 text-gray-500">
-                <p className="flex-[6] text-sm">Free Stiching</p>
-                <input
-                  className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1 flex-[3]"
-                  type="text"
-                  value={1}
-                />
-                <div className="flex flex-[3] gap-2 items-center">
-                  <p>20000</p>
-                  <AiTwotoneDelete color="red" />
-                </div>
-              </div>
-            </div>
-          </div> */}
-              {/* end part  */}
+
+              {/* new part */}
               <div className="px-6">
+                <h3 className="font-semibold mb-4 text-xl">Shipping Address</h3>
+
+                <div className="flex items-center mb-4">
+                  <label className="w-56" htmlFor="name">
+                    Name:
+                  </label>
+                  <input
+                    className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
+                    id="name"
+                    type="text"
+                    placeholder="Input Here"
+                    value={orderData.shippingAddress.fullName}
+                  />
+                </div>
+
+                <div className="flex items-center mb-4">
+                  <label className="w-56" htmlFor="phone">
+                    Phone number:
+                  </label>
+                  <input
+                    className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
+                    id="phone"
+                    type="text"
+                    placeholder="Input Here"
+                    value={orderData.shippingAddress.phone}
+                  />
+                </div>
+
+                <div className="flex items-center mb-4">
+                  <label className="w-56" htmlFor="street">
+                    Street:
+                  </label>
+                  <input
+                    className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
+                    id="street"
+                    type="text"
+                    placeholder="Input Here"
+                    value={shippingAddress.street}
+                    onChange={(e: any) => {
+                      setShippingAddress({
+                        ...shippingAddress,
+                        street: e.target.value,
+                      });
+                    }}
+                  />
+                </div>
+                <div className="flex items-center  mb-4">
+                  <label className="w-56" htmlFor="city">
+                    City:
+                  </label>
+                  <input
+                    className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
+                    id="city"
+                    type="text"
+                    placeholder="Input Here"
+                    value={shippingAddress.city}
+                    onChange={(e: any) => {
+                      setShippingAddress({
+                        ...shippingAddress,
+                        city: e.target.value,
+                      });
+                    }}
+                  />
+                </div>
+
+                <div className="flex items-center  mb-4">
+                  <label className="w-56" htmlFor="country">
+                    Country:
+                  </label>
+                  <input
+                    className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
+                    id="city"
+                    type="text"
+                    placeholder="Input Here"
+                    value={shippingAddress.country}
+                    onChange={(e: any) => {
+                      setShippingAddress({
+                        ...shippingAddress,
+                        country: e.target.value,
+                      });
+                    }}
+                  />
+                </div>
+              </div>
+              {/* new part 2 */}
+              <div className="px-6">
+                <h3 className="font-semibold mb-6 text-xl ">Product</h3>
+                {orderData.product.map((el: any, i: number) => (
+                  <div
+                    className="flex items-center mb-6 gap-4 xl:gap-8 border-b pb-4"
+                    key={i}
+                  >
+                    <Image
+                      src={el.imageUrl}
+                      alt={el.slug}
+                      width={432}
+                      height={558}
+                      className="w-12 h-16"
+                    />
+                    <div>
+                      <p className="text-sm">Color: {el.color}</p>
+                      <p className="text-sm">Size: {el.size}</p>
+                      <p className="text-sm">Quantity: {el.quantity}</p>
+                    </div>
+                    <div className="font-semibold">Price: {el.price}</div>
+                    {el.coupon ? (
+                      <div>Coupon: {el.coupon}</div>
+                    ) : (
+                      <div className="text-red-500">No Coupon applied</div>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {/* end part  */}
+              {/* <div className="px-6">
                 <p className="text-lg font-medium mb-4">History</p>
                 <ol className="relative border-l border-gray-200 ml-2">
                   <li className="mb-10 ml-6 text-sm">
@@ -361,7 +451,7 @@ const OrderUpdate = ({ params }: any) => {
                     </div>
                   </li>
                 </ol>
-              </div>
+              </div> */}
             </div>
             <div className="flex gap-x-2">
               <PrimaryButton name="Update" />
