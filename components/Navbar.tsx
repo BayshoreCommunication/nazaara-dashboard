@@ -12,7 +12,7 @@ const Navbar = () => {
   const routerForPush = useRouter();
   const [userCredential, setUserCredential] = useState({
     email: "",
-    fullname: "",
+    fullName: "",
   });
 
   const jsonStr = getCookie("adminCredential");
@@ -20,7 +20,7 @@ const Navbar = () => {
   useEffect(() => {
     if (jsonStr != null) {
       const obj = JSON.parse(jsonStr);
-      setUserCredential({ email: obj.email, fullname: obj.fullname });
+      setUserCredential({ email: obj.email, fullName: obj.fullName });
     }
   }, [jsonStr]);
 
@@ -61,7 +61,7 @@ const Navbar = () => {
             <div className="text-gray-500 flex items-center">
               <div>
                 <p className="text-[#11142D] text-sm">
-                  {userCredential.fullname}
+                  {userCredential.fullName}
                 </p>
                 <p className="text-xs">{userCredential.email}</p>
               </div>
