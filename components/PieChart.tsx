@@ -13,7 +13,7 @@ const PieChart: React.FC = () => {
     const fetchApexCharts = async () => {
       const ApexCharts = await import("apexcharts");
       const options = {
-        series: [4, 8, 1, 1, 1, 1, 1, 1],
+        series: [4, 8, 1, 1, 1, 1, 1, 8],
         chart: {
           width: 480,
           type: "pie",
