@@ -9,11 +9,13 @@ dynamic(() => import("react-apexcharts"), {
 const PieChart: React.FC = () => {
   const chartRef = useRef<HTMLDivElement>(null);
 
+  const url = `${process.env.API_URL}/api/v1/product/categories`;
+
   useEffect(() => {
     const fetchApexCharts = async () => {
       const ApexCharts = await import("apexcharts");
       const options = {
-        series: [4, 8, 1, 1, 1, 1, 1, 8],
+        series: [4, 8, 1, 1, 1, 1, 1, 1],
         chart: {
           width: 480,
           type: "pie",

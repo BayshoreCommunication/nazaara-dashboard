@@ -213,6 +213,7 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     try {
+      console.log("first", formData);
       const data: any = await createProduct(formData);
       // refetch();
       if (data.data.status === "success") {
