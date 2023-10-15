@@ -176,7 +176,7 @@ const Products: any = () => {
                   {elem.variant[0].imageUrl[0] ? (
                     <Image
                       src={elem.variant[0].imageUrl[0]}
-                      alt="nazara main logo"
+                      alt="nazaara main logo"
                       width={248}
                       height={248}
                       className="w-[70px] h-[70px]"
@@ -184,7 +184,7 @@ const Products: any = () => {
                   ) : (
                     <Image
                       src="/images/no-image.jpg"
-                      alt="nazara main logo"
+                      alt="nazaara main logo"
                       width={248}
                       height={248}
                       className="w-[70px] h-[70px]"

@@ -20,7 +20,6 @@ const ErpProducts = () => {
     page: currentPage,
     page_size: pageSize,
   });
-  console.log("pro", pro?.results);
   const [erpData, setErpData] = useState<TErpData>();
   const getData = useCallback(async () => {
     try {
@@ -175,7 +174,7 @@ const ErpProducts = () => {
                     <td>
                       <Image
                         src={elem?.ProductImage[0]?.photo}
-                        alt="nazara main logo"
+                        alt="nazaara main logo"
                         width={248}
                         height={248}
                         className="w-[70px] h-[70px]"

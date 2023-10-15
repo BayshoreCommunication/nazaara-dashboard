@@ -14,7 +14,7 @@ export default async function middleware(req, res) {
   const token = req.cookies.get(process.env.COOKIE_NAME);
 
   if (!token) {
-    req.nextUrl.pathname = "/nazara-admin";
+    req.nextUrl.pathname = "/nazaara-admin";
     return NextResponse.redirect(req.nextUrl);
   }
 
@@ -23,7 +23,7 @@ export default async function middleware(req, res) {
     return NextResponse.next();
   } catch (e) {
     console.error(e);
-    req.nextUrl.pathname = "/nazara-admin";
+    req.nextUrl.pathname = "/nazaara-admin";
     return NextResponse.redirect(req.nextUrl);
   }
 }

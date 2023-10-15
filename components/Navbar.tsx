@@ -38,8 +38,8 @@ const Navbar = () => {
         <div className="flex-1 flex justify-center">
           <Link href="/">
             <Image
-              src="/images/nazara-logo.png"
-              alt="nazara main logo"
+              src="/images/nazaara-logo.png"
+              alt="nazaara main logo"
               width={248}
               height={49}
               className="w-[150px] h-[30px]"
@@ -51,7 +51,7 @@ const Navbar = () => {
           <div>
             <Image
               src="https://res.cloudinary.com/nazaara/image/upload/v1692621035/users/login_c43wh2.png"
-              alt="nazara main logo"
+              alt="nazaara main logo"
               width={600}
               height={600}
               className="w-[36px] h-[36px] rounded-full"
