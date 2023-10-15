@@ -341,7 +341,9 @@ const OrderUpdate = ({ params }: any) => {
                     {el.coupon ? (
                       <div>Coupon: {el.coupon}</div>
                     ) : (
-                      <div className="text-red-500">No Coupon applied</div>
+                      <div className="text-red-500 text-sm">
+                        No Coupon applied
+                      </div>
                     )}
                   </div>
                 ))}
