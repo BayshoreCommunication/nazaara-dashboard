@@ -10,7 +10,7 @@ import {
 import dynamic from "next/dynamic";
 import { TProduct } from "@/types/types";
 import Loader from "@/components/loader";
-import { useGetPromotionsQuery } from "@/services/promotionApi";
+import { useGetAllPromotionsQuery } from "@/services/promotionApi";
 const Select = dynamic(() => import("react-select"), {
   ssr: false,
 });
@@ -216,7 +216,7 @@ const UpdateProduct: FC = () => {
 
   // console.log("formDatas", formData.promotion);
 
-  const { data: promotionData } = useGetPromotionsQuery();
+  const { data: promotionData } = useGetAllPromotionsQuery();
 
   return productsLoading ? (
     <Loader height="h-[85vh]" />

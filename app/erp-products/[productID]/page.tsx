@@ -1,20 +1,13 @@
 "use client";
 import Editor from "@/components/Editor";
-import {
-  FC,
-  ChangeEvent,
-  useState,
-  FormEvent,
-  useEffect,
-  useCallback,
-} from "react";
+import { FC, ChangeEvent, useState, FormEvent, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useCreateProductMutation } from "@/services/productApi";
 import dynamic from "next/dynamic";
 import { ErpIdProps, TProduct, TResult } from "@/types/types";
 import Loader from "@/components/loader";
-import { useGetPromotionsQuery } from "@/services/promotionApi";
+import { useGetAllPromotionsQuery } from "@/services/promotionApi";
 import { useGetErpDataByIdQuery } from "@/services/erpApi";
 const Select = dynamic(() => import("react-select"), {
   ssr: false,
@@ -105,8 +98,8 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
         preOrder: "yes",
       });
     }
-  }, [productsData]);
-  console.log("formData", formData);
+  }, [productsData, formData.status]);
+  // console.log("formData", formData);
 
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -253,7 +246,7 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
     label: el,
   }));
 
-  const { data: promotionData } = useGetPromotionsQuery();
+  const { data: promotionData } = useGetAllPromotionsQuery();
 
   return !productsData ? (
     <Loader height="h-[85vh]" />

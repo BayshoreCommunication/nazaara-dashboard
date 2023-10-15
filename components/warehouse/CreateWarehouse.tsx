@@ -1,4 +1,3 @@
-import { useCreatePromotionMutation } from "@/services/promotionApi";
 import { useCreateWarehouseMutation } from "@/services/warehouseApi";
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import { toast } from "react-hot-toast";
