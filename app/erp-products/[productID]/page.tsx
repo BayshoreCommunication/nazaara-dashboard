@@ -53,20 +53,20 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
   const [createProduct] = useCreateProductMutation();
   const [formData, setFormData] = useState<TProduct>({
     erpId: 0,
-    productName: "",
     sku: "",
+    productName: "",
     purchasePrice: 0,
     regularPrice: 0,
     salePrice: 0,
-    size: [],
     variant: [],
-    stock: 0,
+    size: [],
     description: "",
+    erpCategory: "",
+    erpSubCategory: "",
     category: "",
     subCategory: "",
-    promotion: "",
-    status: "draft",
-    preOrder: "",
+    stock: 0,
+    preOrder: false,
   });
 
   const { data: productsData, isLoading: productsLoading } =
@@ -77,29 +77,34 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
   useEffect(() => {
     if (productsData) {
       setFormData({
-        erpId: productsData ? productsData.id : 0,
+        erpId: productsData.id ? productsData.id : 0,
+        sku: productsData.title ? productsData.title : "",
         productName: "",
-        sku: productsData ? productsData.title : "",
-        regularPrice: productsData ? Number(productsData?.selling_price) : 0,
-        purchasePrice: productsData ? Number(productsData?.purchase_price) : 0,
-        salePrice: productsData ? Number(productsData?.selling_price) : 0,
-        size: [productsData && productsData.size],
+        purchasePrice: productsData.purchase_price
+          ? Number(productsData.purchase_price)
+          : 0,
+        regularPrice: productsData.selling_price
+          ? Number(productsData.selling_price)
+          : 0,
+        salePrice: productsData.selling_price
+          ? Number(productsData.selling_price)
+          : 0,
         variant: [
           productsData.color && { color: productsData.color, imageUrl: [] },
         ],
-        stock: productsData ? Number(productsData.quantity) : 0,
+        size: [productsData.size ? productsData.size : ""],
         description: "",
-        category: productsData
+        erpCategory: productsData.Deatils
           ? productsData?.Deatils.map((el: any) => el.main_category)[0]
           : "",
-        subCategory: productsData ? productsData.category : "",
-        promotion: "none",
-        status: formData.status,
-        preOrder: "yes",
+        erpSubCategory: productsData ? productsData.category : "",
+        category: "",
+        subCategory: "",
+        stock: 0,
+        preOrder: false,
       });
     }
   }, [productsData, formData.status]);
-  // console.log("formData", formData);
 
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -117,23 +122,7 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
       });
     }
   };
-  // const handleVariant = (
-  //   event: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  //   index: number
-  // ) => {
-  //   const { name, value } = event.target;
-  //   const updatedVariants = [...formData.variant]; // Create a copy of the variant array
-  //   const updatedVariant = {
-  //     ...updatedVariants[index], // Get the variant object at the specified index
-  //     [name]: value, // Update the specific field of the variant object
-  //   };
-  //   updatedVariants[index] = updatedVariant; // Update the variant object in the array
 
-  //   setFormData((formData: any) => ({
-  //     ...formData,
-  //     variant: updatedVariants, // Update the variant array in the formData
-  //   }));
-  // };
   const handleVariant = (
     event: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
     index: number
@@ -364,7 +353,7 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
                     </div>
                   </div>
                   <div className="bg-gray-100 py-3 flex flex-col gap-y-3 rounded-md">
-                    <div>
+                    {/* <div>
                       <label className="font-medium" htmlFor="promotion">
                         Promotion
                       </label>
@@ -384,7 +373,7 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
                             </option>
                           ))}
                       </select>
-                    </div>
+                    </div> */}
                     <div>
                       <label className="font-medium" htmlFor="regular_price">
                         Purchase Price

@@ -250,6 +250,21 @@ const Category: FC = () => {
 
   if (isLoading) return <Loader height="h-[90vh]" />;
 
+  const truncateDescription = (data: IHiringData[]) => {
+    return data.map((item) => {
+      // apply condition to check if description length is greater than 200
+      if (item.description.length > 200) {
+        // if yes then truncate the description and add ... at the end
+        return {
+          ...item,
+          description: `${item.description.slice(0, 200)}...`,
+        };
+      } else {
+        return item;
+      }
+    });
+  };
+
   return (
     <div className="flex gap-10 container">
       {/* show all category */}
@@ -257,7 +272,7 @@ const Category: FC = () => {
         <h1 className="text-lg font-semibold mb-2">All Hirings</h1>
         {hiringsData ? (
           <HiringList
-            hirings={hiringsData.data}
+            hirings={truncateDescription(hiringsData.data)} // pass the truncated description to the component
             handleEditCategory={handleEditCategory}
             handleDeleteCategory={handleDeleteCategory}
           />
