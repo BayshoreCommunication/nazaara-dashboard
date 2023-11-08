@@ -1,124 +1,127 @@
-"use client";
-import Editor from "@/components/Editor";
-import { FC, ChangeEvent, useState, FormEvent, useEffect } from "react";
-import toast from "react-hot-toast";
-import { useSearchParams, useRouter } from "next/navigation";
+'use client'
+import Editor from '@/components/Editor'
+import { FC, ChangeEvent, useState, FormEvent, useEffect } from 'react'
+import toast from 'react-hot-toast'
+import { useSearchParams, useRouter } from 'next/navigation'
 import {
   useGetProductByIdQuery,
   useUpdateProductMutation,
-} from "@/services/productApi";
-import dynamic from "next/dynamic";
-import { TProduct } from "@/types/types";
-import Loader from "@/components/loader";
-import { useGetAllPromotionsQuery } from "@/services/promotionApi";
-const Select = dynamic(() => import("react-select"), {
+} from '@/services/productApi'
+import dynamic from 'next/dynamic'
+import { TProduct } from '@/types/types'
+import Loader from '@/components/loader'
+import { useGetAllPromotionsQuery } from '@/services/promotionApi'
+const Select = dynamic(() => import('react-select'), {
   ssr: false,
-});
+})
 
 const customStyles = {
   control: (provided: any) => ({
     ...provided,
-    "& input": {
-      height: "auto",
+    '& input': {
+      height: 'auto',
     },
   }),
-};
+}
 
 //id to handle multiple variant
 
 //form Data type for creating new product
 
 const options = [
-  { value: "customizable", label: "Customizable" },
-  { value: "34", label: "34" },
-  { value: "36", label: "36" },
-  { value: "38", label: "38" },
-  { value: "40", label: "40" },
-  { value: "42", label: "42" },
-  { value: "44", label: "44" },
-  { value: "46", label: "46" },
-  { value: "XS", label: "XS" },
-  { value: "S", label: "S" },
-  { value: "M", label: "M" },
-  { value: "L", label: "L" },
-  { value: "XL", label: "XL" },
-  { value: "XXL", label: "XXL" },
-];
+  { value: 'customizable', label: 'Customizable' },
+  { value: '34', label: '34' },
+  { value: '36', label: '36' },
+  { value: '38', label: '38' },
+  { value: '40', label: '40' },
+  { value: '42', label: '42' },
+  { value: '44', label: '44' },
+  { value: '46', label: '46' },
+  { value: 'XS', label: 'XS' },
+  { value: 'S', label: 'S' },
+  { value: 'M', label: 'M' },
+  { value: 'L', label: 'L' },
+  { value: 'XL', label: 'XL' },
+  { value: 'XXL', label: 'XXL' },
+]
 
 const UpdateProduct: FC = () => {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const singleProductId: any = searchParams.get("id");
-  if (singleProductId === "" || singleProductId === null) {
-    router.back();
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const singleProductId: any = searchParams.get('id')
+  if (singleProductId === '' || singleProductId === null) {
+    router.back()
   }
   const {
     data: productsData,
     isLoading: productsLoading,
     refetch,
-  } = useGetProductByIdQuery(singleProductId);
+  } = useGetProductByIdQuery(singleProductId)
 
   const [formData, setFormData] = useState<TProduct>({
     erpId: 0,
-    productName: "",
+    sku: '',
+    productName: '',
     purchasePrice: 0,
     regularPrice: 0,
     salePrice: 0,
+    preOrder: false,
     size: [],
     variant: [
       {
-        color: "",
+        color: '',
         imageUrl: [],
       },
     ],
     stock: 0,
-    description: "",
-    category: "",
-    subCategory: "",
-    promotion: "",
-    status: "",
-  });
+    description: '',
+    category: '',
+    subCategory: '',
+    erpCategory: '',
+    erpSubCategory: '',
+    status: '',
+  })
 
   useEffect(() => {
     if (productsData?.data && productsData.data.variant) {
-      const updateVariantState = productsData.data;
-      setFormData(updateVariantState);
+      const updateVariantState = productsData.data
+      setFormData(updateVariantState)
     }
-  }, [productsData]);
+  }, [productsData])
 
   const handleChange = (
-    event: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    event: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     setFormData({
       ...formData,
       [event.target.name]: event.target.value,
-    });
-  };
+    })
+  }
   const handleSelectionChange = (option: any | null) => {
     if (option) {
       setFormData({
         ...formData,
-        ["size"]: option.map((elem: any) => elem.value),
-      });
+        ['size']: option.map((elem: any) => elem.value),
+      })
     }
-  };
+  }
   const handleVariant = (
     event: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-    index: number
+    index: number,
   ) => {
-    const { name, value } = event.target;
-    const updatedVariants = [...formData.variant]; // Create a copy of the variant array
+    const { name, value } = event.target
+    const updatedVariants = [...formData.variant] // Create a copy of the variant array
     const updatedVariant = {
       ...updatedVariants[index], // Get the variant object at the specified index
       [name]: value, // Update the specific field of the variant object
-    };
-    updatedVariants[index] = updatedVariant; // Update the variant object in the array
+    }
+    updatedVariants[index] = updatedVariant // Update the variant object in the array
 
     setFormData((formData: any) => ({
       ...formData,
       variant: updatedVariants, // Update the variant array in the formData
-    }));
-  };
+    }))
+  }
 
   const addDivField = () => {
     setFormData((prevFormData: any) => ({
@@ -126,23 +129,23 @@ const UpdateProduct: FC = () => {
       variant: [
         ...prevFormData.variant,
         {
-          color: "",
+          color: '',
           imageUrl: [],
         },
       ],
-    }));
-  };
+    }))
+  }
   const removeDivField = (index: number) => {
     setFormData((prevFormData: any) => {
       const updatedVariants = prevFormData.variant.filter(
-        (_: any, i: number) => i !== index
-      );
+        (_: any, i: number) => i !== index,
+      )
       return {
         ...prevFormData,
         variant: updatedVariants,
-      };
-    });
-  };
+      }
+    })
+  }
 
   // const handleClear = () => {
   //   setFormData({
@@ -165,42 +168,50 @@ const UpdateProduct: FC = () => {
   //   });
   // };
 
-  const [updateProduct] = useUpdateProductMutation();
+  const [updateProduct] = useUpdateProductMutation()
 
   const handleSubmit = async (event: FormEvent) => {
-    event.preventDefault();
+    event.preventDefault()
     try {
       const mutationData: any = await updateProduct({
         id: singleProductId,
         payload: formData,
-      });
-      refetch();
-      if (mutationData.data.status === "success") {
-        router.push("/products");
-        toast.success("Product updated sucessfully.", { duration: 3000 });
+      })
+      refetch()
+      if (mutationData.data.status === 'success') {
+        router.push('/products')
+        toast.success('Product updated sucessfully.', { duration: 3000 })
         // Reset form fields
         setFormData({
           erpId: 0,
-          productName: "",
+          sku: '',
+          productName: '',
           purchasePrice: 0,
           regularPrice: 0,
           salePrice: 0,
+          preOrder: false,
           size: [],
-          variant: [{ color: "", imageUrl: [] }],
+          variant: [
+            {
+              color: '',
+              imageUrl: [],
+            },
+          ],
           stock: 0,
-          description: "",
-          category: "",
-          subCategory: "",
-          promotion: "",
-          status: "",
-        });
+          description: '',
+          category: '',
+          subCategory: '',
+          erpCategory: '',
+          erpSubCategory: '',
+          status: '',
+        })
       } else {
-        toast.error("Failed to updated product!", { duration: 3000 });
+        toast.error('Failed to updated product!', { duration: 3000 })
       }
     } catch {
-      toast.error("Something went wrong!", { duration: 3000 });
+      toast.error('Something went wrong!', { duration: 3000 })
     }
-  };
+  }
 
   // useEffect(() => {
   //   if (productsData?.data && productsData.data.variant) {
@@ -212,11 +223,11 @@ const UpdateProduct: FC = () => {
   const defaultValueOptions = formData.size.map((el) => ({
     value: el,
     label: el,
-  }));
+  }))
 
   // console.log("formDatas", formData.promotion);
 
-  const { data: promotionData } = useGetAllPromotionsQuery();
+  const { data: promotionData } = useGetAllPromotionsQuery()
 
   return productsLoading ? (
     <Loader height="h-[85vh]" />
@@ -242,7 +253,7 @@ const UpdateProduct: FC = () => {
                         type="text"
                         placeholder="Enter product name."
                         onChange={(event) => {
-                          handleChange(event);
+                          handleChange(event)
                         }}
                       />
                     </div>
@@ -257,7 +268,7 @@ const UpdateProduct: FC = () => {
                         type="text"
                         placeholder="Enter product name."
                         onChange={(event) => {
-                          handleChange(event);
+                          handleChange(event)
                         }}
                       />
                     </div>
@@ -272,7 +283,7 @@ const UpdateProduct: FC = () => {
                         type="text"
                         placeholder="Enter product name."
                         onChange={(event) => {
-                          handleChange(event);
+                          handleChange(event)
                         }}
                       />
                     </div>
@@ -290,8 +301,8 @@ const UpdateProduct: FC = () => {
                           borderRadius: 3,
                           colors: {
                             ...theme.colors,
-                            primary25: "#e6e6e6",
-                            primary: "rgb(156 163 175/1)",
+                            primary25: '#e6e6e6',
+                            primary: 'rgb(156 163 175/1)',
                           },
                         })}
                         options={options}
@@ -300,26 +311,6 @@ const UpdateProduct: FC = () => {
                     </div>
                   </div>
                   <div className="bg-gray-100 py-3 flex flex-col gap-y-3 rounded-lg">
-                    <div>
-                      <label className="font-medium" htmlFor="promotion">
-                        Promotion
-                      </label>
-                      <select
-                        className="w-full border border-gray-400 rounded-sm p-2 focus:outline-none text-gray-500"
-                        name="promotion"
-                        value={formData.promotion}
-                        onChange={(event) => {
-                          handleChange(event);
-                        }}
-                      >
-                        {promotionData &&
-                          promotionData.data.map((data, i) => (
-                            <option value={data.name} key={i}>
-                              {data.name}
-                            </option>
-                          ))}
-                      </select>
-                    </div>
                     <div>
                       <label className="font-medium" htmlFor="regular_price">
                         Regular Price
@@ -336,7 +327,7 @@ const UpdateProduct: FC = () => {
                           min={0}
                           placeholder="Enter regular Price"
                           onChange={(event) => {
-                            handleChange(event);
+                            handleChange(event)
                           }}
                         />
                       </div>
@@ -357,7 +348,7 @@ const UpdateProduct: FC = () => {
                           min={0}
                           placeholder="Enter selling Price"
                           onChange={(event) => {
-                            handleChange(event);
+                            handleChange(event)
                           }}
                         />
                       </div>
@@ -372,7 +363,7 @@ const UpdateProduct: FC = () => {
                           name="status"
                           value={formData.status}
                           onChange={(event) => {
-                            handleChange(event);
+                            handleChange(event)
                           }}
                         >
                           <option value="draft">Draft</option>
@@ -450,7 +441,7 @@ const UpdateProduct: FC = () => {
         </form>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default UpdateProduct;
+export default UpdateProduct
