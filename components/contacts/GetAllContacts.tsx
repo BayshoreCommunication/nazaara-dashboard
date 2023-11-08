@@ -9,7 +9,7 @@ export const GetAllContacts = () => {
   const { data: contactData, isLoading } = useGetContactsQuery()
 
   return isLoading ? (
-    <Loader height="h-[85vh]" />
+    <Loader height="h-[90vh]" />
   ) : (
     <tbody>
       {contactData?.data.map((data, index) => {
