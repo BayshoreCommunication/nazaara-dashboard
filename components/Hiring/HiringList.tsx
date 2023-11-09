@@ -1,9 +1,9 @@
 // CategoryList.tsx
+import { parseHtmlToString, truncateDescription } from "@/helpers";
 import { IHiringData } from "@/services/hiringApi";
 import React from "react";
 import { MdDelete } from "react-icons/md";
 import { TbEdit } from "react-icons/tb";
-const parse = require("html-react-parser");
 
 // export interface Category {
 //   _id: string;
@@ -37,38 +37,41 @@ const HiringList: React.FC<CategoryListProps> = ({
       <tbody>
         {hirings && (
           <>
-            {hirings.map((data, index) => (
-              <tr key={data._id}>
-                <td>{index + 1}</td>
-                <td>{data.title}</td>
-                <td>{parse(data.description)}</td>
-                <td
-                  className={`font-medium ${
-                    data.status === "published"
-                      ? "text-green-500"
-                      : "text-red-500"
-                  }`}
-                >
-                  {data.status}
-                </td>
-                <td>
-                  <div className="flex">
-                    <label
-                      onClick={() => handleEditCategory(data._id as string)}
-                      className="cursor-pointer"
-                      htmlFor="modal-handle"
-                    >
-                      <TbEdit color="green" size={20} />
-                    </label>
-                    <button
-                      onClick={() => handleDeleteCategory(data._id as string)}
-                    >
-                      <MdDelete color="red" size={20} />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {hirings.map((data, index) => {
+              const description = parseHtmlToString(data.description);
+              return (
+                <tr key={data._id}>
+                  <td>{index + 1}</td>
+                  <td>{data.title}</td>
+                  <td>{truncateDescription(description, 200)}</td>
+                  <td
+                    className={`font-medium ${
+                      data.status === "published"
+                        ? "text-green-500"
+                        : "text-red-500"
+                    }`}
+                  >
+                    {data.status}
+                  </td>
+                  <td>
+                    <div className="flex">
+                      <label
+                        onClick={() => handleEditCategory(data._id as string)}
+                        className="cursor-pointer"
+                        htmlFor="modal-handle"
+                      >
+                        <TbEdit color="green" size={20} />
+                      </label>
+                      <button
+                        onClick={() => handleDeleteCategory(data._id as string)}
+                      >
+                        <MdDelete color="red" size={20} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
           </>
         )}
       </tbody>

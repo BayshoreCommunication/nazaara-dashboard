@@ -20,7 +20,7 @@ const HiringForm: React.FC<any> = ({
   formData,
   setFormData,
 }) => {
-  console.log("formData", formData);
+  // console.log("formData", formData);
 
   return (
     <form

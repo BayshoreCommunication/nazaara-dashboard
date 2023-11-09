@@ -1,42 +1,43 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 interface Contact {
-  status: string
-  data: Data[]
+  status: string;
+  data: Data[];
 }
 
 interface ContactByID {
-  status: string
-  data: Data
+  status: string;
+  data: Data;
 }
 
 interface Data {
-  _id: string
-  message: string
-  status: string
-  user: User
-  email: string
-  createdAt: Date
-  updatedAt: Date
-  __v: number
+  _id: string;
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  status?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  __v: number;
 }
 
 interface User {
-  _id: string
-  fullName: string
-  email: string
-  phone: string
-  refund: number
+  _id: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  refund: number;
 }
 
 interface AddContact {
-  message: string
-  status: string
-  user: string
+  message: string;
+  status: string;
+  user: string;
 }
 
 export const contactsApi = createApi({
-  reducerPath: 'contactsApi',
+  reducerPath: "contactsApi",
   baseQuery: fetchBaseQuery({ baseUrl: `${process.env.API_URL}` }),
   endpoints: (builder) => ({
     getContacts: builder.query<Contact, void>({
@@ -48,15 +49,15 @@ export const contactsApi = createApi({
     addContact: builder.mutation<AddContact, Partial<AddContact>>({
       query: (body) => ({
         url: `/api/v1/contact`,
-        method: 'POST',
+        method: "POST",
         body,
       }),
     }),
   }),
-})
+});
 
 export const {
   useGetContactsQuery,
   useGetContactByIDQuery,
   useAddContactMutation,
-} = contactsApi
+} = contactsApi;

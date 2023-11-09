@@ -1,6 +1,6 @@
-import { AiOutlineDownload, AiOutlineShoppingCart } from 'react-icons/ai'
-import UtilityBtn from '@/components/UtilityBtn'
-import { GetAllContacts } from '@/components/contacts'
+import { AiOutlineDownload, AiOutlineShoppingCart } from "react-icons/ai";
+import UtilityBtn from "@/components/UtilityBtn";
+import { GetAllContacts } from "@/components/contacts";
 
 const Contacts = () => {
   return (
@@ -12,22 +12,21 @@ const Contacts = () => {
         </div>
         <UtilityBtn name="Export" icon={<AiOutlineDownload color="white" />} />
       </div>
-      <div className="overflow-x-auto">
-        <table className="table bg-basic">
-          <thead>
-            <tr>
-              <th>SL</th>
-              <th>Email</th>
-              <th>Message</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <GetAllContacts />
-        </table>
-      </div>
+      <table className="table bg-basic overflow-auto">
+        <thead>
+          <tr>
+            <th>SL</th>
+            <th>Email</th>
+            <th>Message</th>
+            <th>Subject</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <GetAllContacts />
+      </table>
     </div>
-  )
-}
+  );
+};
 
-export default Contacts
+export default Contacts;

@@ -80,16 +80,16 @@ const Home = (): JSX.Element => {
     },
   ];
 
-  const {
-    data: datas,
-    error,
-    isLoading,
-    isFetching,
-    isSuccess,
-    isUninitialized,
-  } = useGetContactByIDQuery("64731c5526d071ac04063cfc");
+  // const {
+  //   data: datas,
+  //   error,
+  //   isLoading,
+  //   isFetching,
+  //   isSuccess,
+  //   isUninitialized,
+  // } = useGetContactByIDQuery("64731c5526d071ac04063cfc");
 
-  datas != undefined && console.log("data", datas);
+  // datas != undefined && console.log("data", datas);
 
   return (
     <div className="container">
