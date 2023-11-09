@@ -191,7 +191,7 @@ export type TProduct = {
   erpCategory: string;
   erpSubCategory: string;
   subCategory: string;
-  status?: string;
+  status: string;
   createdAt?: string;
   updatedAt?: string;
   __v?: number;

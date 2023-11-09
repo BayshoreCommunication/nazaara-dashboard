@@ -16,10 +16,7 @@ const ErpProducts = () => {
   const pageSize = 10;
   const [currentPage, setCurrentPage] = useState<number>(1);
   const url = `https://erp.anzaralifestyle.com/api/product/Details/?format=json&page=${currentPage}&page_size=${pageSize}`;
-  const { data: pro, isLoading: proLoading } = useGetAllErpDataQuery({
-    page: currentPage,
-    page_size: pageSize,
-  });
+
   const [erpData, setErpData] = useState<TErpData>();
   const getData = useCallback(async () => {
     try {
@@ -132,9 +129,7 @@ const ErpProducts = () => {
     return pageNumbers;
   };
 
-  return !erpData ? (
-    <Loader height="h-[85vh]" />
-  ) : (
+  return (
     <div>
       <div className="container">
         <div className="flex items-center justify-between mb-3">
@@ -160,56 +155,74 @@ const ErpProducts = () => {
               </tr>
             </thead>
             <tbody>
-              {erpData?.results?.map((elem, index) => {
-                const checkdata = productsErpId?.result.filter(
-                  (el: any) => el.erpId === elem.id
-                )[0];
-                // console.log("check data here", checkdata);
-
-                return (
-                  <tr
-                    key={index}
-                    // className={`${checkdata != undefined && "bg-gray-300"}`}
-                  >
-                    <td>
-                      <Image
-                        src={elem?.ProductImage[0]?.photo}
-                        alt="nazaara main logo"
-                        width={248}
-                        height={248}
-                        className="w-[70px] h-[70px]"
-                      />
-                    </td>
-                    <td>{elem.id}</td>
-                    <td>{elem.title}</td>
-                    <td>{elem.Deatils.map((el) => el.main_category)}</td>
-                    <td>
-                      <span className="text-xl">৳</span>
-                      {Math.floor(Number(elem.selling_price))}
-                    </td>
-                    <td>{elem.quantity}</td>
-                    {checkdata != undefined ? (
-                      <td className="text-green-500 font-medium">stored</td>
-                    ) : (
-                      <td className="text-red-500 font-medium">not stored</td>
-                    )}
-                    <td>
-                      {checkdata === undefined ? (
-                        <Link
-                          href={`/erp-products/${elem.id}`}
-                          className="text-sm bg-secondary px-3 py-1 text-white rounded-lg"
-                        >
-                          Upload Product
-                        </Link>
+              {!erpData ? ( // if erpData is not available
+                <tr>
+                  <td colSpan={8}>
+                    <div className="flex justify-center items-center">
+                      <Loader height="h-[60vh]" />
+                    </div>
+                  </td>
+                </tr>
+              ) : erpData?.results?.length >= 0 ? ( // if erpData is available but no data
+                erpData?.results?.map((elem, index) => {
+                  const checkdata = productsErpId?.result.filter(
+                    (el: any) => el.erpId === elem.id
+                  )[0];
+                  return (
+                    <tr
+                      key={index}
+                      // className={`${checkdata != undefined && "bg-gray-300"}`}
+                    >
+                      <td>
+                        <Image
+                          src={elem?.ProductImage[0]?.photo}
+                          alt="nazaara main logo"
+                          width={248}
+                          height={248}
+                          className="w-[70px] h-[70px]"
+                        />
+                      </td>
+                      <td>{elem.id}</td>
+                      <td>{elem.title}</td>
+                      <td>{elem.Deatils.map((el) => el.main_category)}</td>
+                      <td>
+                        <span className="text-xl">৳</span>
+                        {Math.floor(Number(elem.selling_price))}
+                      </td>
+                      <td>{elem?.ProductDetails?.quantity}</td>
+                      {checkdata != undefined ? (
+                        <td className="text-green-500 font-medium">stored</td>
                       ) : (
-                        <p className="text-sm bg-gray-500 px-3 py-1 text-white rounded-lg w-max cursor-not-allowed">
-                          Already Added
-                        </p>
+                        <td className="text-red-500 font-medium">not stored</td>
                       )}
-                    </td>
-                  </tr>
-                );
-              })}
+                      <td>
+                        {checkdata === undefined ? (
+                          <Link
+                            href={`/erp-products/${elem.id}`}
+                            className="text-sm bg-secondary px-3 py-1 text-white rounded-lg"
+                          >
+                            Upload Product
+                          </Link>
+                        ) : (
+                          <p className="text-sm bg-gray-500 px-3 py-1 text-white rounded-lg w-max cursor-not-allowed">
+                            Already Added
+                          </p>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td colSpan={8}>
+                    <div className="flex justify-center items-center h-[20vh]">
+                      <span className="text-lg font-medium text-gray-500">
+                        No products found
+                      </span>
+                    </div>
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

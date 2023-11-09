@@ -9,6 +9,7 @@ import { ErpIdProps, TProduct, TResult } from "@/types/types";
 import Loader from "@/components/loader";
 import { useGetAllPromotionsQuery } from "@/services/promotionApi";
 import { useGetErpDataByIdQuery } from "@/services/erpApi";
+import { toCapitalize } from "@/helpers";
 const Select = dynamic(() => import("react-select"), {
   ssr: false,
 });
@@ -66,6 +67,7 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
     category: "",
     subCategory: "",
     stock: 0,
+    status: "draft",
     preOrder: false,
   });
 
@@ -90,7 +92,10 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
           ? Number(productsData.selling_price)
           : 0,
         variant: [
-          productsData.color && { color: productsData.color, imageUrl: [] },
+          productsData.color && {
+            color: toCapitalize(productsData.color),
+            imageUrl: [],
+          },
         ],
         size: [productsData.size ? productsData.size : ""],
         description: "",
@@ -100,8 +105,11 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
         erpSubCategory: productsData ? productsData.category : "",
         category: "",
         subCategory: "",
-        stock: 0,
+        stock: productsData.ProductDetails
+          ? Number(productsData?.ProductDetails.quantity)
+          : 0,
         preOrder: false,
+        status: "draft",
       });
     }
   }, [productsData, formData.status]);
@@ -141,18 +149,6 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
     }));
   };
 
-  // const addDivField = () => {
-  //   setFormData((prevFormData: any) => ({
-  //     ...prevFormData,
-  //     variant: [
-  //       ...prevFormData.variant,
-  //       {
-  //         color: "", // Set the color to an empty string for the new variant
-  //         imageUrl: [],
-  //       },
-  //     ],
-  //   }));
-  // };
   const addDivField = () => {
     setFormData((prevFormData: TProduct) => ({
       ...prevFormData,
@@ -178,52 +174,38 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
     });
   };
 
-  // const handleClear = () => {
-  //   setFormData({
-  //     productName: "",
-  //     regularPrice: 0,
-  //     salePrice: 0,
-  //     size: [],
-  //     variant: [
-  //       {
-  //         color: "",
-  //         imageUrl: [],
-  //       },
-  //     ],
-  //     stock: 0,
-  //     description: "",
-  //     category: "",
-  //     subCategory: "",
-  //     promotion: "",
-  //     status: "",
-  //   });
-  // };
-
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     try {
-      console.log("first", formData);
+      //each variant color should to toCapitalize before sending to backend
+      formData.variant.forEach((el) => {
+        el.color = toCapitalize(el.color);
+      });
+      console.log("formData", formData);
       const data: any = await createProduct(formData);
       // refetch();
       if (data.data.status === "success") {
         router.push("/products");
         toast.success("New Product Created", { duration: 3000 });
         // Reset form fields
-        // setFormData({
-        //   erpId: 0,
-        //   productName: "",
-        //   purchasePrice: 0,
-        //   regularPrice: 0,
-        //   salePrice: 0,
-        //   size: [],
-        //   variant: [],
-        //   stock: 0,
-        //   description: "",
-        //   category: "",
-        //   subCategory: "",
-        //   promotion: "",
-        //   status: "",
-        // });
+        setFormData({
+          erpId: 0,
+          sku: "",
+          productName: "",
+          purchasePrice: 0,
+          regularPrice: 0,
+          salePrice: 0,
+          variant: [],
+          size: [],
+          description: "",
+          erpCategory: "",
+          erpSubCategory: "",
+          category: "",
+          subCategory: "",
+          stock: 0,
+          status: "draft",
+          preOrder: false,
+        });
       } else {
         toast.error("Failed to create new product!", { duration: 3000 });
       }
@@ -236,7 +218,7 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
     label: el,
   }));
 
-  const { data: promotionData } = useGetAllPromotionsQuery();
+  // const { data: promotionData } = useGetAllPromotionsQuery();
 
   return !productsData ? (
     <Loader height="h-[85vh]" />
@@ -247,9 +229,17 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
         <form onSubmit={handleSubmit}>
           <div className="bg-basic rounded-md px-6 py-3 flex flex-col gap-y-4">
             <h4 className="text-lg font-bold">Product Information</h4>
-            <p>
-              <b>Erp ID:</b> {formData.erpId}
-            </p>
+            <div className="flex justify-between">
+              <p>
+                <b>Erp ID:</b> {formData.erpId}
+              </p>
+              <p>
+                <b>Erp Category:</b> {formData.erpCategory}
+              </p>
+              <p>
+                <b>Erp SubCategory:</b> {formData.erpSubCategory}
+              </p>
+            </div>
             <div className="flex flex-col gap-4 items-start">
               <div className="w-full bg-gray-100 py-3 px-5 flex flex-col gap-y-3 rounded-md">
                 <div className="grid grid-cols-3 gap-4 items-start">
@@ -333,23 +323,6 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
                         options={options}
                         isMulti={true}
                       />
-                    </div>
-                    <div>
-                      <label className="font-medium" htmlFor="status">
-                        Stock
-                      </label>
-                      <div className="flex items-center mt-1">
-                        <input
-                          className="rounded-md p-2 border border-gray-400 focus:outline-none text-gray-500 w-full cursor-not-allowed"
-                          name="stock"
-                          type="number"
-                          value={formData.stock}
-                          required
-                          readOnly
-                          min={0}
-                          placeholder="Enter Product Stock"
-                        />
-                      </div>
                     </div>
                   </div>
                   <div className="bg-gray-100 py-3 flex flex-col gap-y-3 rounded-md">
@@ -471,6 +444,23 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
                     </div>
                   </div>
                   <div className="bg-gray-100 py-3 flex flex-col gap-y-3 rounded-md">
+                    <div>
+                      <label className="font-medium" htmlFor="status">
+                        Stock
+                      </label>
+                      <div className="flex items-center mt-1">
+                        <input
+                          className="rounded-md p-2 border border-gray-400 focus:outline-none text-gray-500 w-full cursor-not-allowed"
+                          name="stock"
+                          type="number"
+                          value={formData.stock}
+                          required
+                          readOnly
+                          min={0}
+                          placeholder="Enter Product Stock"
+                        />
+                      </div>
+                    </div>
                     <label className="font-medium" htmlFor="promotion">
                       Color Variants
                     </label>
@@ -490,7 +480,7 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
                               type="text"
                               required
                               placeholder="Enter Color Name"
-                              value={formData.variant[variantIndex].color}
+                              value={formData?.variant[variantIndex]?.color}
                               onChange={(event) =>
                                 handleVariant(event, variantIndex)
                               }
