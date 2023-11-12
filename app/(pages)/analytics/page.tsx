@@ -1,7 +1,7 @@
-import DonutChart from "@/components/Analytics/DonutChart";
-import MostViewedProduct from "@/components/Analytics/MostViewedProduct";
-import RecentProducts from "@/components/Analytics/RecentProducts";
-import TopSellingProduct from "@/components/Analytics/TopSellingProduct";
+import DonutChart from "@/components/analytics/DonutChart";
+import MostViewedProduct from "@/components/analytics/MostViewedProduct";
+import RecentProducts from "@/components/analytics/RecentProducts";
+import TopSellingProduct from "@/components/analytics/TopSellingProduct";
 import { TbBrandGoogleAnalytics } from "react-icons/tb";
 
 const page = () => {

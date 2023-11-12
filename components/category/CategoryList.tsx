@@ -1,18 +1,18 @@
 // CategoryList.tsx
-import { TSubCategoryData } from "@/types/categoryTypes";
+import { TCategoryData } from "@/types/categoryTypes";
 import React, { FC } from "react";
 import { MdDelete } from "react-icons/md";
 import { TbEdit } from "react-icons/tb";
 import Loader from "../Loader";
 
 interface CategoryListProps {
-  subCategories: TSubCategoryData[];
+  categories: TCategoryData[];
   handleEditCategory: (id: string) => void;
   handleDeleteCategory: (id: string) => void;
 }
 
-const SubCategoryList: FC<CategoryListProps> = ({
-  subCategories,
+const CategoryList: FC<CategoryListProps> = ({
+  categories,
   handleEditCategory,
   handleDeleteCategory,
 }) => {
@@ -21,15 +21,15 @@ const SubCategoryList: FC<CategoryListProps> = ({
       <thead>
         <tr>
           <th>SL</th>
-          <th>Sub Category Name</th>
-          <th>Slug</th>
+          <th>Category Title</th>
+          <th>Category Slug</th>
           <th>Status</th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody>
         {/* if subCategory.length === 0 show no data found */}
-        {subCategories?.length === 0 && (
+        {categories?.length === 0 && (
           <tr>
             <td colSpan={5}>
               <div className="flex justify-center items-center">
@@ -39,16 +39,16 @@ const SubCategoryList: FC<CategoryListProps> = ({
           </tr>
         )}
         {/* add loader here */}
-        {subCategories?.length > 0 ? (
+        {categories?.length > 0 ? (
           // if categories is available then show data here
-          subCategories?.map((data, index) => (
+          categories?.map((data, index) => (
             <tr key={index}>
               <td>{index + 1}</td>
               <td>{data.title}</td>
               <td>{data.slug}</td>
               <td
                 className={`font-medium ${
-                  data.status === "Draft" ? "text-red-600" : "text-green-600"
+                  data.status === "draft" ? "text-red-600" : "text-green-600"
                 }`}
               >
                 {data.status}
@@ -72,6 +72,7 @@ const SubCategoryList: FC<CategoryListProps> = ({
             </tr>
           ))
         ) : (
+          // if categories is not available or empty array then show loader here
           <tr>
             <td colSpan={5}>
               <div className="flex justify-center items-center">
@@ -85,4 +86,4 @@ const SubCategoryList: FC<CategoryListProps> = ({
   );
 };
 
-export default SubCategoryList;
+export default CategoryList;

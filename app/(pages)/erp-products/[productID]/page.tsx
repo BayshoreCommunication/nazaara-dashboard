@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useCreateProductMutation } from "@/services/productApi";
 import dynamic from "next/dynamic";
 import { ErpIdProps, TProduct, TResult } from "@/types/types";
-import Loader from "@/components/loader";
+import Loader from "@/components/Loader";
 import { useGetAllPromotionsQuery } from "@/services/promotionApi";
 import { useGetErpDataByIdQuery } from "@/services/erpApi";
 import { toCapitalize } from "@/helpers";
@@ -438,7 +438,7 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
                           onChange={handleChange}
                         >
                           <option value="draft">Draft</option>
-                          <option value="publish">Publish</option>
+                          <option value="published">Publish</option>
                         </select>
                       </div>
                     </div>

@@ -4,7 +4,7 @@ import React from "react";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { useGetProductsQuery } from "@/services/productApi";
 import Image from "next/image";
-import Loader from "../loader";
+import Loader from "../Loader";
 
 const TopSellingProduct = () => {
   const { data: productsData, isLoading: productsLoading } =

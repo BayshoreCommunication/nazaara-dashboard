@@ -7,7 +7,7 @@ import {
   useGetBestSellingQuery,
   useUpdateBestSellingMutation,
 } from "@/services/bestSellingApi";
-import Loader from "../loader";
+import Loader from "../Loader";
 import toast from "react-hot-toast";
 
 const Select = dynamic(() => import("react-select"), {

@@ -3,7 +3,7 @@ import { useGetProductsQuery } from "@/services/productApi";
 import Image from "next/image";
 import Link from "next/link";
 import { AiOutlineShoppingCart } from "react-icons/ai";
-import Loader from "../loader";
+import Loader from "../Loader";
 
 const RecentProducts = () => {
   const { data: productsData, isLoading: productsLoading } =

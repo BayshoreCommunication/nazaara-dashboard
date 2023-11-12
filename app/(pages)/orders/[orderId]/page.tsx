@@ -31,18 +31,18 @@ const paymentStatusOptions = [
 ];
 const OrderUpdate = ({ params }: any) => {
   const [orderData, setOrderData] = useState<any>();
-  const fetchOrderData = async () => {
-    try {
-      const response = await axios.get(
-        `http://localhost:8000/api/v1/order/${params.orderId}`
-      );
-      setOrderData(response.data.data);
-    } catch (error) {
-      console.error("Request error:", error);
-    }
-  };
 
   useEffect(() => {
+    const fetchOrderData = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8000/api/v1/order/${params.orderId}`
+        );
+        setOrderData(response.data.data);
+      } catch (error) {
+        console.error("Request error:", error);
+      }
+    };
     fetchOrderData(); // Call the fetchOrderData function
   }, [params.orderId]);
 
@@ -59,16 +59,14 @@ const OrderUpdate = ({ params }: any) => {
       orderData.deliveryCharge
     );
 
-  console.log("order data", orderData);
+  // console.log("order data", orderData);
   const [deliveryCharge, setDeliveryCharge] = useState();
   const [paymentMethod, setPaymentMethod] = useState();
   const [paymentStatus, setPaymentStatus] = useState<any>(
     paymentStatusOptions[0]
   );
   const [remark, setRemark] = useState();
-  const defaultOption = deliveryOptions.find(
-    (option) => option.value === orderData?.deliveryStatus
-  );
+
   const [selectedOption, setSelectedOption] = useState<any>(deliveryOptions[0]);
   const [shippingAddress, setShippingAddress] = useState({
     street: "",
@@ -76,6 +74,9 @@ const OrderUpdate = ({ params }: any) => {
     country: "",
   });
   useEffect(() => {
+    const defaultOption = deliveryOptions.find(
+      (option) => option.value === orderData?.deliveryStatus
+    );
     if (orderData) {
       setDeliveryCharge(orderData.deliveryCharge);
       setPaymentMethod(orderData.paymentMethod);

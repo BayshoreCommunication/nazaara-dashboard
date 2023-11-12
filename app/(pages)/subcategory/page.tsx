@@ -1,7 +1,7 @@
 "use client";
-import CategoryForm from "@/components/Category/CategoryFrom";
-import CategoryList from "@/components/Category/CategoryList";
-import Loader from "@/components/loader";
+import CategoryForm from "@/components/category/CategoryFrom";
+import CategoryList from "@/components/category/CategoryList";
+import Loader from "@/components/Loader";
 import SubCategoryForm from "@/components/subCategory/SubCategoryForm";
 import SubCategoryList from "@/components/subCategory/SubCategoryList";
 import {
@@ -10,6 +10,7 @@ import {
   useGetSubCategoriesQuery,
   useUpdateSubCategoryMutation,
 } from "@/services/subcategory";
+import { TSubCategory, TSubCategoryData } from "@/types/categoryTypes";
 import { FC, useState, ChangeEvent, FormEvent, useRef } from "react";
 import toast from "react-hot-toast";
 import { RxCross2 } from "react-icons/rx";
@@ -26,22 +27,12 @@ const SubCategory: FC = () => {
   const [createSubCategory] = useCreateSubCategoryMutation();
 
   //handle form for creating new category
-  interface IFormData {
-    _id?: string;
-    name: string;
-    status: string;
-  }
-
-  interface Category {
-    _id: string;
-    name: string;
-    status: string;
-  }
 
   //crate category start
-  const [formData, setFormData] = useState<IFormData>({
-    name: "",
+  const [formData, setFormData] = useState<TSubCategoryData>({
+    title: "",
     status: "",
+    category: "",
   });
 
   const handleSubmit = async (event: FormEvent) => {
@@ -53,8 +44,9 @@ const SubCategory: FC = () => {
       toast.success("New SubCategory Created", { duration: 3000 });
       // Reset form fields
       setFormData({
-        name: "",
+        title: "",
         status: "",
+        category: "",
       });
     }
   };
@@ -93,13 +85,13 @@ const SubCategory: FC = () => {
 
   //edit modal
   const [filteredData, setFilteredData] = useState([
-    { _id: "", name: "", status: "Publish" },
+    { _id: "", title: "", category: "", status: "published" },
   ]);
 
   const [selectedValue, setSelectedValue] = useState<string>("");
   const handleEditCategory = (id: string) => {
     const filtered: any = subcategories?.data?.filter(
-      (item) => item._id === id
+      (item: any) => item._id === id
     );
 
     setFilteredData(filtered);
@@ -111,22 +103,24 @@ const SubCategory: FC = () => {
 
   //update category start
   const [updateSubCategory] = useUpdateSubCategoryMutation();
-  const nameRef = useRef<HTMLInputElement>(null);
+  const titleRef = useRef<HTMLInputElement>(null);
   const statusRef = useRef<HTMLSelectElement>(null);
+  const categoryRef = useRef<HTMLSelectElement>(null);
 
   const handleUpdateCategorySubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (nameRef.current && statusRef.current) {
+    if (titleRef.current && statusRef.current && categoryRef.current) {
       const formData: any = {
-        name: nameRef.current.value,
+        title: titleRef.current.value,
         status: statusRef.current.value,
+        category: categoryRef.current.value,
       };
 
-      const { name, status } = formData;
+      const { title, status, category } = formData;
 
       try {
-        const updatedData = { name, status };
+        const updatedData = { title, status, category };
         const updatedCategory = await updateSubCategory({
           id: filteredData[0]?._id,
           payload: updatedData,
@@ -144,22 +138,16 @@ const SubCategory: FC = () => {
     }
   };
 
-  if (isLoading) return <Loader height="h-[90vh]" />;
-
   return (
     <div className="flex gap-10 container">
       {/* show all category  */}
       <div className="flex-[6] overflow-x-auto">
-        <h1 className="text-lg font-semibold mb-2">All SubCategories</h1>
-        {subcategories ? (
-          <SubCategoryList
-            categories={subcategories.data as Category[]} // Convert ICategory[] to Category[]
-            handleEditCategory={handleEditCategory}
-            handleDeleteCategory={handleDeleteCategory}
-          />
-        ) : (
-          <Loader height="h-[90vh]" />
-        )}
+        <h1 className="text-lg font-semibold mb-2">All Sub Categories</h1>
+        <SubCategoryList
+          subCategories={subcategories?.data as TSubCategoryData[]} // Convert ICategory[] to Category[]
+          handleEditCategory={handleEditCategory}
+          handleDeleteCategory={handleDeleteCategory}
+        />
       </div>
 
       {/* add new category  */}
@@ -202,9 +190,9 @@ const SubCategory: FC = () => {
                       <input
                         className="block w-full p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
                         type="text"
-                        ref={nameRef}
+                        ref={titleRef}
                         required
-                        defaultValue={filteredData[0].name}
+                        defaultValue={filteredData[0].title}
                       />
                     </div>
                     <div className="mb-2">
@@ -218,7 +206,7 @@ const SubCategory: FC = () => {
                         value={selectedValue}
                         onChange={(e) => setSelectedValue(e.target.value)}
                       >
-                        <option value="publish">Publish</option>
+                        <option value="published">Publish</option>
                         <option value="draft">Draft</option>
                       </select>
                     </div>

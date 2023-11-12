@@ -10,7 +10,7 @@ import { SlCloudUpload } from "react-icons/sl";
 import { IoIosRemoveCircleOutline } from "react-icons/io";
 import Image from "next/image";
 import toast from "react-hot-toast";
-import Loader from "@/components/loader";
+import Loader from "@/components/Loader";
 import { TImageUrl, TProduct } from "@/types/types";
 import axios from "axios";
 

@@ -1,4 +1,4 @@
-import ButtonToggle from "@/components/Customization/ButtonToggle";
+import ButtonToggle from "@/components/customization/ButtonToggle";
 import React from "react";
 
 const CustomizationPage = () => {

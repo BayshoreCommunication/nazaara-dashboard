@@ -1,28 +1,17 @@
+import { TSubCategory, TSubCategoryData } from "@/types/categoryTypes";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
-export interface ISubCategories {
-  status: string;
-  data: ISubCategory[];
-  refetch?: any;
-}
-
-export interface ISubCategory {
-  _id: string;
-  name: string;
-  status: string;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
-}
 
 export const subCategoriesApi = createApi({
   reducerPath: "subCategoriesApi",
   baseQuery: fetchBaseQuery({ baseUrl: `${process.env.API_URL}` }),
   endpoints: (builder) => ({
-    getSubCategories: builder.query<ISubCategories, void>({
+    getSubCategories: builder.query<TSubCategory, void>({
       query: () => `/api/v1/sub-category`,
     }),
-    createSubCategory: builder.mutation<ISubCategory, Partial<ISubCategory>>({
+    createSubCategory: builder.mutation<
+      TSubCategory,
+      Partial<TSubCategoryData>
+    >({
       query: (payload) => ({
         url: "/api/v1/sub-category",
         method: "POST",
@@ -44,8 +33,8 @@ export const subCategoriesApi = createApi({
       }),
     }),
     updateSubCategory: builder.mutation<
-      ISubCategory,
-      { id: string; payload: Partial<ISubCategory> }
+      TSubCategory,
+      { id: string; payload: Partial<TSubCategoryData> }
     >({
       query: ({ id, payload }) => ({
         url: `/api/v1/sub-category/${id}`,

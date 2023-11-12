@@ -1,5 +1,5 @@
 // CategoryForm.tsx
-import React, { ChangeEvent, FormEvent } from "react";
+import React, { ChangeEvent, FC, FormEvent } from "react";
 
 interface CategoryFormProps {
   handleSubmit: (event: FormEvent) => void;
@@ -7,12 +7,13 @@ interface CategoryFormProps {
     event: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => void;
   formData: {
-    name: string;
+    title: string;
+    category: string;
     status: string;
   };
 }
 
-const SubCategoryForm: React.FC<CategoryFormProps> = ({
+const SubCategoryForm: FC<CategoryFormProps> = ({
   handleSubmit,
   handleChange,
   formData,
@@ -28,13 +29,13 @@ const SubCategoryForm: React.FC<CategoryFormProps> = ({
         </label>
         <input
           className="block w-full p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
-          id="name"
+          id="title"
           type="text"
-          name="name"
-          value={formData.name}
+          name="title"
+          value={formData.title}
           onChange={handleChange}
           required
-          placeholder="Enter Category Name"
+          placeholder="Enter Category Title"
         />
       </div>
       <div className="mb-2">

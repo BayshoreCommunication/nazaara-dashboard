@@ -1,13 +1,14 @@
 "use client";
-import CategoryForm from "@/components/Category/CategoryFrom";
-import CategoryList from "@/components/Category/CategoryList";
-import Loader from "@/components/loader";
+import CategoryForm from "@/components/category/CategoryFrom";
+import CategoryList from "@/components/category/CategoryList";
+// import Loader from "@/components/Loader";
 import {
   useGetCategoriesQuery,
   useCreateCategoryMutation,
   useDeleteCategoryMutation,
   useUpdateCategoryMutation,
 } from "@/services/categoryApi";
+import { TCategoryData } from "@/types/categoryTypes";
 import { FC, useState, ChangeEvent, FormEvent, useRef } from "react";
 import toast from "react-hot-toast";
 import { RxCross2 } from "react-icons/rx";
@@ -15,25 +16,13 @@ import Swal from "sweetalert2";
 
 const Category: FC = () => {
   const { data: categoriesData, isLoading, refetch } = useGetCategoriesQuery();
-
   const [createCategory] = useCreateCategoryMutation();
-
   //handle form for creating new category
-  interface IFormData {
-    _id?: string;
-    name: string;
-    status: string;
-  }
-
-  interface Category {
-    _id: string;
-    name: string;
-    status: string;
-  }
 
   //crate category start
-  const [formData, setFormData] = useState<IFormData>({
-    name: "",
+  const [formData, setFormData] = useState<TCategoryData>({
+    title: "",
+    slug: "",
     status: "",
   });
 
@@ -46,7 +35,8 @@ const Category: FC = () => {
       toast.success("New Category Created", { duration: 3000 });
       // Reset form fields
       setFormData({
-        name: "",
+        title: "",
+        slug: "",
         status: "",
       });
     }
@@ -86,7 +76,7 @@ const Category: FC = () => {
 
   //edit modal
   const [filteredData, setFilteredData] = useState([
-    { _id: "", name: "", status: "Publish" },
+    { _id: "", title: "", status: "published" },
   ]);
 
   const [selectedValue, setSelectedValue] = useState<string>("");
@@ -107,7 +97,7 @@ const Category: FC = () => {
   const nameRef = useRef<HTMLInputElement>(null);
   const statusRef = useRef<HTMLSelectElement>(null);
 
-  const handleUpdateCategorySubmit = async (event: React.FormEvent) => {
+  const handleUpdateCategorySubmit = async (event: FormEvent) => {
     event.preventDefault();
 
     if (nameRef.current && statusRef.current) {
@@ -137,22 +127,16 @@ const Category: FC = () => {
     }
   };
 
-  if (isLoading) return <Loader height="h-[90vh]" />;
-
   return (
     <div className="flex gap-10 container">
       {/* show all category  */}
       <div className="flex-[6] overflow-x-auto">
         <h1 className="text-lg font-semibold mb-2">All Categories</h1>
-        {categoriesData ? (
-          <CategoryList
-            categories={categoriesData.data as Category[]} // Convert ICategory[] to Category[]
-            handleEditCategory={handleEditCategory}
-            handleDeleteCategory={handleDeleteCategory}
-          />
-        ) : (
-          <Loader height="h-[90vh]" />
-        )}
+        <CategoryList
+          categories={categoriesData?.data as TCategoryData[]}
+          handleEditCategory={handleEditCategory}
+          handleDeleteCategory={handleDeleteCategory}
+        />
       </div>
 
       {/* add new category  */}
@@ -164,7 +148,6 @@ const Category: FC = () => {
           formData={formData}
         />
       </div>
-
       {isOpen && (
         <>
           {/* modal code start  */}
@@ -197,7 +180,7 @@ const Category: FC = () => {
                         type="text"
                         ref={nameRef}
                         required
-                        defaultValue={filteredData[0].name}
+                        defaultValue={filteredData[0].title}
                       />
                     </div>
                     <div className="mb-2">
@@ -211,7 +194,7 @@ const Category: FC = () => {
                         value={selectedValue}
                         onChange={(e) => setSelectedValue(e.target.value)}
                       >
-                        <option value="publish">Publish</option>
+                        <option value="published">Publish</option>
                         <option value="draft">Draft</option>
                       </select>
                     </div>

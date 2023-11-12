@@ -1,6 +1,6 @@
 "use client";
 import { TbEdit } from "react-icons/tb";
-import Loader from "@/components/loader";
+import Loader from "@/components/Loader";
 import { AiOutlineDownload, AiOutlineShoppingCart } from "react-icons/ai";
 import UtilityBtn from "@/components/UtilityBtn";
 import { BiMailSend } from "react-icons/bi";

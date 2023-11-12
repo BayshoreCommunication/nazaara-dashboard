@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { AiOutlineShoppingCart } from "react-icons/ai";
-import Loader from "../loader";
+import Loader from "../Loader";
 
 const MostViewedProduct = () => {
   const { data: productsData, isLoading: productsLoading } =

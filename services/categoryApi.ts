@@ -1,31 +1,17 @@
+import { TCategoryData, TCategory } from "@/types/categoryTypes";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-
-export interface ICategory {
-  [x: string]: any;
-  status: string;
-  data: IData[];
-}
-
-export interface IData {
-  _id?: string;
-  name: string;
-  status: string;
-  createdAt?: string;
-  updatedAt?: string;
-  __v?: number;
-}
 
 export const categoriesApi = createApi({
   reducerPath: "categoriesApi",
   baseQuery: fetchBaseQuery({ baseUrl: `${process.env.API_URL}` }),
   endpoints: (builder) => ({
-    getCategories: builder.query<ICategory, void>({
+    getCategories: builder.query<TCategory, void>({
       query: () => `/api/v1/category`,
     }),
-    getCategoryById: builder.query<IData, string>({
+    getCategoryById: builder.query<TCategoryData, string>({
       query: (id: string) => `/api/v1/category/${id}`,
     }),
-    createCategory: builder.mutation<IData, Partial<IData>>({
+    createCategory: builder.mutation<TCategoryData, Partial<TCategoryData>>({
       query: (payload) => ({
         url: "/api/v1/category",
         method: "POST",
@@ -41,8 +27,8 @@ export const categoriesApi = createApi({
       },
     }),
     updateCategory: builder.mutation<
-      IData,
-      { id: string; payload: Partial<IData> }
+      TCategoryData,
+      { id: string; payload: Partial<TCategoryData> }
     >({
       query: ({ id, payload }) => ({
         url: `/api/v1/category/${id}`,
@@ -55,9 +41,8 @@ export const categoriesApi = createApi({
       // Update the cache after successful creation
       async onQueryStarted(data: any, { dispatch, queryFulfilled }) {
         await queryFulfilled; // Wait for the query to be fulfilled
-        await dispatch(
-          categoriesApi.endpoints.getCategoryById.initiate(data._id)
-        ); // Fetch the updated category
+        // Fetch the updated category
+        // await dispatch(categoriesApi.endpoints.getCategoryById.initiate(data._id));
         await dispatch(categoriesApi.endpoints.getCategories.initiate()); // Fetch the updated category list
       },
     }),
@@ -66,6 +51,12 @@ export const categoriesApi = createApi({
         url: `/api/v1/category/${id}`,
         method: "DELETE",
       }),
+      async onQueryStarted(data: any, { dispatch, queryFulfilled }) {
+        await queryFulfilled; // Wait for the query to be fulfilled
+        // Fetch the updated category
+        // await dispatch(categoriesApi.endpoints.getCategoryById.initiate(data._id));
+        await dispatch(categoriesApi.endpoints.getCategories.initiate()); // Fetch the updated category list
+      },
     }),
   }),
 });

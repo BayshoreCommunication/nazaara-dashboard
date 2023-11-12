@@ -1,7 +1,7 @@
 "use client";
 import CustomerViewProfileDrawer from "@/components/CustomerViewProfileDrawer";
 import UtilityBtn from "@/components/UtilityBtn";
-import Loader from "@/components/loader";
+import Loader from "@/components/Loader";
 import { useGetUserByIdQuery, useGetUsersQuery } from "@/services/userApi";
 import { useState } from "react";
 import { AiOutlineDownload, AiOutlineShoppingCart } from "react-icons/ai";

@@ -1,6 +1,6 @@
 "use client";
 import UtilityBtn from "@/components/UtilityBtn";
-import Loader from "@/components/loader";
+import Loader from "@/components/Loader";
 import { useGetAllErpDataQuery } from "@/services/erpApi";
 import { useGetProductErpIdQuery } from "@/services/productApi";
 import { TErpData } from "@/types/types";
@@ -191,9 +191,9 @@ const ErpProducts = () => {
                       </td>
                       <td>{elem?.ProductDetails?.quantity}</td>
                       {checkdata != undefined ? (
-                        <td className="text-green-500 font-medium">stored</td>
+                        <td className="text-green-500 font-medium">Stored</td>
                       ) : (
-                        <td className="text-red-500 font-medium">not stored</td>
+                        <td className="text-red-500 font-medium">Not stored</td>
                       )}
                       <td>
                         {checkdata === undefined ? (

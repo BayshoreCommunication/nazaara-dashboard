@@ -1,6 +1,6 @@
 "use client";
 import UtilityBtn from "@/components/UtilityBtn";
-import Loader from "@/components/loader";
+import Loader from "@/components/Loader";
 import {
   useGetProductsQuery,
   useDeleteProductMutation,

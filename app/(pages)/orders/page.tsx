@@ -8,7 +8,7 @@ import UtilityBtn from "@/components/UtilityBtn";
 import { AiOutlineDownload, AiOutlineShoppingCart } from "react-icons/ai";
 import Link from "next/link";
 import { useGetOrdersQuery } from "@/services/orderApi";
-import Loader from "@/components/loader";
+import Loader from "@/components/Loader";
 import { BiSolidEditAlt } from "react-icons/bi";
 import { BsFillEyeFill } from "react-icons/bs";
 import { FaRulerHorizontal } from "react-icons/fa";

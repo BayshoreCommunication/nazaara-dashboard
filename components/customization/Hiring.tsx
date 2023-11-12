@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import dynamic from "next/dynamic";
 import "react-quill/dist/quill.snow.css";
-import Loader from "@/components/loader";
+import Loader from "@/components/Loader";
 import {
   IHiringData,
   useCreateHiringCustomizationMutation,
@@ -19,8 +19,8 @@ import {
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 import { RxCross2 } from "react-icons/rx";
-import HiringList from "../Hiring/HiringList";
-import HiringForm from "../Hiring/HiringForm";
+import HiringList from "../hiring/HiringList";
+import HiringForm from "../hiring/HiringForm";
 
 const ReactQuill = dynamic(() => import("react-quill"), {
   ssr: false,

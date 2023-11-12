@@ -258,12 +258,12 @@ export type TCoupon = {
 
 // ============================ Promotions =============================== //
 
-export interface TPromotions {
+export type TPromotions = {
   status: string;
   data: TPromotion[];
-}
+};
 
-export interface TPromotion {
+export type TPromotion = {
   _id?: string;
   name: string;
   promotionOn?: string;
@@ -277,4 +277,4 @@ export interface TPromotion {
   createdAt?: string;
   updatedAt?: string;
   ___v?: number;
-}
+};

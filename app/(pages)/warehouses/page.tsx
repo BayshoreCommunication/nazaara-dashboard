@@ -1,5 +1,5 @@
 "use client";
-import Loader from "@/components/loader";
+import Loader from "@/components/Loader";
 import CreateWarehouse from "@/components/warehouse/CreateWarehouse";
 import WarehouseList from "@/components/warehouse/WarehouseList";
 import { useGetwarehousesQuery } from "@/services/warehouseApi";
@@ -65,7 +65,7 @@ const Warehouses = () => {
                     Choose Status
                   </option>
                   <option value="draft">Draft</option>
-                  <option value="publish">Publish</option>
+                  <option value="published">Publish</option>
                 </select>
               </div>
               <button className="bg-secondary py-1 px-4 rounded-md text-white w-full">

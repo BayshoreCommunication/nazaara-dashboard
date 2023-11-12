@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useGetContactsQuery } from "@/services/contactApi";
-import Loader from "@/components/loader";
+import Loader from "@/components/Loader";
 import { TbEdit } from "react-icons/tb";
 import { BiMailSend } from "react-icons/bi";
 import Loading from "@/app/loading";

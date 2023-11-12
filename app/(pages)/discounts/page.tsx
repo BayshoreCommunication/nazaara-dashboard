@@ -1,7 +1,7 @@
 "use client";
 import DiscountForm from "@/components/discount/DiscountForm";
 import DiscountList from "@/components/discount/DiscountList";
-import Loader from "@/components/loader";
+import Loader from "@/components/Loader";
 import {
   useGetCouponsQuery,
   useDeleteCouponMutation,
