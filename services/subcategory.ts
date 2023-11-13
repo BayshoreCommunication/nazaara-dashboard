@@ -1,4 +1,8 @@
-import { TSubCategory, TSubCategoryData } from "@/types/categoryTypes";
+import {
+  TSubCategory,
+  TSubCategoryData,
+  TSubCategoryFrom,
+} from "@/types/categoryTypes";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const subCategoriesApi = createApi({
@@ -10,7 +14,7 @@ export const subCategoriesApi = createApi({
     }),
     createSubCategory: builder.mutation<
       TSubCategory,
-      Partial<TSubCategoryData>
+      Partial<TSubCategoryFrom>
     >({
       query: (payload) => ({
         url: "/api/v1/sub-category",
@@ -34,7 +38,7 @@ export const subCategoriesApi = createApi({
     }),
     updateSubCategory: builder.mutation<
       TSubCategory,
-      { id: string; payload: Partial<TSubCategoryData> }
+      { id: string; payload: Partial<TSubCategoryFrom> }
     >({
       query: ({ id, payload }) => ({
         url: `/api/v1/sub-category/${id}`,

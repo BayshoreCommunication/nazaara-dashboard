@@ -1,4 +1,4 @@
-// CategoryForm.tsx
+import { useGetCategoriesQuery } from "@/services/categoryApi";
 import React, { ChangeEvent, FC, FormEvent } from "react";
 
 interface CategoryFormProps {
@@ -18,6 +18,8 @@ const SubCategoryForm: FC<CategoryFormProps> = ({
   handleChange,
   formData,
 }) => {
+  const { data: categories, isLoading } = useGetCategoriesQuery();
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -25,18 +27,40 @@ const SubCategoryForm: FC<CategoryFormProps> = ({
     >
       <div>
         <label className="font-medium" htmlFor="name">
-          Category Name:
+          Sub Category Title:
         </label>
         <input
-          className="block w-full p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
-          id="title"
+          className="w-full border border-gray-400 rounded-sm p-2 focus:outline-none text-gray-500"
           type="text"
+          id="title"
           name="title"
+          placeholder="Enter Sub Category Title"
           value={formData.title}
           onChange={handleChange}
           required
-          placeholder="Enter Category Title"
         />
+      </div>
+      <div className="mb-2">
+        <label className="font-medium" htmlFor="name">
+          Select Category:
+        </label>
+        <select
+          className="w-full border border-gray-400 rounded-sm p-2 focus:outline-none text-gray-500"
+          id="category"
+          name="category"
+          value={formData.category}
+          onChange={handleChange}
+          required
+        >
+          <option disabled value="">
+            Choose Category
+          </option>
+          {categories?.data?.map((category: any, index: number) => (
+            <option key={index} value={category._id}>
+              {category.title}
+            </option>
+          ))}
+        </select>
       </div>
       <div className="mb-2">
         <label className="font-medium" htmlFor="status">

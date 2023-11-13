@@ -3,6 +3,7 @@ import {
   TProductCategory,
   TProductErpIdData,
   TProductGetOne,
+  TProductSlugData,
   TProducts,
 } from "@/types/types";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
@@ -25,6 +26,9 @@ export const productsApi = createApi({
     }),
     getProductById: builder.query<TProductGetOne, string>({
       query: (id: string) => `/api/v1/product/${id}`,
+    }),
+    getProductBySlug: builder.query<TProductSlugData, void>({
+      query: () => `/api/v1/product/slugs`,
     }),
     createProduct: builder.mutation<TProduct, Partial<TProduct>>({
       query: (payload) => ({
@@ -79,6 +83,7 @@ export const {
   useGetProductsCategoriesQuery,
   useGetProductErpIdQuery,
   useGetProductByIdQuery,
+  useGetProductBySlugQuery,
   useCreateProductMutation,
   useUpdateProductMutation,
   useDeleteProductMutation,

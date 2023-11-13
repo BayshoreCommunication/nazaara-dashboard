@@ -1,5 +1,5 @@
 "use client";
-import { useGetSlugsQuery } from "@/services/navSaleApi";
+
 import dynamic from "next/dynamic";
 import React, { FormEvent, useEffect, useState } from "react";
 import PrimaryButton from "../PrimaryButton";
@@ -9,6 +9,7 @@ import {
 } from "@/services/bestSellingApi";
 import Loader from "../Loader";
 import toast from "react-hot-toast";
+import { useGetProductBySlugQuery } from "@/services/productApi";
 
 const Select = dynamic(() => import("react-select"), {
   ssr: false,
@@ -31,7 +32,8 @@ const BestSelling = () => {
   const [sellingData, setSellingData] = useState<SellingData>({
     slug: [],
   });
-  const { data: slugsData, isLoading: slugsLoading } = useGetSlugsQuery(); //get all the slugs data
+  const { data: slugsData, isLoading: slugsLoading } =
+    useGetProductBySlugQuery(); //get all the slugs data
 
   const { data: bestSellingData, isLoading: bestSellingLoading } =
     useGetBestSellingQuery(); //get all the best selling data

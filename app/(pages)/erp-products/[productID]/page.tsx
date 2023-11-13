@@ -7,9 +7,10 @@ import { useCreateProductMutation } from "@/services/productApi";
 import dynamic from "next/dynamic";
 import { ErpIdProps, TProduct, TResult } from "@/types/types";
 import Loader from "@/components/Loader";
-import { useGetAllPromotionsQuery } from "@/services/promotionApi";
 import { useGetErpDataByIdQuery } from "@/services/erpApi";
 import { toCapitalize } from "@/helpers";
+import { useGetCategoriesQuery } from "@/services/categoryApi";
+import { useGetSubCategoriesQuery } from "@/services/subcategory";
 const Select = dynamic(() => import("react-select"), {
   ssr: false,
 });
@@ -213,12 +214,17 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
       toast.error("Something went wrong!", { duration: 3000 });
     }
   };
+
   const defaultValueOptions = formData.size.map((el) => ({
     value: el,
     label: el,
   }));
 
-  // const { data: promotionData } = useGetAllPromotionsQuery();
+  const { data: categories, isLoading: categoriesLoading } =
+    useGetCategoriesQuery();
+
+  const { data: subCategories, isLoading: subCategoriesLoading } =
+    useGetSubCategoriesQuery();
 
   return !productsData ? (
     <Loader height="h-[85vh]" />
@@ -275,29 +281,40 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
                       <label className="font-medium" htmlFor="category">
                         Category
                       </label>
-                      <input
-                        className="block w-full rounded-md p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
+                      <select
+                        className="w-full border border-gray-400 rounded-md p-2 focus:outline-none text-gray-500"
                         value={formData.category}
                         name="category"
-                        type="text"
                         required
-                        placeholder="Enter Category Name"
                         onChange={handleChange}
-                      />
+                      >
+                        <option value="">Choose Category</option>
+                        {categories?.data?.map((category: any, index) => (
+                          <option key={index} value={category._id}>
+                            {category.title}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                     <div>
                       <label className="font-medium" htmlFor="subCategory">
                         Subcategory
                       </label>
-                      <input
-                        className="block w-full rounded-md p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
+                      <select
+                        className="w-full border border-gray-400 rounded-md p-2 focus:outline-none text-gray-500"
                         value={formData.subCategory}
                         name="subCategory"
-                        type="text"
                         required
-                        placeholder="Enter SubCategory Name"
                         onChange={handleChange}
-                      />
+                      >
+                        <option value="">Choose Subcategory</option>
+                        {/* filter subCategories based on category, only show the subCategories which are under the selected categories */}
+                        {subCategories?.data?.map((subCategory: any, index) => (
+                          <option key={index} value={subCategory._id}>
+                            {subCategory.title}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                     <div>
                       <label className="font-medium" htmlFor="size">
@@ -326,27 +343,6 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
                     </div>
                   </div>
                   <div className="bg-gray-100 py-3 flex flex-col gap-y-3 rounded-md">
-                    {/* <div>
-                      <label className="font-medium" htmlFor="promotion">
-                        Promotion
-                      </label>
-                      <select
-                        className="w-full border border-gray-400 rounded-md p-2 focus:outline-none text-gray-500"
-                        name="promotion"
-                        placeholder="Enter Product Promotion"
-                        value={formData.promotion}
-                        required
-                        onChange={handleChange}
-                      >
-                        <option value="none">No Promotion</option>
-                        {promotionData &&
-                          promotionData.data.map((data, i) => (
-                            <option value={data.name} key={i}>
-                              {data.name}
-                            </option>
-                          ))}
-                      </select>
-                    </div> */}
                     <div>
                       <label className="font-medium" htmlFor="regular_price">
                         Purchase Price
@@ -497,9 +493,7 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
                             </button>
                           </div>
                         ) : (
-                          <div className="w-5 mb-2">
-                            <button className="w-5 h-5" />
-                          </div>
+                          <></>
                         )}
                       </div>
                     ))}

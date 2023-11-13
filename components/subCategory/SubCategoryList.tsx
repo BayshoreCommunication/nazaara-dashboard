@@ -23,6 +23,7 @@ const SubCategoryList: FC<CategoryListProps> = ({
           <th>SL</th>
           <th>Sub Category Name</th>
           <th>Slug</th>
+          <th>Category</th>
           <th>Status</th>
           <th>Actions</th>
         </tr>
@@ -31,7 +32,7 @@ const SubCategoryList: FC<CategoryListProps> = ({
         {/* if subCategory.length === 0 show no data found */}
         {subCategories?.length === 0 && (
           <tr>
-            <td colSpan={5}>
+            <td colSpan={6}>
               <div className="flex justify-center items-center">
                 <span className="font-medium text-lg">No Data Found</span>
               </div>
@@ -46,9 +47,10 @@ const SubCategoryList: FC<CategoryListProps> = ({
               <td>{index + 1}</td>
               <td>{data.title}</td>
               <td>{data.slug}</td>
+              <td>{data.category.title}</td>
               <td
                 className={`font-medium ${
-                  data.status === "Draft" ? "text-red-600" : "text-green-600"
+                  data.status === "draft" ? "text-red-600" : "text-green-600"
                 }`}
               >
                 {data.status}
@@ -73,7 +75,7 @@ const SubCategoryList: FC<CategoryListProps> = ({
           ))
         ) : (
           <tr>
-            <td colSpan={5}>
+            <td colSpan={6}>
               <div className="flex justify-center items-center">
                 <Loader height="h-[30vh]" />
               </div>

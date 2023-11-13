@@ -1,23 +1,23 @@
 "use client";
-import CategoryForm from "@/components/category/CategoryFrom";
-import CategoryList from "@/components/category/CategoryList";
-import Loader from "@/components/Loader";
+
 import SubCategoryForm from "@/components/subCategory/SubCategoryForm";
 import SubCategoryList from "@/components/subCategory/SubCategoryList";
+import { useGetCategoriesQuery } from "@/services/categoryApi";
 import {
   useCreateSubCategoryMutation,
   useDeleteSubCategoryMutation,
   useGetSubCategoriesQuery,
   useUpdateSubCategoryMutation,
 } from "@/services/subcategory";
-import { TSubCategory, TSubCategoryData } from "@/types/categoryTypes";
+import { TSubCategoryData, TSubCategoryFrom } from "@/types/categoryTypes";
 import { FC, useState, ChangeEvent, FormEvent, useRef } from "react";
 import toast from "react-hot-toast";
 import { RxCross2 } from "react-icons/rx";
 import Swal from "sweetalert2";
 
 const SubCategory: FC = () => {
-  //   const { data: subcategories, isLoading, refetch } = useGetCategoriesQuery();
+  const { data: categories, isLoading: categoriesLoading } =
+    useGetCategoriesQuery();
   const {
     data: subcategories,
     isLoading,
@@ -29,7 +29,7 @@ const SubCategory: FC = () => {
   //handle form for creating new category
 
   //crate category start
-  const [formData, setFormData] = useState<TSubCategoryData>({
+  const [formData, setFormData] = useState<TSubCategoryFrom>({
     title: "",
     status: "",
     category: "",
@@ -85,7 +85,12 @@ const SubCategory: FC = () => {
 
   //edit modal
   const [filteredData, setFilteredData] = useState([
-    { _id: "", title: "", category: "", status: "published" },
+    {
+      _id: "",
+      title: "",
+      category: { _id: "", title: "" },
+      status: "published",
+    },
   ]);
 
   const [selectedValue, setSelectedValue] = useState<string>("");
@@ -103,18 +108,20 @@ const SubCategory: FC = () => {
 
   //update category start
   const [updateSubCategory] = useUpdateSubCategoryMutation();
-  const titleRef = useRef<HTMLInputElement>(null);
-  const statusRef = useRef<HTMLSelectElement>(null);
-  const categoryRef = useRef<HTMLSelectElement>(null);
 
-  const handleUpdateCategorySubmit = async (event: React.FormEvent) => {
+  const handleUpdateCategorySubmit = async (event: FormEvent) => {
     event.preventDefault();
 
-    if (titleRef.current && statusRef.current && categoryRef.current) {
+    if (
+      filteredData[0] &&
+      filteredData[0]?.title &&
+      filteredData[0]?.category?._id &&
+      filteredData[0]?.status
+    ) {
       const formData: any = {
-        title: titleRef.current.value,
-        status: statusRef.current.value,
-        category: categoryRef.current.value,
+        title: filteredData[0]?.title,
+        category: filteredData[0]?.category?._id,
+        status: selectedValue,
       };
 
       const { title, status, category } = formData;
@@ -138,13 +145,22 @@ const SubCategory: FC = () => {
     }
   };
 
+  const handleChangeFormData = (event: any) => {
+    setFilteredData([
+      {
+        ...filteredData[0],
+        [event.target.name]: event.target.value,
+      },
+    ]);
+  };
+
   return (
     <div className="flex gap-10 container">
       {/* show all category  */}
       <div className="flex-[6] overflow-x-auto">
         <h1 className="text-lg font-semibold mb-2">All Sub Categories</h1>
         <SubCategoryList
-          subCategories={subcategories?.data as TSubCategoryData[]} // Convert ICategory[] to Category[]
+          subCategories={subcategories?.data as TSubCategoryData[]} // convert data to TCategoryData type array
           handleEditCategory={handleEditCategory}
           handleDeleteCategory={handleDeleteCategory}
         />
@@ -178,7 +194,6 @@ const SubCategory: FC = () => {
                   <h1 className="text-lg font-semibold mb-2 ml-3">
                     Update SubCategory
                   </h1>
-
                   <form
                     onSubmit={handleUpdateCategorySubmit}
                     className="bg-white p-3 flex flex-col gap-y-3 rounded-xl"
@@ -190,10 +205,34 @@ const SubCategory: FC = () => {
                       <input
                         className="block w-full p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
                         type="text"
-                        ref={titleRef}
+                        name="title"
                         required
+                        onChange={handleChangeFormData}
                         defaultValue={filteredData[0].title}
                       />
+                    </div>
+                    <div className="mb-2">
+                      <label className="font-medium" htmlFor="name">
+                        Select Category:
+                      </label>
+                      <select
+                        className="w-full border border-gray-400 rounded-sm p-2 focus:outline-none text-gray-500"
+                        required
+                        name="category"
+                        onChange={handleChangeFormData}
+                        value={filteredData[0].category._id}
+                      >
+                        <option disabled value="">
+                          Choose Category
+                        </option>
+                        {categories?.data?.map(
+                          (category: any, index: number) => (
+                            <option key={index} value={category._id}>
+                              {category.title}
+                            </option>
+                          )
+                        )}
+                      </select>
                     </div>
                     <div className="mb-2">
                       <label className="font-medium" htmlFor="status">
@@ -201,7 +240,6 @@ const SubCategory: FC = () => {
                       </label>
                       <select
                         className="w-full border border-gray-400 rounded-sm p-2 focus:outline-none text-gray-500"
-                        ref={statusRef}
                         required
                         value={selectedValue}
                         onChange={(e) => setSelectedValue(e.target.value)}

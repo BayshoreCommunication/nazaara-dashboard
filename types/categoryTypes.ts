@@ -25,10 +25,24 @@ export type TSubCategoryData = {
   _id?: string;
   title: string;
   slug?: string;
-  category: string;
+  category: TCategoryIndividual;
   status: string;
   createdAt?: string;
   updatedAt?: string;
   __v?: number;
+  promotion?: any;
+};
+
+export type TCategoryIndividual = {
+  _id?: string;
+  title: string;
+};
+
+export type TSubCategoryFrom = {
+  _id?: string;
+  title: string;
+  slug?: string;
+  category: string;
+  status: string;
   promotion?: any;
 };

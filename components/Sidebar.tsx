@@ -136,7 +136,7 @@ const Sidebar = () => {
     return path.startsWith(link);
   };
   return (
-    <div className="flex-1 h-[93.5vh] sticky top-0 overflow-auto bg-primary">
+    <div className="flex-1 h-[100vh] sticky top-0 overflow-auto bg-primary">
       <div className="p-3 flex flex-col gap-2">
         {datas.map((data, index) => (
           <div key={index}>

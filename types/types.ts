@@ -225,6 +225,15 @@ export type TCategoryItem = {
   url: string;
 };
 
+export type TProductSlugData = {
+  success: boolean;
+  slugs: TProductSlug[];
+};
+
+export type TProductSlug = {
+  slug: string;
+};
+
 // ============================= Image Urls ============================= //
 export type TImageUrl = {
   _id?: number;
