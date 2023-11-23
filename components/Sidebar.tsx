@@ -3,12 +3,9 @@ import { RxDashboard } from "react-icons/rx";
 import { FaUserAlt, FaWarehouse } from "react-icons/fa";
 import { SiGoogleanalytics } from "react-icons/si";
 import { AiOutlineShoppingCart } from "react-icons/ai";
-import { IoTicketOutline } from "react-icons/io5";
-import { usePathname } from "next/navigation";
 import {
   BsFillBoxFill,
   BsChatLeftText,
-  BsChatRightText,
   BsFillFileEarmarkSpreadsheetFill,
 } from "react-icons/bs";
 import {
@@ -18,6 +15,7 @@ import {
   MdUnsubscribe,
 } from "react-icons/md";
 import { TbSpeakerphone } from "react-icons/tb";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -78,45 +76,51 @@ const Sidebar = () => {
       icon: <BsChatLeftText size={18} />,
     },
     {
-      _id: "207",
+      _id: "109",
       title: "Warehouse",
       link: "/warehouses",
       icon: <FaWarehouse size={18} />,
     },
     {
-      _id: "106",
+      _id: "110",
       title: "Promotions",
       link: "/promotions",
       icon: <TbSpeakerphone size={18} />,
     },
     {
-      _id: "203",
+      _id: "111",
       title: "Category",
       link: "/category",
       icon: <MdCategory size={18} />,
     },
     {
-      _id: "204",
+      _id: "112",
       title: "SubCategory",
       link: "/subcategory",
       icon: <MdCategory size={18} />,
     },
     {
-      _id: "109",
+      _id: "113",
+      title: "Sale Tag",
+      link: "/sale-tag",
+      icon: <MdCategory size={18} />,
+    },
+    {
+      _id: "114",
+      title: "Fastival Tag",
+      link: "/fastival-tag",
+      icon: <MdCategory size={18} />,
+    },
+    {
+      _id: "115",
       title: "Subscriber",
       link: "/subscribers",
       icon: <MdUnsubscribe size={18} />,
     },
     {
-      _id: "110",
+      _id: "116",
       title: "Basic Customization",
       link: "/customization",
-      icon: <MdOutlineDashboardCustomize size={18} />,
-    },
-    {
-      _id: "110",
-      title: "NavBar Sale Customization",
-      link: "/nav-sale",
       icon: <MdOutlineDashboardCustomize size={18} />,
     },
   ];

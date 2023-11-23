@@ -17,6 +17,7 @@ const Login = () => {
                   width={248}
                   height={248}
                   className="w-[160px]"
+                  priority
                 />
               </div>
               <h1 className="text-lg font-semibold leading-tight tracking-tight md:text-2xl text-center">

@@ -1,5 +1,5 @@
 // CategoryForm.tsx
-import React, { ChangeEvent, FC, FormEvent } from "react";
+import { ChangeEvent, FC, FormEvent } from "react";
 
 interface CategoryFormProps {
   handleSubmit: (event: FormEvent) => void;

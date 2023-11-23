@@ -11,6 +11,7 @@ import { useGetErpDataByIdQuery } from "@/services/erpApi";
 import { toCapitalize } from "@/helpers";
 import { useGetCategoriesQuery } from "@/services/categoryApi";
 import { useGetSubCategoriesQuery } from "@/services/subcategory";
+import { useGetSalesQuery } from "@/services/navSaleApi";
 const Select = dynamic(() => import("react-select"), {
   ssr: false,
 });
@@ -49,8 +50,10 @@ const options = [
 ];
 
 const AddProduct: FC<ErpIdProps> = ({ params }) => {
+  const { data: categories } = useGetCategoriesQuery();
+  const { data: subCategories } = useGetSubCategoriesQuery();
+  const { data: sales } = useGetSalesQuery();
   const singleProductId = params.productID as number;
-  const [erpData, setErpData] = useState<TResult>();
   const router = useRouter();
   const [createProduct] = useCreateProductMutation();
   const [formData, setFormData] = useState<TProduct>({
@@ -68,8 +71,8 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
     category: "",
     subCategory: "",
     stock: 0,
-    status: "draft",
     preOrder: false,
+    status: "draft",
   });
 
   const { data: productsData, isLoading: productsLoading } =
@@ -140,7 +143,7 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
     const updatedVariants = [...formData.variant]; // Create a copy of the variant array
     const updatedVariant = {
       ...updatedVariants[index], // Get the variant object at the specified index
-      [name]: value, // Update the specific field of the variant object
+      [name]: toCapitalize(value), // Update the specific field of the variant object
     };
     updatedVariants[index] = updatedVariant; // Update the variant object in the array
 
@@ -175,19 +178,38 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
     });
   };
 
-  const handleSubmit = async (event: FormEvent) => {
+  const handleSubmit = async (event: any) => {
     event.preventDefault();
+
+    const submitData = {
+      erpId: formData.erpId,
+      sku: formData.sku,
+      productName: event.target.productName.value,
+      purchasePrice: formData.purchasePrice,
+      regularPrice: event.target.regularPrice.value,
+      salePrice: event.target.salePrice.value,
+      variant: formData.variant,
+      size: formData.size,
+      description: formData.description,
+      erpCategory: formData.erpCategory,
+      erpSubCategory: formData.erpSubCategory,
+      category: event.target.category.value,
+      subCategory: event.target.subCategory.value,
+      stock: formData.stock,
+      preOrder: event.target.preOrder.value === "yes" ? true : false,
+      status: event.target.status.value,
+    };
+
+    // color should be toCapitalize before sending to backend
+
     try {
-      //each variant color should to toCapitalize before sending to backend
-      formData.variant.forEach((el) => {
-        el.color = toCapitalize(el.color);
-      });
-      console.log("formData", formData);
-      const data: any = await createProduct(formData);
+      // each variant color should to toCapitalize before sending to backend
+      const response: any = await createProduct(submitData);
       // refetch();
-      if (data.data.status === "success") {
+
+      if (response?.data?.success === true) {
         router.push("/products");
-        toast.success("New Product Created", { duration: 3000 });
+        toast.success("New Product Created Successfully!");
         // Reset form fields
         setFormData({
           erpId: 0,
@@ -204,14 +226,15 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
           category: "",
           subCategory: "",
           stock: 0,
-          status: "draft",
           preOrder: false,
+          status: "draft",
         });
       } else {
-        toast.error("Failed to create new product!", { duration: 3000 });
+        toast.error(`Failed to create new product!`);
       }
-    } catch {
-      toast.error("Something went wrong!", { duration: 3000 });
+    } catch (error) {
+      console.error("Failed to create new product!", error);
+      toast.error(`Something went wrong ${error}`);
     }
   };
 
@@ -220,315 +243,326 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
     label: el,
   }));
 
-  const { data: categories, isLoading: categoriesLoading } =
-    useGetCategoriesQuery();
-
-  const { data: subCategories, isLoading: subCategoriesLoading } =
-    useGetSubCategoriesQuery();
-
-  return !productsData ? (
-    <Loader height="h-[85vh]" />
-  ) : (
+  return (
     <div className="container">
       <h1 className="text-2xl font-bold mb-3">Add Product</h1>
       <div className="flex flex-col gap-y-5">
-        <form onSubmit={handleSubmit}>
-          <div className="bg-basic rounded-md px-6 py-3 flex flex-col gap-y-4">
-            <h4 className="text-lg font-bold">Product Information</h4>
-            <div className="flex justify-between">
-              <p>
-                <b>Erp ID:</b> {formData.erpId}
-              </p>
-              <p>
-                <b>Erp Category:</b> {formData.erpCategory}
-              </p>
-              <p>
-                <b>Erp SubCategory:</b> {formData.erpSubCategory}
-              </p>
-            </div>
-            <div className="flex flex-col gap-4 items-start">
-              <div className="w-full bg-gray-100 py-3 px-5 flex flex-col gap-y-3 rounded-md">
-                <div className="grid grid-cols-3 gap-4 items-start">
-                  <div className="bg-gray-100 py-2 flex flex-col gap-y-3 rounded-md">
-                    <div>
-                      <label className="font-medium" htmlFor="name">
-                        Product Name
-                      </label>
-                      <input
-                        className="block w-full rounded-md p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
-                        name="productName"
-                        type="text"
-                        placeholder="Enter Product Name"
-                        required
-                        onChange={handleChange}
-                      />
-                    </div>
-                    <div>
-                      <label className="font-medium" htmlFor="name">
-                        Product SKU
-                      </label>
-                      <input
-                        className="block w-full rounded-md p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1 cursor-not-allowed"
-                        value={formData.sku}
-                        name="sku"
-                        type="text"
-                        placeholder="Enter Product SKU"
-                        required
-                        readOnly
-                      />
-                    </div>
-                    <div>
-                      <label className="font-medium" htmlFor="category">
-                        Category
-                      </label>
-                      <select
-                        className="w-full border border-gray-400 rounded-md p-2 focus:outline-none text-gray-500"
-                        value={formData.category}
-                        name="category"
-                        required
-                        onChange={handleChange}
-                      >
-                        <option value="">Choose Category</option>
-                        {categories?.data?.map((category: any, index) => (
-                          <option key={index} value={category._id}>
-                            {category.title}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="font-medium" htmlFor="subCategory">
-                        Subcategory
-                      </label>
-                      <select
-                        className="w-full border border-gray-400 rounded-md p-2 focus:outline-none text-gray-500"
-                        value={formData.subCategory}
-                        name="subCategory"
-                        required
-                        onChange={handleChange}
-                      >
-                        <option value="">Choose Subcategory</option>
-                        {/* filter subCategories based on category, only show the subCategories which are under the selected categories */}
-                        {subCategories?.data?.map((subCategory: any, index) => (
-                          <option key={index} value={subCategory._id}>
-                            {subCategory.title}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <div>
-                      <label className="font-medium" htmlFor="size">
-                        Size
-                      </label>
-                      <Select
-                        // className="w-full rounded-md focus:outline-none text-gray-500"
-                        onChange={handleSelectionChange}
-                        defaultValue={defaultValueOptions}
-                        placeholder="Choose One"
-                        styles={customStyles}
-                        required
-                        theme={(theme) => ({
-                          ...theme,
-                          borderRadius: 5,
-                          // padding: 3,
-                          colors: {
-                            ...theme.colors,
-                            primary25: "#e6e6e6",
-                            primary: "rgb(156 163 175/1)",
-                          },
-                        })}
-                        options={options}
-                        isMulti={true}
-                      />
-                    </div>
-                  </div>
-                  <div className="bg-gray-100 py-3 flex flex-col gap-y-3 rounded-md">
-                    <div>
-                      <label className="font-medium" htmlFor="regular_price">
-                        Purchase Price
-                      </label>
-                      <div className="flex items-center mt-1">
-                        <div className="border border-gray-400 bg-gray-100 rounded-sm p-[10px] text-sm text-gray-500 font-medium">
-                          BDT
-                        </div>
+        {productsLoading ? (
+          <Loader height="h-[85vh]" />
+        ) : (
+          <form onSubmit={handleSubmit}>
+            <div className="bg-basic rounded-md px-6 py-3 flex flex-col gap-y-4">
+              <h4 className="text-lg font-bold">Product Information</h4>
+              <div className="flex justify-between">
+                <p>
+                  <b>Erp ID:</b> {formData?.erpId}
+                </p>
+                <p>
+                  <b>Erp Category:</b> {formData?.erpCategory}
+                </p>
+                <p>
+                  <b>Erp SubCategory:</b> {formData?.erpSubCategory}
+                </p>
+              </div>
+              <div className="flex flex-col gap-4 items-start">
+                <div className="w-full bg-gray-100 py-3 px-5 flex flex-col gap-y-3 rounded-md">
+                  <div className="grid grid-cols-3 gap-4 items-start">
+                    <div className="bg-gray-100 py-2 flex flex-col gap-y-3 rounded-md">
+                      <div>
+                        <label className="font-medium" htmlFor="name">
+                          Product Name
+                        </label>
                         <input
-                          className="rounded-e-lg p-2 border border-gray-400 focus:outline-none text-gray-500 w-full cursor-not-allowed"
-                          name="purchasePrice"
-                          type="number"
+                          className="block w-full rounded-md p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
+                          name="productName"
+                          type="text"
+                          placeholder="Enter Product Name"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="font-medium" htmlFor="name">
+                          Product SKU
+                        </label>
+                        <input
+                          className="block w-full rounded-md p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1 cursor-not-allowed"
+                          value={formData.sku}
+                          name="sku"
+                          type="text"
+                          placeholder="Enter Product SKU"
                           required
                           readOnly
-                          value={formData.purchasePrice}
-                          min={0}
-                          placeholder="Enter Purchase Price"
                         />
                       </div>
-                    </div>
-                    <div>
-                      <label className="font-medium" htmlFor="regular_price">
-                        Regular Price
-                      </label>
-                      <div className="flex items-center mt-1">
-                        <div className="border border-gray-400 bg-gray-100 rounded-sm p-[10px] text-sm text-gray-500 font-medium">
-                          BDT
-                        </div>
-                        <input
-                          className="rounded-e-lg p-2 border border-gray-400 focus:outline-none text-gray-500 w-full cursor-not-allowed"
-                          name="regularPrice"
-                          type="number"
-                          required
-                          readOnly
-                          value={formData.regularPrice}
-                          min={0}
-                          placeholder="Enter regular Price"
-                          onChange={handleChange}
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <label className="font-medium" htmlFor="selling_price">
-                        Selling Price
-                      </label>
-                      <div className="flex items-center mt-1">
-                        <div className="border border-gray-400 bg-gray-100 rounded-sm p-[10px] text-sm text-gray-500 font-medium">
-                          BDT
-                        </div>
-                        <input
-                          className="rounded-e-lg p-2 border border-gray-400 focus:outline-none text-gray-500 w-full"
-                          name="salePrice"
-                          type="number"
-                          required
-                          value={formData.salePrice}
-                          min={0}
-                          placeholder="Enter Selling Price"
-                          onChange={handleChange}
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="font-medium" htmlFor="status">
-                        Pre-Order
-                      </label>
-                      <div className="flex items-center mt-1">
+                      <div>
+                        <label className="font-medium" htmlFor="category">
+                          Category
+                        </label>
                         <select
-                          className="w-full border rounded-md border-gray-400 p-2 focus:outline-none text-gray-500"
-                          name="preOrder"
+                          className="w-full h-[42px] mt-1 border border-gray-400 rounded-md p-2 focus:outline-none text-gray-500"
                           required
+                          name="category"
+                          value={formData.category}
                           onChange={handleChange}
                         >
-                          <option value={"yes"}>Yes</option>
-                          <option value={"no"}>No</option>
+                          <option value="" disabled>
+                            Choose Category
+                          </option>
+                          {categories?.data?.map((category: any, index) => (
+                            <option key={index} value={category._id}>
+                              {category.title}
+                            </option>
+                          ))}
                         </select>
                       </div>
-                    </div>
-                    <div>
-                      <label className="font-medium" htmlFor="status">
-                        Status
-                      </label>
-                      <div className="flex items-center mt-1">
+                      <div>
+                        <label className="font-medium" htmlFor="subCategory">
+                          Subcategory
+                        </label>
                         <select
-                          className="w-full border border-gray-400 rounded-md p-2 focus:outline-none text-gray-500"
-                          name="status"
-                          value={formData.status}
+                          className="w-full h-[42px] mt-1 border border-gray-400 rounded-md p-2 focus:outline-none text-gray-500"
+                          name="subCategory"
                           required
-                          onChange={handleChange}
+                          disabled={formData.category === ""}
                         >
-                          <option value="draft">Draft</option>
-                          <option value="published">Publish</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="bg-gray-100 py-3 flex flex-col gap-y-3 rounded-md">
-                    <div>
-                      <label className="font-medium" htmlFor="status">
-                        Stock
-                      </label>
-                      <div className="flex items-center mt-1">
-                        <input
-                          className="rounded-md p-2 border border-gray-400 focus:outline-none text-gray-500 w-full cursor-not-allowed"
-                          name="stock"
-                          type="number"
-                          value={formData.stock}
-                          required
-                          readOnly
-                          min={0}
-                          placeholder="Enter Product Stock"
-                        />
-                      </div>
-                    </div>
-                    <label className="font-medium" htmlFor="promotion">
-                      Color Variants
-                    </label>
-                    {formData.variant.map((variant, variantIndex) => (
-                      <div
-                        className="flex gap-2 items-center"
-                        key={variantIndex}
-                      >
-                        <div className="w-full rounded-md">
-                          <div className="flex items-center">
-                            <div className="border border-gray-400 bg-gray-100 rounded-sm p-[10px] text-sm text-gray-500 font-medium">
-                              Color
-                            </div>
-                            <input
-                              className="rounded-e-lg p-2 border border-gray-400 focus:outline-none text-gray-500 w-full"
-                              name="color"
-                              type="text"
-                              required
-                              placeholder="Enter Color Name"
-                              value={formData?.variant[variantIndex]?.color}
-                              onChange={(event) =>
-                                handleVariant(event, variantIndex)
+                          <option value="" disabled>
+                            Choose Subcategory
+                          </option>
+                          {/* filter subCategories based on category, only show the subCategories which are under the selected categories */}
+                          {subCategories?.data?.map(
+                            (subCategory: any, index) => {
+                              if (
+                                subCategory.category._id === formData.category
+                              ) {
+                                return (
+                                  <option key={index} value={subCategory._id}>
+                                    {subCategory.title}
+                                  </option>
+                                );
                               }
-                            />
-                          </div>
-                        </div>
-                        {variantIndex !== 0 ? (
-                          <div className="w-5 mb-2">
-                            <button
-                              onClick={() => removeDivField(variantIndex)}
-                              className="w-5 h-5 rounded-full border border-sky-400 text-sky-400 flex justify-center items-center"
-                            >
-                              -
-                            </button>
-                          </div>
-                        ) : (
-                          <></>
-                        )}
+                            }
+                          )}
+                        </select>
                       </div>
-                    ))}
+                      <div>
+                        <label className="font-medium" htmlFor="size">
+                          Size
+                        </label>
+                        <Select
+                          // className="w-full rounded-md focus:outline-none text-gray-500"
+                          onChange={handleSelectionChange}
+                          defaultValue={defaultValueOptions}
+                          placeholder="Choose One"
+                          styles={customStyles}
+                          required
+                          theme={(theme) => ({
+                            ...theme,
+                            borderRadius: 5,
+                            // padding: 3,
+                            colors: {
+                              ...theme.colors,
+                              primary25: "#e6e6e6",
+                              primary: "rgb(156 163 175/1)",
+                            },
+                          })}
+                          options={options}
+                          isMulti={true}
+                        />
+                      </div>
+                    </div>
+                    <div className="bg-gray-100 py-3 flex flex-col gap-y-3 rounded-md">
+                      <div>
+                        <label className="font-medium" htmlFor="regular_price">
+                          Purchase Price
+                        </label>
+                        <div className="flex items-center">
+                          <div className="border border-gray-400 bg-gray-100 rounded-sm p-[10px] text-sm text-gray-500 font-medium">
+                            BDT
+                          </div>
+                          <input
+                            className="rounded-e-lg p-2 border border-gray-400 focus:outline-none text-gray-500 w-full cursor-not-allowed"
+                            name="purchasePrice"
+                            type="number"
+                            required
+                            readOnly
+                            value={formData.purchasePrice}
+                            min={0}
+                            placeholder="Enter Purchase Price"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="font-medium" htmlFor="regular_price">
+                          Regular Price
+                        </label>
+                        <div className="flex items-center mt-1">
+                          <div className="border border-gray-400 bg-gray-100 rounded-sm p-[10px] text-sm text-gray-500 font-medium">
+                            BDT
+                          </div>
+                          <input
+                            className="rounded-e-lg p-2 border border-gray-400 focus:outline-none text-gray-500 w-full cursor-not-allowed"
+                            name="regularPrice"
+                            type="number"
+                            required
+                            readOnly
+                            value={formData.regularPrice}
+                            min={0}
+                            placeholder="Enter regular Price"
+                            onChange={handleChange}
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="font-medium" htmlFor="selling_price">
+                          Selling Price
+                        </label>
+                        <div className="flex items-center mt-1">
+                          <div className="border border-gray-400 bg-gray-100 rounded-sm p-[10px] text-sm text-gray-500 font-medium">
+                            BDT
+                          </div>
+                          <input
+                            className="rounded-e-lg p-2 border border-gray-400 focus:outline-none text-gray-500 w-full"
+                            name="salePrice"
+                            type="number"
+                            required
+                            value={formData.salePrice}
+                            min={0}
+                            placeholder="Enter Selling Price"
+                            onChange={handleChange}
+                          />
+                        </div>
+                      </div>
 
-                    <button
-                      type="button"
-                      onClick={addDivField}
-                      className="py-1 w-full border border-dashed border-sky-400 text-sky-400 mt-2"
-                    >
-                      + Add Field
-                    </button>
+                      <div>
+                        <label className="font-medium" htmlFor="pre-order">
+                          Pre-Order
+                        </label>
+                        <div className="flex items-center">
+                          <select
+                            className="w-full h-[42px] mt-1 border rounded-md border-gray-400 p-2 focus:outline-none text-gray-500"
+                            name="preOrder"
+                            required
+                          >
+                            <option value="" disabled>
+                              Choose One
+                            </option>
+                            <option value="no">No</option>
+                            <option value="yes">Yes</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div>
+                        <label className="font-medium" htmlFor="status">
+                          Status
+                        </label>
+                        <div className="flex items-center">
+                          <select
+                            className="w-full h-[42px] mt-1 border rounded-md border-gray-400 p-2 focus:outline-none text-gray-500"
+                            name="status"
+                            required
+                          >
+                            <option value="" disabled>
+                              Choose One
+                            </option>
+                            <option value="draft">Draft</option>
+                            <option value="published">Published</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="bg-gray-100 py-3 flex flex-col gap-y-3 rounded-md">
+                      <div>
+                        <label className="font-medium" htmlFor="status">
+                          Stock
+                        </label>
+                        <div className="flex items-center">
+                          <input
+                            className="rounded-md p-2 border border-gray-400 focus:outline-none text-gray-500 w-full cursor-not-allowed"
+                            name="stock"
+                            type="number"
+                            value={formData.stock}
+                            required
+                            readOnly
+                            min={0}
+                            placeholder="Enter Product Stock"
+                          />
+                        </div>
+                      </div>
+                      <div className="">
+                        <label className="font-medium" htmlFor="promotion">
+                          Color Variants
+                        </label>
+                        {formData.variant.map((variant, variantIndex) => (
+                          <div
+                            className="flex gap-2 items-center mt-1"
+                            key={variantIndex}
+                          >
+                            <div className="w-full rounded-md">
+                              <div className="flex items-center">
+                                <div className="border border-gray-400 bg-gray-100 rounded-sm p-[10px] text-sm text-gray-500 font-medium">
+                                  Color
+                                </div>
+                                <input
+                                  className="rounded-e-lg p-2 border border-gray-400 focus:outline-none text-gray-500 w-full"
+                                  name="color"
+                                  type="text"
+                                  required
+                                  placeholder="Enter Color Name"
+                                  value={variant?.color}
+                                  onChange={(event) =>
+                                    handleVariant(event, variantIndex)
+                                  }
+                                />
+                              </div>
+                            </div>
+                            {variantIndex !== 0 ? (
+                              <div className="w-5 mb-2">
+                                <button
+                                  onClick={() => removeDivField(variantIndex)}
+                                  className="w-5 h-5 rounded-full border border-sky-400 text-sky-400 flex justify-center items-center"
+                                >
+                                  -
+                                </button>
+                              </div>
+                            ) : (
+                              <></>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={addDivField}
+                        className="py-1 w-full border border-dashed border-sky-400 text-sky-400 mt-2"
+                      >
+                        + Add Field
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div className="bg-basic rounded-md px-6 py-3 flex flex-col gap-y-4">
-            <h4 className="text-lg font-bold">Product Description</h4>
-            <Editor setFormData={setFormData} formData={formData} />
-          </div>
-          <div className="flex justify-end gap-x-3">
-            <button
-              className="bg-secondary py-1 px-4 rounded-md text-white mt-3"
-              type="submit"
-            >
-              Add New Product
-            </button>
-            {/* <button
+            <div className="bg-basic rounded-md px-6 py-3 flex flex-col gap-y-4">
+              <h4 className="text-lg font-bold">Product Description</h4>
+              <Editor setFormData={setFormData} formData={formData} />
+            </div>
+            <div className="flex justify-end gap-x-3">
+              <button
+                className="bg-secondary py-1 px-4 rounded-md text-white mt-3"
+                type="submit"
+              >
+                Add New Product
+              </button>
+              {/* <button
           className="bg-warning py-1 px-4 rounded-md text-white"
           onClick={handleClear}
         >
           Clear All
         </button> */}
-          </div>
-        </form>
+            </div>
+          </form>
+        )}
       </div>
     </div>
   );

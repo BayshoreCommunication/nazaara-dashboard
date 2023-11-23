@@ -159,8 +159,39 @@ export type TParent = {
 // =============== Product Types ============ /
 
 export type TProductGetOne = {
-  status: string;
+  success: boolean;
+  message: string;
   data: TProduct;
+};
+
+export type TProduct = {
+  erpId: number;
+  sku: string;
+  slug?: string;
+  productName: string;
+  purchasePrice: number;
+  regularPrice: number;
+  salePrice: number;
+  variant: TVariant[];
+  size: string[];
+  description: string;
+  erpCategory: string;
+  erpSubCategory: string;
+  category: string;
+  subCategory: string;
+  stock: number;
+  preOrder: boolean;
+  status: string;
+  _id?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  __v?: number;
+};
+
+export type TVariant = {
+  _id?: string;
+  color: string;
+  imageUrl: string[];
 };
 
 export type TProducts = {
@@ -173,35 +204,29 @@ export type TProducts = {
   product: TProduct[];
 };
 
-export type TProduct = {
-  _id?: string;
-  erpId: number;
-  sku?: string;
-  slug?: string;
-  productName: string;
-  purchasePrice: number;
-  regularPrice: number;
-  salePrice?: number;
-  preOrder?: boolean;
-  size: string[];
-  variant: TVariant[];
-  stock: number;
-  description: string;
-  category: string;
-  erpCategory: string;
-  erpSubCategory: string;
-  subCategory: string;
-  status: string;
-  createdAt?: string;
-  updatedAt?: string;
-  __v?: number;
-};
-
-export type TVariant = {
-  _id?: string;
-  color: string;
-  imageUrl: string[];
-};
+// export type TProduct = {
+//   _id?: string;
+//   erpId: number;
+//   sku?: string;
+//   slug?: string;
+//   productName: string;
+//   purchasePrice: number;
+//   regularPrice: number;
+//   salePrice?: number;
+//   size: string[];
+//   variant: TVariant[];
+//   description: string;
+//   category: string;
+//   subCategory: string;
+//   erpCategory: string;
+//   erpSubCategory: string;
+//   stock: number;
+//   preOrder?: boolean;
+//   status: string;
+//   createdAt?: string;
+//   updatedAt?: string;
+//   __v?: number;
+// };
 
 export type TProductErpIdData = {
   status: string;
@@ -286,4 +311,11 @@ export type TPromotion = {
   createdAt?: string;
   updatedAt?: string;
   ___v?: number;
+};
+
+// ============================ React Select Options =============================== //
+
+export type TOptionSelect = {
+  value: string;
+  label: string;
 };

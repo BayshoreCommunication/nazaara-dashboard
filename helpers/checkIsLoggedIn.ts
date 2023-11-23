@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import { getCookie } from "cookies-next";
 
-export const checkIsLoggedIn = () => {
+const checkIsLoggedIn = () => {
   const router = useRouter();
 
   fetch(`${process.env.API_URL}/api/v1/user/isLoggedIn`, {
@@ -17,11 +17,12 @@ export const checkIsLoggedIn = () => {
     .then((res) => res.json())
     .then((data) => {
       if (data.status != "success") {
-        // navigate to "/nazaara-admin" if user is not logged in using any server side rendering method
         router.push("/nazaara-admin");
       }
     })
     .catch((err) => {
-      console.log(err);
+      console.log("is logged in error", err);
     });
 };
+
+export { checkIsLoggedIn };

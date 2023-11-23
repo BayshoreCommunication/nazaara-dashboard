@@ -7,6 +7,7 @@ import {
   TProducts,
 } from "@/types/types";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import toast from "react-hot-toast";
 
 export const productsApi = createApi({
   reducerPath: "productsApi",
@@ -30,7 +31,7 @@ export const productsApi = createApi({
     getProductBySlug: builder.query<TProductSlugData, void>({
       query: () => `/api/v1/product/slugs`,
     }),
-    createProduct: builder.mutation<TProduct, Partial<TProduct>>({
+    createProduct: builder.mutation<TProductGetOne, Partial<TProduct>>({
       query: (payload) => ({
         url: "/api/v1/product",
         method: "POST",
@@ -41,11 +42,18 @@ export const productsApi = createApi({
       }),
       // Update the cache after successful creation
       async onQueryStarted(data: any, { dispatch, queryFulfilled }) {
-        await queryFulfilled; // Wait for the query to be fulfilled
-        await dispatch(productsApi.endpoints.getProductById.initiate(data._id)); // Fetch the updated category
-        await dispatch(
-          productsApi.endpoints.getProducts.initiate({ page: 1, limit: 10 })
-        ); // Fetch the updated category list
+        try {
+          await queryFulfilled; // Wait for the query to be fulfilled
+          await dispatch(
+            productsApi.endpoints.getProductById.initiate(data._id)
+          ); // Fetch the updated category
+          await dispatch(
+            productsApi.endpoints.getProducts.initiate({ page: 1, limit: 10 })
+          ); // Fetch the updated category list
+          toast.success("Product added to database successfully!");
+        } catch ({ error }: any) {
+          toast.error(error.data.message);
+        }
       },
     }),
     updateProduct: builder.mutation<

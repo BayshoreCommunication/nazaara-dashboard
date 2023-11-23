@@ -61,7 +61,10 @@ const ErpProducts = () => {
   const renderPageNumbers = () => {
     const pageNumbers = [];
     const ellipsis = (
-      <button className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 border border-gray-300">
+      <button
+        key={Math.random() * new Date().getTime()}
+        className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 border border-gray-300"
+      >
         ...
       </button>
     );
@@ -85,7 +88,7 @@ const ErpProducts = () => {
     if (startPage > 1) {
       pageNumbers.push(
         <button
-          // key={1}
+          key={Math.random() * new Date().getTime()}
           className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 border border-gray-300"
           onClick={() => handlePageClick(1)}
         >
@@ -100,7 +103,7 @@ const ErpProducts = () => {
     for (let i = startPage; i <= endPage; i++) {
       pageNumbers.push(
         <button
-          key={i} // Use 'i' as the key
+          key={Math.random() * new Date().getTime()}
           className={`flex items-center justify-center px-3 h-8 leading-tight text-gray-500 border border-gray-300 ${
             currentPage === i ? "bg-secondary text-white" : ""
           }`}
@@ -117,7 +120,7 @@ const ErpProducts = () => {
       }
       pageNumbers.push(
         <button
-          key={totalPages}
+          key={Math.random() * new Date().getTime()}
           className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 border border-gray-300"
           onClick={() => handlePageClick(totalPages)}
         >
@@ -180,6 +183,7 @@ const ErpProducts = () => {
                           width={248}
                           height={248}
                           className="w-[70px] h-[70px]"
+                          priority
                         />
                       </td>
                       <td>{elem.id}</td>
@@ -240,6 +244,7 @@ const ErpProducts = () => {
           </li>
 
           <li className="flex">{renderPageNumbers()}</li>
+
           <li>
             <button
               onClick={handleNextPage}

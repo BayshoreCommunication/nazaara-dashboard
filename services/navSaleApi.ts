@@ -7,16 +7,16 @@ export const salesApi = createApi({
   tagTypes: ["Sales"],
   endpoints: (builder) => ({
     getSales: builder.query<TSaleData, void>({
-      query: () => `/api/v1/nav-sale`,
+      query: () => `/api/v1/sale`,
       providesTags: ["Sales"],
     }),
     getSaleById: builder.query<TSaleData, string>({
-      query: (id: string) => `/api/v1/nav-sale/${id}`,
+      query: (id: string) => `/api/v1/sale/${id}`,
       providesTags: ["Sales"],
     }),
     createSale: builder.mutation<TSale, Partial<TSale>>({
       query: (payload) => ({
-        url: "/api/v1/nav-sale",
+        url: "/api/v1/sale",
         method: "POST",
         body: payload,
         headers: {
@@ -30,7 +30,7 @@ export const salesApi = createApi({
       { id: string; payload: Partial<TSale> }
     >({
       query: ({ id, payload }) => ({
-        url: `/api/v1/nav-sale/${id}`,
+        url: `/api/v1/sale/${id}`,
         method: "PATCH",
         body: payload,
         headers: {
@@ -41,7 +41,7 @@ export const salesApi = createApi({
     }),
     deleteSale: builder.mutation({
       query: (id) => ({
-        url: `/api/v1/nav-sale/${id}`,
+        url: `/api/v1/sale/${id}`,
         method: "DELETE",
       }),
       invalidatesTags: ["Sales"],
