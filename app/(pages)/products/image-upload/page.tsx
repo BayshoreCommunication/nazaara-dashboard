@@ -1,5 +1,5 @@
 "use client";
-import { FC, useState, FormEvent, useEffect } from "react";
+import { FC, useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import {
   useGetProductByIdQuery,
@@ -11,7 +11,7 @@ import { IoIosRemoveCircleOutline } from "react-icons/io";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import Loader from "@/components/Loader";
-import { TImageUrl, TProduct } from "@/types/types";
+import { TImageUrl } from "@/types/types";
 import axios from "axios";
 
 const ImageUpload: FC = () => {

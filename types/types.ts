@@ -259,6 +259,11 @@ export type TProductSlug = {
   slug: string;
 };
 
+export type TGetProduct = {
+  _id: string;
+  slug: string;
+};
+
 // ============================= Image Urls ============================= //
 export type TImageUrl = {
   _id?: number;

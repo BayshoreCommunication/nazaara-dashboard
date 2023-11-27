@@ -108,7 +108,7 @@ const Sidebar = () => {
     {
       _id: "114",
       title: "Fastival Tag",
-      link: "/fastival-tag",
+      link: "/festival-tag",
       icon: <MdCategory size={18} />,
     },
     {

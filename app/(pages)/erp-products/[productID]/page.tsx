@@ -11,7 +11,7 @@ import { useGetErpDataByIdQuery } from "@/services/erpApi";
 import { toCapitalize } from "@/helpers";
 import { useGetCategoriesQuery } from "@/services/categoryApi";
 import { useGetSubCategoriesQuery } from "@/services/subcategory";
-import { useGetSalesQuery } from "@/services/navSaleApi";
+import { useGetSalesQuery } from "@/services/salesApi";
 const Select = dynamic(() => import("react-select"), {
   ssr: false,
 });

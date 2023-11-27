@@ -1,4 +1,4 @@
-import { TSale, TSaleData } from "@/types/saleTagTypes";
+import { TSale, TSaleCreate, TSaleData } from "@/types/saleTagTypes";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const salesApi = createApi({
@@ -14,7 +14,7 @@ export const salesApi = createApi({
       query: (id: string) => `/api/v1/sale/${id}`,
       providesTags: ["Sales"],
     }),
-    createSale: builder.mutation<TSale, Partial<TSale>>({
+    createSale: builder.mutation<TSaleData, Partial<TSaleCreate>>({
       query: (payload) => ({
         url: "/api/v1/sale",
         method: "POST",
@@ -26,8 +26,8 @@ export const salesApi = createApi({
       invalidatesTags: ["Sales"],
     }),
     updateSale: builder.mutation<
-      TSale,
-      { id: string; payload: Partial<TSale> }
+      TSaleData,
+      { id: string; payload: Partial<TSaleCreate> }
     >({
       query: ({ id, payload }) => ({
         url: `/api/v1/sale/${id}`,

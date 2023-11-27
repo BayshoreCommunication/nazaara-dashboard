@@ -1,11 +1,11 @@
-import { SaleTagForm, SaleTagList } from "@/components/saleTag";
+import { FestivalTagForm, FestivalTagList } from "@/components/festivalTag";
 
-const SaleTag = () => {
+const FestivalTag = () => {
   return (
     <>
       <div className="flex gap-10 container">
         <div className="flex-[6] overflow-x-auto">
-          <h1 className="text-lg font-semibold mb-2">Sale Tags</h1>
+          <h1 className="text-lg font-semibold mb-2">Festival Tags</h1>
           <table className="overflow-auto table bg-basic">
             <thead>
               <tr>
@@ -17,16 +17,16 @@ const SaleTag = () => {
                 <th>Actions</th>
               </tr>
             </thead>
-            <SaleTagList />
+            <FestivalTagList />
           </table>
         </div>
         <div className="flex-[3]">
-          <h1 className="text-lg font-semibold mb-2">Add New Sale Tag</h1>
-          <SaleTagForm />
+          <h1 className="text-lg font-semibold mb-2">Add New Festival Tag</h1>
+          <FestivalTagForm />
         </div>
       </div>
     </>
   );
 };
 
-export default SaleTag;
+export default FestivalTag;

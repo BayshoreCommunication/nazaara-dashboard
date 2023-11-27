@@ -1,16 +1,25 @@
+import { TGetProduct } from "./types";
+
 export type TSaleData = {
   success: boolean;
   message: string;
-  saleData: TSale[];
+  data: TSale[];
 };
 
 export type TSale = {
-  _id: string;
-  saleTitle: string;
-  navCategoryTitle: string;
-  productSlug: string[];
+  _id?: string;
+  title: string;
+  slug: string;
+  products: TGetProduct[];
   status: string;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
+  createdAt?: string;
+  updatedAt?: string;
+  __v?: number;
+};
+
+export type TSaleCreate = {
+  title: string;
+  slug: string;
+  products: string[];
+  status: string;
 };

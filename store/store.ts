@@ -12,7 +12,8 @@ import { subscribeApi } from "@/services/subscriberApi";
 import { hiringApi } from "@/services/hiringApi";
 import { erpApi } from "@/services/erpApi";
 import { orderApi } from "@/services/orderApi";
-import { salesApi } from "@/services/navSaleApi";
+import { salesApi } from "@/services/salesApi";
+import { festivalsApi } from "@/services/festivalsApi";
 import { bestSellingApi } from "@/services/bestSellingApi";
 import { promotionsApi } from "@/services/promotionApi";
 import productSlice from "@/store/slice/productSlice";
@@ -31,6 +32,7 @@ const rootReducer = combineReducers({
   [hiringApi.reducerPath]: hiringApi.reducer,
   [erpApi.reducerPath]: erpApi.reducer,
   [salesApi.reducerPath]: salesApi.reducer,
+  [festivalsApi.reducerPath]: festivalsApi.reducer,
   [bestSellingApi.reducerPath]: bestSellingApi.reducer,
   [orderApi.reducerPath]: orderApi.reducer,
   products: productSlice,
@@ -55,6 +57,7 @@ export const setupStore = (preloadedState?: PreloadedState<RootState>) => {
         .concat(couponsApi.middleware)
         .concat(erpApi.middleware)
         .concat(salesApi.middleware)
+        .concat(festivalsApi.middleware)
         .concat(bestSellingApi.middleware)
         .concat(orderApi.middleware),
 

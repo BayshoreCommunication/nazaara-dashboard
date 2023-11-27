@@ -1,4 +1,9 @@
-import { TSale, TSaleData } from "@/types/saleTagTypes";
+import {
+  TFastival,
+  TFastivalCreate,
+  TFastivalData,
+  TFastivalDataOne,
+} from "@/types/festivalTagTypes";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const festivalsApi = createApi({
@@ -6,15 +11,15 @@ export const festivalsApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: `${process.env.API_URL}` }),
   tagTypes: ["Festivals"],
   endpoints: (builder) => ({
-    getFestivals: builder.query<TSaleData, void>({
+    getFestivals: builder.query<TFastivalData, void>({
       query: () => `/api/v1/festival`,
       providesTags: ["Festivals"],
     }),
-    getFestivalById: builder.query<TSaleData, string>({
+    getFestivalById: builder.query<TFastivalDataOne, string>({
       query: (id: string) => `/api/v1/festival/${id}`,
       providesTags: ["Festivals"],
     }),
-    createFestival: builder.mutation<TSale, Partial<TSale>>({
+    createFestival: builder.mutation<TFastivalData, Partial<TFastivalCreate>>({
       query: (payload) => ({
         url: "/api/v1/festival",
         method: "POST",
@@ -26,8 +31,8 @@ export const festivalsApi = createApi({
       invalidatesTags: ["Festivals"],
     }),
     updateFestival: builder.mutation<
-      TSale,
-      { id: string; payload: Partial<TSale> }
+      TFastivalData,
+      { id: string; payload: Partial<TFastival> }
     >({
       query: ({ id, payload }) => ({
         url: `/api/v1/festival/${id}`,

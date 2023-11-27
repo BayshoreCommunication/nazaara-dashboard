@@ -1,13 +1,13 @@
 "use client";
 import React from "react";
-import { useGetSalesQuery } from "@/services/salesApi";
+import { useGetFestivalsQuery } from "@/services/festivalsApi";
 import Loader from "../Loader";
 import { MdDelete } from "react-icons/md";
 import { TbEdit } from "react-icons/tb";
 import { showLastNLeters } from "@/helpers";
 
-const SaleTagList = () => {
-  const { data: salesData, isLoading, isError } = useGetSalesQuery();
+const FestivalTagList = () => {
+  const { data: festivalData, isLoading, isError } = useGetFestivalsQuery();
 
   const dataLoadingAndErroeHandler = () => {
     if (isError) {
@@ -29,7 +29,7 @@ const SaleTagList = () => {
       );
     }
 
-    if (salesData?.data?.length === 0) {
+    if (festivalData?.data?.length === 0) {
       return (
         <tr>
           <td colSpan={6} className="text-center">
@@ -38,7 +38,7 @@ const SaleTagList = () => {
         </tr>
       );
     } else {
-      return salesData?.data?.map((elem, index) => (
+      return festivalData?.data?.map((elem, index) => (
         <tr key={index}>
           <td>{index + 1}</td>
           <td>{elem.title}</td>
@@ -71,4 +71,4 @@ const SaleTagList = () => {
   return <tbody>{dataLoadingAndErroeHandler()}</tbody>;
 };
 
-export { SaleTagList };
+export { FestivalTagList };
