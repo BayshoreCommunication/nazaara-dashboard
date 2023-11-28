@@ -5,10 +5,11 @@ const Select = dynamic(() => import("react-select"), {
 });
 import { useGetProductsQuery } from "@/services/productApi";
 import { useCreateFestivalMutation } from "@/services/festivalsApi";
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 import { TOptionSelect } from "@/types/types";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { cloudinaryImageUpload } from "@/helpers";
 
 const customStyles = {
   control: (provided: any, state: any) => ({
@@ -22,7 +23,7 @@ const customStyles = {
 };
 
 const FestivalTagForm = () => {
-  const { data: productsData, isLoading } = useGetProductsQuery({});
+  const { data: productsData } = useGetProductsQuery({});
   const [selectedOption, setSelectedOption] = useState([]);
   const [createFestival] = useCreateFestivalMutation();
 
@@ -36,25 +37,29 @@ const FestivalTagForm = () => {
   }));
 
   // use a proper type for the event argument here instead of any
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: any) => {
+    // formData.append("products", JSON.stringify(selectedOption));
     event.preventDefault();
-    const formData = new FormData(event.currentTarget as HTMLFormElement);
 
-    formData.append("products", selectedOption as string[] | any);
+    const featuredImage = await cloudinaryImageUpload(
+      event.target.featuredImage.files[0],
+      "upload"
+    );
 
-    const formDataObj = Object.fromEntries(formData);
+    // wait for featured image to be uploaded to cloudinary and then create festival
+    if (featuredImage) {
+      const festival = await createFestival({
+        title: event.target.title.value,
+        products: selectedOption,
+        featuredImage: featuredImage,
+        status: event.target.status.value,
+      }).unwrap();
 
-    if (formDataObj.featuredImage) {
-      const formData = new FormData();
-      formData.append("file", formDataObj.featuredImage);
-      formData.append("upload_preset", process.env.UPLOAD_PRESET as string);
-      const response = await axios.post(
-        process.env.API_BASE_URL as string,
-        formData
-      );
-      console.log("response.data.secure_url", response.data.secure_url);
-    } else {
-      console.log("response.data.secure_url", formDataObj.featuredImage);
+      if (festival) {
+        toast.success("Festival Tag Created Successfully");
+      } else {
+        toast.error("Something went wrong");
+      }
     }
   };
 

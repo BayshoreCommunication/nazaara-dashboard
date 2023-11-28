@@ -48,7 +48,7 @@ const DeliveryPartner = () => {
           formData.append("file", image.file);
           formData.append("upload_preset", process.env.OTHER_PRESET as string);
           const response = await axios.post(
-            process.env.API_BASE_URL as string,
+            process.env.CLOUDINARY_URL as string,
             formData
           );
           return response.data.secure_url;
