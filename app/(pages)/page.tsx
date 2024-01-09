@@ -1,4 +1,3 @@
-"use client";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { BiCategory } from "react-icons/bi";
 import { BsChatSquareTextFill, BsFillBoxFill } from "react-icons/bs";
@@ -8,15 +7,7 @@ import PieChart from "@/components/PieChart";
 import RecentOrder from "@/components/home/RecentOrder";
 import RecentCustomer from "@/components/home/RecentCustomer";
 import Product from "@/components/Product";
-import {
-  useGetContactByIDQuery,
-  useGetContactsQuery,
-} from "@/services/contactApi";
-import { useGetOrdersQuery } from "@/services/orderApi";
-import {
-  useGetProductsCategoriesQuery,
-  useGetProductsQuery,
-} from "@/services/productApi";
+import FetchServerSideData from "@/components/ServerSideDataFetching";
 
 interface CardDataItem {
   icon: JSX.Element;
@@ -25,71 +16,45 @@ interface CardDataItem {
   value: number;
 }
 
-const Home = (): JSX.Element => {
-  const { data: totalCategory, isError } = useGetProductsCategoriesQuery();
-
-  const { data: availableProduct } = useGetProductsQuery({
-    page: 1,
-    limit: 10,
-  });
-
-  const { data: getOrders } = useGetOrdersQuery();
-
-  const { data: allContacts } = useGetContactsQuery();
-
-  const pendingMsg = allContacts?.data.filter((el) => el.status === "pending");
-
-  const pendingorder = getOrders?.data.filter(
-    (el) => el.deliveryStatus === "pending"
-  );
-
-  const readyToDeliver = getOrders?.data.filter(
-    (el) => el.deliveryStatus === "ready to deliver"
-  );
-
+const HomePage = async () => {
   const cardData: CardDataItem[] = [
     {
       icon: <BiCategory size={24} />,
       text: "Total Category",
       bgColor: "bg-[#FC8D68]",
-      value: totalCategory ? totalCategory.length : 0,
+      value: 0,
     },
     {
       icon: <AiOutlineShoppingCart size={24} />,
       text: "New Order",
       bgColor: "bg-secondary",
-      value: pendingorder ? pendingorder.length : 0,
+      value: 0,
+      // value: pendingorder ? pendingorder.length : 0,
     },
     {
       icon: <TbTruckDelivery size={24} />,
       text: "Ready to Deliver",
       bgColor: "bg-warning",
-      value: readyToDeliver ? readyToDeliver.length : 0,
+      value: 0,
     },
     {
       icon: <BsFillBoxFill size={24} />,
       text: "Available Product",
       bgColor: "bg-[#77CFBB]",
-      value: availableProduct ? availableProduct.total : 0,
+      value: 0,
     },
     {
       icon: <BsChatSquareTextFill size={24} />,
       text: "Contacts",
       bgColor: "bg-[#766EDA]",
-      value: pendingMsg ? pendingMsg.length : 0,
+      value: 0,
     },
   ];
 
-  // const {
-  //   data: datas,
-  //   error,
-  //   isLoading,
-  //   isFetching,
-  //   isSuccess,
-  //   isUninitialized,
-  // } = useGetContactByIDQuery("64731c5526d071ac04063cfc");
+  const orderApiUrl = `${process.env.API_URL}/api/v1/order/recent-five`;
 
-  // datas != undefined && console.log("data", datas);
+  const orderData = await FetchServerSideData(orderApiUrl);
+  console.log("order data", orderData);
 
   return (
     <div className="container">
@@ -120,7 +85,9 @@ const Home = (): JSX.Element => {
       <div className="grid grid-cols-2 gap-6 mt-6">
         <div className="w-full bg-basic p-4 rounded-lg">
           <h1 className="font-semibold text-md mb-3 ml-3">Recent Orders</h1>
-          <RecentOrder />
+          {orderData.success && orderData.data.length > 0 && (
+            <RecentOrder orderData={orderData.data} />
+          )}
         </div>
         <div className="w-full bg-basic p-4 rounded-lg">
           <h1 className="font-semibold text-md mb-3 ml-3">Recent Customers</h1>
@@ -135,4 +102,4 @@ const Home = (): JSX.Element => {
   );
 };
 
-export default Home;
+export default HomePage;
