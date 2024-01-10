@@ -1,16 +1,12 @@
 import React from "react";
 import SecondaryButton from "../SecondaryButton";
-import PrimaryButton from "../PrimaryButton";
 import Link from "next/link";
 import { Order } from "@/types/orderType";
-
-const RecentOrder = ({
-  orderData,
-}: {
-  orderData: Order;
-}): React.ReactElement => {
-  console.log("orderfdfdf", orderData);
-
+import { formatDate } from "@/helpers/formatDate";
+interface RecentOrderProps {
+  orderData: Order[];
+}
+const RecentOrder = ({ orderData }: RecentOrderProps): React.ReactElement => {
   return (
     <div className="overflow-x-auto">
       <table className="table bg-basic">
@@ -26,24 +22,32 @@ const RecentOrder = ({
         </thead>
         <tbody>
           {/* row need to map order data*/}
-          <tr>
-            <td>Anarkoli Dress</td>
-            <td>1</td>
-            <td>May, 29 2023</td>
-            <td className="flex gap-2">
-              <Link href="/orders/aswfasda">
-                <SecondaryButton name="Edit" />
-              </Link>
-              <PrimaryButton name="Delete" />
-            </td>
-          </tr>
+          {orderData.map((data) => (
+            <tr key={data._id}>
+              <td className="flex gap-2 flex-wrap">
+                {data.product.map((product) => (
+                  <span className="border bg-gray-300 px-1" key={product._id}>
+                    {product.sku}
+                  </span>
+                ))}
+              </td>
+              <td>
+                {data.product.reduce((sum, item) => sum + item.quantity, 0)}
+              </td>
+              <td>
+                <span className="text-xl">৳</span>
+                {` ${data.totalAmount}/-`}
+              </td>
+              <td>{formatDate(data.createdAt)}</td>
+              <td>
+                <Link href={`/orders/${data._id}`}>
+                  <SecondaryButton name="Details" />
+                </Link>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
-      {/* <CustomerViewProfileDrawer
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
-          toggleDrawer={toggleDrawer}
-        /> */}
     </div>
   );
 };

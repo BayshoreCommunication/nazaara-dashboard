@@ -13,7 +13,11 @@ const nextConfig = {
     API_SECRET: process.env.API_SECRET,
   },
   images: {
-    domains: ["anzara.s3.amazonaws.com", "res.cloudinary.com"],
+    domains: [
+      "anzara.s3.amazonaws.com",
+      "res.cloudinary.com",
+      "lh3.googleusercontent.com",
+    ],
   },
 };
 

@@ -174,6 +174,8 @@ export type TProduct = {
   salePrice: number;
   variant: TVariant[];
   size: string[];
+  saleIds?: [];
+  festivalIds?: [];
   description: string;
   erpCategory: string;
   erpSubCategory: string;

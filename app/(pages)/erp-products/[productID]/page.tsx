@@ -12,6 +12,9 @@ import { toCapitalize } from "@/helpers";
 import { useGetCategoriesQuery } from "@/services/categoryApi";
 import { useGetSubCategoriesQuery } from "@/services/subcategory";
 import { useGetSalesQuery } from "@/services/salesApi";
+import axios from "axios";
+import { ISaleTag } from "@/types/saleTypes";
+import { IFestival } from "@/types/festivalTypes";
 const Select = dynamic(() => import("react-select"), {
   ssr: false,
 });
@@ -50,9 +53,50 @@ const options = [
 ];
 
 const AddProduct: FC<ErpIdProps> = ({ params }) => {
+  const [saleData, setSaleData] = useState<{ data: ISaleTag[] }>();
+  const [festivalData, setFestivalData] = useState<{ data: IFestival[] }>();
+
+  const optionsForSale = saleData?.data?.map((data) => ({
+    value: data._id,
+    label: data.title,
+  }));
+  const optionsForFestival = festivalData?.data?.map((data) => ({
+    value: data._id,
+    label: data.title,
+  }));
+
+  console.log("opert", optionsForSale);
+
+  //fetch sale data
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.API_URL}/api/v1/sale/published`
+        );
+        setSaleData(response.data);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+    fetchData();
+
+    const fetchFestivalData = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.API_URL}/api/v1/festival/published`
+        );
+        setFestivalData(response.data);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+    fetchFestivalData();
+  }, []);
+
   const { data: categories } = useGetCategoriesQuery();
   const { data: subCategories } = useGetSubCategoriesQuery();
-  const { data: sales } = useGetSalesQuery();
+  // const { data: sales } = useGetSalesQuery();
   const singleProductId = params.productID as number;
   const router = useRouter();
   const [createProduct] = useCreateProductMutation();
@@ -65,6 +109,8 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
     salePrice: 0,
     variant: [],
     size: [],
+    saleIds: [],
+    festivalIds: [],
     description: "",
     erpCategory: "",
     erpSubCategory: "",
@@ -239,6 +285,16 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
   };
 
   const defaultValueOptions = formData.size.map((el) => ({
+    value: el,
+    label: el,
+  }));
+
+  const defaultValueOptionsForSale = formData?.saleIds?.map((el) => ({
+    value: el,
+    label: el,
+  }));
+
+  const defaultValueOptionsForFestival = formData?.festivalIds?.map((el) => ({
     value: el,
     label: el,
   }));
@@ -471,6 +527,89 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
                       </div>
                     </div>
                     <div className="bg-gray-100 py-3 flex flex-col gap-y-3 rounded-md">
+                      <div>
+                        <label className="font-medium" htmlFor="category">
+                          Sale
+                        </label>
+                        {/* <select
+                          className="w-full h-[42px] mt-1 border border-gray-400 rounded-md p-2 focus:outline-none text-gray-500"
+                          required
+                          name="saleIds"
+                          value={formData.saleIds}
+                          onChange={handleChange}
+                        >
+                          <option value="" disabled>
+                            Choose Sale
+                          </option>
+                          {saleData?.data?.map((sale) => (
+                            <option key={sale._id} value={sale._id}>
+                              {sale.title}
+                            </option>
+                          ))}
+                        </select> */}
+                        <Select
+                          // className="w-full rounded-md focus:outline-none text-gray-500"
+                          onChange={handleSelectionChange}
+                          defaultValue={defaultValueOptionsForSale}
+                          placeholder="Choose Sale"
+                          styles={customStyles}
+                          required
+                          theme={(theme) => ({
+                            ...theme,
+                            borderRadius: 5,
+                            // padding: 3,
+                            colors: {
+                              ...theme.colors,
+                              primary25: "#e6e6e6",
+                              primary: "rgb(156 163 175/1)",
+                            },
+                          })}
+                          options={optionsForSale}
+                          isMulti={true}
+                        />
+                      </div>
+                      <div>
+                        <label className="font-medium" htmlFor="category">
+                          Festival
+                        </label>
+                        {/* <select
+                          className="w-full h-[42px] mt-1 border border-gray-400 rounded-md p-2 focus:outline-none text-gray-500"
+                          required
+                          name="festivalIds"
+                          value={formData.festivalIds}
+                          onChange={handleChange}
+                        >
+                          <option value="" disabled>
+                            Choose Sale
+                          </option>
+                          {festivalData?.data?.map((festival) => (
+                            <option key={festival._id} value={festival._id}>
+                              {festival.title}
+                            </option>
+                          ))}
+                        </select> */}
+                        <Select
+                          // className="w-full rounded-md focus:outline-none text-gray-500"
+                          onChange={handleSelectionChange}
+                          defaultValue={defaultValueOptionsForSale}
+                          placeholder="Choose Festival"
+                          styles={customStyles}
+                          required
+                          theme={(theme) => ({
+                            ...theme,
+                            borderRadius: 5,
+                            // padding: 3,
+                            colors: {
+                              ...theme.colors,
+                              primary25: "#e6e6e6",
+                              primary: "rgb(156 163 175/1)",
+                            },
+                          })}
+                          options={optionsForFestival}
+                          isMulti={true}
+                        />
+                      </div>
+
                       <div>
                         <label className="font-medium" htmlFor="status">
                           Stock

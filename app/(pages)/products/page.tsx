@@ -1,5 +1,5 @@
 "use client";
-import UtilityBtn from "@/components/UtilityBtn";
+// import UtilityBtn from "@/components/UtilityBtn";
 import Loader from "@/components/Loader";
 import {
   useGetProductsQuery,
@@ -183,7 +183,7 @@ const Products: any = () => {
                 alt="nazaara main logo"
                 width={248}
                 height={248}
-                className="w-[70px] h-[70px]"
+                className="w-[64px] h-[80px] rounded-md"
               />
             ) : (
               <Image
@@ -191,14 +191,20 @@ const Products: any = () => {
                 alt="nazaara main logo"
                 width={248}
                 height={248}
-                className="w-[70px] h-[70px]"
+                className="w-[64px] h-[80px] rounded-md"
               />
             )}
           </td>
           <td>{elem.erpId}</td>
-          <td>{elem.productName}</td>
+          <td>{elem.sku}</td>
+          <td>{elem.erpCategory}</td>
+          <td>{elem.erpSubCategory}</td>
           <td>{elem.category}</td>
           <td>{elem.subCategory}</td>
+          <td>
+            <span className="text-xl">৳</span>
+            {elem.regularPrice}
+          </td>
           <td>
             <span className="text-xl">৳</span>
             {elem.salePrice}
@@ -218,7 +224,7 @@ const Products: any = () => {
                   pathname: "/products/image-upload",
                   query: { id: `${elem._id}` },
                 }}
-                className="text-white bg-red-800 py-2 px-3 rounded-md shadow-md"
+                className="text-white bg-red-800 py-1 px-2 rounded-md shadow-md text-xs"
               >
                 Edit Image
               </Link>
@@ -227,13 +233,13 @@ const Products: any = () => {
                   pathname: "/products/update-product",
                   query: { id: `${elem._id}` },
                 }}
-                className="text-white bg-red-800 py-2 px-3 rounded-md shadow-md"
+                className="text-white bg-red-800 py-1 px-2 rounded-md shadow-md text-xs"
               >
                 Edit Details
               </Link>
               <button
                 onClick={() => handleDelete(elem._id as string)}
-                className="text-white bg-red-800 py-2 px-3 rounded-md shadow-md"
+                className="text-white bg-red-800 py-1 px-2 rounded-md shadow-md text-xs"
               >
                 Delete
               </button>
@@ -262,14 +268,14 @@ const Products: any = () => {
         <AiOutlineShoppingCart size={18} color="gray" />
         <span className="font-medium text-lg">Products</span>
       </div>
-      <div className="flex justify-end py-4">
+      {/* <div className="flex justify-end py-4">
         <button
           className="text-white bg-red-800 py-2 px-3 rounded-md shadow-md"
           onClick={syncErpDataHandler}
         >
           Sync with erp data
         </button>
-      </div>
+      </div> */}
       {/* product component  */}
       <div className="overflow-x-auto">
         <table className="table bg-basic">
@@ -278,9 +284,12 @@ const Products: any = () => {
             <tr>
               <th>Image</th>
               <th>Erp ID</th>
-              <th>Product Name</th>
-              <th>Category</th>
-              <th>Sub Category</th>
+              <th>Sku</th>
+              <th>Erp-Category</th>
+              <th>Erp-SubCategory</th>
+              <th>Web-Category</th>
+              <th>Web-SubCategory</th>
+              <th>Regular Price</th>
               <th>Sale Price</th>
               <th>Stock</th>
               <th>Status</th>

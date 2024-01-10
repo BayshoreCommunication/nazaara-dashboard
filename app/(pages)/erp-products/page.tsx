@@ -1,13 +1,14 @@
 "use client";
-import UtilityBtn from "@/components/UtilityBtn";
+// import UtilityBtn from "@/components/UtilityBtn";
 import Loader from "@/components/Loader";
-import { useGetAllErpDataQuery } from "@/services/erpApi";
+// import { useGetAllErpDataQuery } from "@/services/erpApi";
 import { useGetProductErpIdQuery } from "@/services/productApi";
 import { TErpData } from "@/types/types";
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { AiOutlineShoppingCart } from "react-icons/ai";
+import axios from "axios";
 
 const ErpProducts = () => {
   const { data: productsErpId } = useGetProductErpIdQuery();
@@ -18,23 +19,25 @@ const ErpProducts = () => {
   const url = `https://erp.anzaralifestyle.com/api/product/Details/?format=json&page=${currentPage}&page_size=${pageSize}`;
 
   const [erpData, setErpData] = useState<TErpData>();
-  const getData = useCallback(async () => {
-    try {
-      const response = await fetch(url, {
-        headers: {
-          Authorization: `Token ${process.env.AUTH_TOKEN}`,
-        },
-      });
-      const data = await response.json();
-      setErpData(data);
-    } catch (err) {
-      console.log("error", err);
-    }
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(url, {
+          headers: {
+            Authorization: `Token ${process.env.AUTH_TOKEN}`,
+          },
+        });
+        // const data = await response.json();
+        setErpData(response.data);
+      } catch (err) {
+        console.error("Error fetching erp product data:", err);
+      }
+    };
+
+    fetchData();
   }, [url]);
 
-  useEffect(() => {
-    getData();
-  }, [getData, url]);
+  // console.log("erp data", erpData);
 
   //pagination
   const totalPages = Math.ceil(erpData?.count! / pageSize);
@@ -54,7 +57,7 @@ const ErpProducts = () => {
   const handlePageClick = (page: number) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
-      getData();
+      // getData();
     }
   };
 
@@ -62,48 +65,45 @@ const ErpProducts = () => {
     const pageNumbers = [];
     const ellipsis = (
       <button
-        key={Math.random() * new Date().getTime()}
+        key="ellipsis"
         className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 border border-gray-300"
       >
         ...
       </button>
     );
 
-    const maxButtonsToShow = 5; // Number of buttons to show at a time
+    const maxButtonsToShow = 4; // Number of buttons to show at a time
     const halfMaxButtons = Math.floor(maxButtonsToShow / 2);
 
-    let startPage = currentPage - halfMaxButtons;
-    let endPage = currentPage + halfMaxButtons;
+    let startPage = Math.max(1, currentPage - halfMaxButtons);
+    let endPage = Math.min(totalPages, startPage + maxButtonsToShow - 1);
 
-    if (startPage < 1) {
-      startPage = 1;
-      endPage = Math.min(totalPages, maxButtonsToShow);
-    }
-
-    if (endPage > totalPages) {
-      endPage = totalPages;
-      startPage = Math.max(1, totalPages - maxButtonsToShow + 1);
+    if (endPage - startPage < maxButtonsToShow - 1) {
+      startPage = Math.max(1, endPage - maxButtonsToShow + 1);
     }
 
     if (startPage > 1) {
       pageNumbers.push(
         <button
-          key={Math.random() * new Date().getTime()}
+          key={1}
           className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 border border-gray-300"
           onClick={() => handlePageClick(1)}
         >
           1
         </button>
       );
+
       if (startPage > 2) {
-        pageNumbers.push(ellipsis);
+        if (startPage > 3) {
+          pageNumbers.push(ellipsis);
+        }
       }
     }
 
     for (let i = startPage; i <= endPage; i++) {
       pageNumbers.push(
         <button
-          key={Math.random() * new Date().getTime()}
+          key={i}
           className={`flex items-center justify-center px-3 h-8 leading-tight text-gray-500 border border-gray-300 ${
             currentPage === i ? "bg-secondary text-white" : ""
           }`}
@@ -116,11 +116,14 @@ const ErpProducts = () => {
 
     if (endPage < totalPages) {
       if (endPage < totalPages - 1) {
-        pageNumbers.push(ellipsis);
+        if (endPage < totalPages - 2) {
+          pageNumbers.push(ellipsis);
+        }
       }
+
       pageNumbers.push(
         <button
-          key={Math.random() * new Date().getTime()}
+          key={totalPages}
           className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 border border-gray-300"
           onClick={() => handlePageClick(totalPages)}
         >
@@ -145,7 +148,7 @@ const ErpProducts = () => {
         <div className="overflow-x-auto">
           <table className="table bg-basic">
             {/* head */}
-            <thead className="">
+            <thead className="text-gray-700">
               <tr>
                 <th>Image</th>
                 <th>ERP ID</th>

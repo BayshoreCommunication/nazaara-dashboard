@@ -9,6 +9,7 @@ export interface ShippingAddress {
 }
 
 export interface ProductDetails {
+  _id: string;
   productDetails: string; // Assuming this is a unique identifier for a product
   title: string;
   sku: string;
@@ -34,6 +35,7 @@ export interface TransactionDetails {
 }
 
 export interface Order {
+  _id: string;
   transactionId: string;
   paymentMethod: "partial-payment" | "full-payment";
   shippingMethod: string;

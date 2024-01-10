@@ -1,41 +1,52 @@
-"use client";
-import React, { useState } from "react";
-import CustomerViewProfileDrawer from "../CustomerViewProfileDrawer";
+import React from "react";
+import FetchServerSideData from "../ServerSideDataFetching";
+import Image from "next/image";
+import { UserData } from "@/types/userTypes";
 
-const RecentCustomer = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const toggleDrawer = (id: string) => {
-    setIsOpen((prevState) => !prevState);
-  };
+const RecentCustomer = async () => {
+  const url = `${process.env.API_URL}/api/v1/user?limit=5&userType=user`;
+  const userData: { data: UserData[] } = await FetchServerSideData(url);
+
   return (
     <div className="overflow-x-auto">
-      <table className="table bg-basic">
+      <table className="table">
         {/* head */}
-        <thead className="">
+        <thead>
           <tr>
-            <th>Name</th>
+            <th>Info</th>
+            <th>Email</th>
             <th>Phone</th>
-            <th>Action</th>
           </tr>
         </thead>
-        {/* <tbody>
-          <tr>
-            <td>Anarkoli Dress</td>
-            <td>01393933939</td>
-            <td className="flex gap-2">
-              <button onClick={toggleDrawer} className="text-[#5B94FC]">
-                View Profile
-              </button>
-            </td>
-          </tr>
-        </tbody> */}
+        <tbody>
+          {/* row */}
+          {userData.data.map((user) => (
+            <tr key={user._id}>
+              <td>
+                <div className="flex items-center gap-3">
+                  <div className="avatar">
+                    <div className="mask mask-squircle w-8 h-8">
+                      {user?.imageUrl && (
+                        <Image
+                          src={user.imageUrl}
+                          width={80}
+                          height={80}
+                          alt="User Image"
+                        />
+                      )}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="font-bold">{user.fullName}</div>
+                  </div>
+                </div>
+              </td>
+              <td>{user.email}</td>
+              <td>{user.phone}</td>
+            </tr>
+          ))}
+        </tbody>
       </table>
-      {/* <CustomerViewProfileDrawer
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        toggleDrawer={toggleDrawer}
-        selectedCustomerId={selectedCustomerId}
-      /> */}
     </div>
   );
 };

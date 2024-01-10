@@ -54,7 +54,7 @@ const HomePage = async () => {
   const orderApiUrl = `${process.env.API_URL}/api/v1/order/recent-five`;
 
   const orderData = await FetchServerSideData(orderApiUrl);
-  console.log("order data", orderData);
+  // console.log("order data", orderData);
 
   return (
     <div className="container">
@@ -84,18 +84,23 @@ const HomePage = async () => {
 
       <div className="grid grid-cols-2 gap-6 mt-6">
         <div className="w-full bg-basic p-4 rounded-lg">
-          <h1 className="font-semibold text-md mb-3 ml-3">Recent Orders</h1>
+          <h2 className="font-semibold text-md mb-3 ml-3">Recent Orders</h2>
           {orderData.success && orderData.data.length > 0 && (
             <RecentOrder orderData={orderData.data} />
           )}
         </div>
         <div className="w-full bg-basic p-4 rounded-lg">
-          <h1 className="font-semibold text-md mb-3 ml-3">Recent Customers</h1>
+          {/* <div className="flex items-center justify-between"> */}
+          <h2 className="font-semibold text-md mb-3 ml-3">Recent Customers</h2>
+          {/* <Link href={"/customers"}>
+              <SecondaryButton name="All Customers" />
+            </Link> */}
+          {/* </div> */}
           <RecentCustomer />
         </div>
       </div>
       <div className="mt-6">
-        <h1 className="font-semibold text-md mb-3 ml-3">Recent Products</h1>
+        <h2 className="font-semibold text-md mb-3 ml-3">Recent Products</h2>
         <Product />
       </div>
     </div>
