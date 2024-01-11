@@ -1,8 +1,8 @@
 "use client";
 import Editor from "@/components/Editor";
-import { FC, ChangeEvent, useState, FormEvent, useEffect } from "react";
+import { ChangeEvent, useState, FormEvent, useEffect } from "react";
 import toast from "react-hot-toast";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import {
   useGetProductByIdQuery,
   useUpdateProductMutation,
@@ -45,18 +45,19 @@ const options = [
   { value: "XXL", label: "XXL" },
 ];
 
-const UpdateProduct: FC = () => {
+interface UpdateProductProps {
+  params: {
+    id: string;
+  };
+}
+
+const UpdateProduct: React.FC<UpdateProductProps> = ({ params }) => {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const singleProductId: any = searchParams.get("id");
-  if (singleProductId === "" || singleProductId === null) {
-    router.back();
-  }
   const {
     data: productsData,
     isLoading: productsLoading,
     refetch,
-  } = useGetProductByIdQuery(singleProductId);
+  } = useGetProductByIdQuery(params.id);
 
   const [formData, setFormData] = useState<TProduct>({
     erpId: 0,
@@ -65,29 +66,27 @@ const UpdateProduct: FC = () => {
     purchasePrice: 0,
     regularPrice: 0,
     salePrice: 0,
-    preOrder: false,
+    variant: [],
     size: [],
-    variant: [
-      {
-        color: "",
-        imageUrl: [],
-      },
-    ],
-    stock: 0,
+    saleIds: [],
+    festivalIds: [],
     description: "",
-    category: "",
-    subCategory: "",
     erpCategory: "",
     erpSubCategory: "",
-    status: "",
+    category: "",
+    subCategory: "",
+    stock: 0,
+    preOrder: false,
+    status: "draft",
   });
 
   useEffect(() => {
     if (productsData?.data && productsData.data.variant) {
-      const updateVariantState = productsData.data;
-      setFormData(updateVariantState);
+      setFormData(productsData.data);
     }
   }, [productsData]);
+
+  console.log("form Data", formData);
 
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -174,37 +173,13 @@ const UpdateProduct: FC = () => {
     event.preventDefault();
     try {
       const mutationData: any = await updateProduct({
-        id: singleProductId,
+        id: params.id,
         payload: formData,
       });
       refetch();
       if (mutationData.data.status === "success") {
         router.push("/products");
         toast.success("Product updated sucessfully.", { duration: 3000 });
-        // Reset form fields
-        setFormData({
-          erpId: 0,
-          sku: "",
-          productName: "",
-          purchasePrice: 0,
-          regularPrice: 0,
-          salePrice: 0,
-          preOrder: false,
-          size: [],
-          variant: [
-            {
-              color: "",
-              imageUrl: [],
-            },
-          ],
-          stock: 0,
-          description: "",
-          category: "",
-          subCategory: "",
-          erpCategory: "",
-          erpSubCategory: "",
-          status: "",
-        });
       } else {
         toast.error("Failed to updated product!", { duration: 3000 });
       }

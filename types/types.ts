@@ -165,7 +165,7 @@ export type TProductGetOne = {
 };
 
 export type TProduct = {
-  erpId: number;
+  erpId?: number;
   sku: string;
   slug?: string;
   productName: string;

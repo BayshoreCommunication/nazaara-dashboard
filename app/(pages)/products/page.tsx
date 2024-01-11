@@ -229,10 +229,7 @@ const Products: any = () => {
                 Edit Image
               </Link>
               <Link
-                href={{
-                  pathname: "/products/update-product",
-                  query: { id: `${elem._id}` },
-                }}
+                href={`/products/update-product/${elem._id}`}
                 className="text-white bg-red-800 py-1 px-2 rounded-md shadow-md text-xs"
               >
                 Edit Details

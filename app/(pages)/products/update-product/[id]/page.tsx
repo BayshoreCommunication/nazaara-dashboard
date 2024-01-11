@@ -3,7 +3,11 @@ import Editor from "@/components/Editor";
 import { FC, ChangeEvent, useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import { useCreateProductMutation } from "@/services/productApi";
+import {
+  useCreateProductMutation,
+  useGetProductByIdQuery,
+  useUpdateProductMutation,
+} from "@/services/productApi";
 import dynamic from "next/dynamic";
 import { ErpIdProps, TProduct } from "@/types/types";
 import Loader from "@/components/Loader";
@@ -48,14 +52,17 @@ const options = [
   { value: "XXL", label: "XXL" },
 ];
 
-const AddProduct: FC<ErpIdProps> = ({ params }) => {
+const UpdateProduct: FC<ErpIdProps> = ({ params }) => {
   const [saleData, setSaleData] = useState<{ data: ISaleTag[] }>();
   const [festivalData, setFestivalData] = useState<{ data: IFestival[] }>();
+
+  const [updateProduct] = useUpdateProductMutation();
 
   const optionsForSale = saleData?.data?.map((data) => ({
     value: data._id,
     label: data.title,
   }));
+
   const optionsForFestival = festivalData?.data?.map((data) => ({
     value: data._id,
     label: data.title,
@@ -92,8 +99,11 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
 
   const { data: categories } = useGetCategoriesQuery();
   const { data: subCategories } = useGetSubCategoriesQuery();
+
+  console.log("subcategories", subCategories);
+
   // const { data: sales } = useGetSalesQuery();
-  const singleProductId = params.productID as number;
+  const singleProductId = params.id as number;
   const router = useRouter();
   const [createProduct] = useCreateProductMutation();
   const [formData, setFormData] = useState<TProduct>({
@@ -114,53 +124,60 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
     subCategory: "",
     stock: 0,
     preOrder: false,
-    status: "draft",
+    status: "",
   });
 
-  const { data: productsData, isLoading: productsLoading } =
-    useGetErpDataByIdQuery({
-      singleProductId,
-    });
+  // const { data: productsData, isLoading: productsLoading } =
+  //   useGetErpDataByIdQuery({
+  //     singleProductId,
+  //   });
+  const {
+    data: productsData,
+    isLoading: productsLoading,
+    refetch,
+  } = useGetProductByIdQuery(params.id);
 
-  // console.log("erp data", productsData);
+  console.log("erp data", productsData);
 
   useEffect(() => {
     if (productsData) {
       setFormData({
-        erpId: productsData.id ? productsData.id : 0,
-        sku: productsData.title ? productsData.title : "",
-        productName: "",
-        purchasePrice: productsData.purchase_price
-          ? Number(productsData.purchase_price)
-          : 0,
-        regularPrice: productsData.selling_price
-          ? Number(productsData.selling_price)
-          : 0,
-        salePrice: productsData.selling_price
-          ? Number(productsData.selling_price)
-          : 0,
-        variant: [
-          productsData.color && {
-            color: toCapitalize(productsData.color),
-            imageUrl: [productsData.ProductImage[0].photo],
-          },
-        ],
-        size: [productsData.size ? productsData.size : ""],
-        description: "",
-        erpCategory: productsData.Deatils
-          ? productsData?.Deatils.map((el: any) => el.main_category)[0]
+        erpId: productsData.data.erpId ? productsData.data.erpId : 0,
+        sku: productsData.data.sku ? productsData.data.sku : "",
+        productName: productsData.data.productName
+          ? productsData.data.productName
           : "",
-        erpSubCategory: productsData ? productsData.category : "",
-        category: "",
-        subCategory: "",
-        stock: productsData.ProductDetails
-          ? Number(productsData?.ProductDetails.quantity)
+        purchasePrice: productsData.data.purchasePrice
+          ? Number(productsData.data.purchasePrice)
           : 0,
-        preOrder: false,
-        status: "draft",
+        regularPrice: productsData.data.regularPrice
+          ? Number(productsData.data.regularPrice)
+          : 0,
+        salePrice: productsData.data.salePrice
+          ? Number(productsData.data.salePrice)
+          : 0,
+        variant: productsData.data.variant.map((variant) => ({
+          color: toCapitalize(variant.color),
+          imageUrl: variant.imageUrl.map((image) => image),
+        })),
+        size: productsData.data.size
+          ? productsData.data.size.map((size) => size)
+          : [],
+        saleIds: productsData.data.saleIds,
+        festivalIds: productsData.data.festivalIds,
+        description: productsData.data.description,
+        erpCategory: productsData.data.erpCategory,
+        erpSubCategory: productsData.data.erpSubCategory,
+        category: productsData.data.category._id,
+        subCategory: productsData.data.subCategory._id,
+        stock: Number(productsData.data.stock),
+        preOrder: productsData.data.preOrder,
+        status: productsData.data.status,
       });
     }
   }, [productsData, formData.status]);
+
+  console.log("form data", formData);
 
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -170,6 +187,18 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
       [event.target.name]: event.target.value,
     });
   };
+
+  // const handleChange = (
+  //   event: ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  // ) => {
+  //   const { name, value, type } = event.target;
+
+  //   setFormData((prevFormData) => ({
+  //     ...prevFormData,
+  //     [name]: type === "checkbox" ? event.target.checked : value,
+  //   }));
+  // };
+
   const handleSelectionChange = (option: any | null) => {
     if (option) {
       setFormData({
@@ -265,24 +294,24 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
     };
 
     // console.log("form data", formData);
-    // console.log("submit form", submitData);
+    console.log("submit form", submitData);
 
     // color should be toCapitalize before sending to backend
 
     try {
-      // each variant color should to toCapitalize before sending to backend
-      const response: any = await createProduct(submitData);
-      // refetch();
-
-      if (response?.data?.success === true) {
+      const mutationData: any = await updateProduct({
+        id: params.id,
+        payload: submitData,
+      });
+      refetch();
+      if (mutationData) {
         router.push("/products");
-        toast.success("New Product Created Successfully👍");
+        toast.success("Product updated sucessfully.", { duration: 3000 });
       } else {
-        toast.error(`Failed to create the product!`);
+        toast.error("Failed to updated product!", { duration: 3000 });
       }
-    } catch (error) {
-      console.error("Failed to create new product!", error);
-      toast.error(`Something went wrong ${error}`);
+    } catch {
+      toast.error("Something went wrong!", { duration: 3000 });
     }
   };
 
@@ -291,19 +320,23 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
     label: el,
   }));
 
-  const defaultValueOptionsForSale = formData?.saleIds?.map((el) => ({
-    value: el,
-    label: el,
-  }));
+  const defaultValueOptionsForSale = formData?.saleIds?.map((saleId) => {
+    const sale = optionsForSale?.find((sale) => sale.value === saleId);
+    return sale ? { value: sale.value, label: sale.label } : null;
+  });
 
-  const defaultValueOptionsForFestival = formData?.festivalIds?.map((el) => ({
-    value: el,
-    label: el,
-  }));
+  const defaultValueOptionsForFestival = formData?.festivalIds?.map(
+    (festivalId) => {
+      const festival = optionsForFestival?.find(
+        (festival) => festival.value === festivalId
+      );
+      return festival ? { value: festival.value, label: festival.label } : null;
+    }
+  );
 
   return (
     <div className="container">
-      <h1 className="text-2xl font-bold mb-3">Add Product</h1>
+      <h1 className="text-2xl font-bold mb-3">Update Product</h1>
       <div className="flex flex-col gap-y-5">
         {productsLoading ? (
           <Loader height="h-[85vh]" />
@@ -333,9 +366,10 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
                         <input
                           className="block w-full rounded-md p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
                           name="productName"
-                          // value={formData.productName}
+                          value={formData.productName}
                           type="text"
                           placeholder="Enter Product Name"
+                          onChange={handleChange}
                           required
                         />
                       </div>
@@ -355,7 +389,7 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
                       </div>
                       <div>
                         <label className="font-medium" htmlFor="category">
-                          Category
+                          Web Category
                         </label>
                         <select
                           className="w-full h-[42px] mt-1 border border-gray-400 rounded-md p-2 focus:outline-none text-gray-500"
@@ -376,13 +410,14 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
                       </div>
                       <div>
                         <label className="font-medium" htmlFor="subCategory">
-                          Subcategory
+                          Web Subcategory
                         </label>
                         <select
                           className="w-full h-[42px] mt-1 border border-gray-400 rounded-md p-2 focus:outline-none text-gray-500"
                           name="subCategory"
+                          value={formData.subCategory}
                           required
-                          disabled={formData.category === ""}
+                          onChange={handleChange}
                         >
                           <option value="" disabled>
                             Choose Subcategory
@@ -500,6 +535,8 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
                             className="w-full h-[42px] mt-1 border rounded-md border-gray-400 p-2 focus:outline-none text-gray-500"
                             name="preOrder"
                             required
+                            value={formData.preOrder}
+                            onChange={handleChange}
                           >
                             <option value="" disabled>
                               Choose One
@@ -518,12 +555,23 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
                             className="w-full h-[42px] mt-1 border rounded-md border-gray-400 p-2 focus:outline-none text-gray-500"
                             name="status"
                             required
+                            defaultValue={formData.status}
+                            // onChange={(event) => {
+                            //   handleChange(event);
+                            // }}
                           >
-                            <option value="" disabled>
-                              Choose One
+                            <option
+                              value="draft"
+                              selected={formData.status === "draft"}
+                            >
+                              Draft
                             </option>
-                            <option value="draft">Draft</option>
-                            <option value="published">Published</option>
+                            <option
+                              value="published"
+                              selected={formData.status === "published"}
+                            >
+                              Published
+                            </option>
                           </select>
                         </div>
                       </div>
@@ -658,7 +706,7 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
                 className="bg-secondary py-1 px-4 rounded-md text-white mt-3"
                 type="submit"
               >
-                Add New Product
+                Update Product
               </button>
               {/* <button
           className="bg-warning py-1 px-4 rounded-md text-white"
@@ -674,4 +722,4 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
   );
 };
 
-export default AddProduct;
+export default UpdateProduct;

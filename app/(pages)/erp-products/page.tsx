@@ -185,8 +185,9 @@ const ErpProducts = () => {
                           alt="nazaara main logo"
                           width={248}
                           height={248}
-                          className="w-[70px] h-[70px]"
-                          priority
+                          placeholder="blur"
+                          blurDataURL={"/images/placeholder.png"}
+                          className="w-[66px] h-[80px] rounded-md"
                         />
                       </td>
                       <td>{elem.id}</td>
