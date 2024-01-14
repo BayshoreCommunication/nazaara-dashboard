@@ -11,7 +11,7 @@ import {
 import dynamic from "next/dynamic";
 import { ErpIdProps, TProduct } from "@/types/types";
 import Loader from "@/components/Loader";
-import { useGetErpDataByIdQuery } from "@/services/erpApi";
+// import { useGetErpDataByIdQuery } from "@/services/erpApi";
 import { toCapitalize } from "@/helpers";
 import { useGetCategoriesQuery } from "@/services/categoryApi";
 import { useGetSubCategoriesQuery } from "@/services/subcategory";
@@ -52,7 +52,13 @@ const options = [
   { value: "XXL", label: "XXL" },
 ];
 
-const UpdateProduct: FC<ErpIdProps> = ({ params }) => {
+interface IProps {
+  params: {
+    id: string;
+  };
+}
+
+const UpdateProduct: FC<IProps> = ({ params }) => {
   const [saleData, setSaleData] = useState<{ data: ISaleTag[] }>();
   const [festivalData, setFestivalData] = useState<{ data: IFestival[] }>();
 
@@ -103,9 +109,9 @@ const UpdateProduct: FC<ErpIdProps> = ({ params }) => {
   console.log("subcategories", subCategories);
 
   // const { data: sales } = useGetSalesQuery();
-  const singleProductId = params.id as number;
+  // const singleProductId = params.id as number;
   const router = useRouter();
-  const [createProduct] = useCreateProductMutation();
+  // const [createProduct] = useCreateProductMutation();
   const [formData, setFormData] = useState<TProduct>({
     erpId: 0,
     sku: "",
@@ -535,7 +541,7 @@ const UpdateProduct: FC<ErpIdProps> = ({ params }) => {
                             className="w-full h-[42px] mt-1 border rounded-md border-gray-400 p-2 focus:outline-none text-gray-500"
                             name="preOrder"
                             required
-                            value={formData.preOrder}
+                            value={formData.preOrder ? "yes" : "no"}
                             onChange={handleChange}
                           >
                             <option value="" disabled>

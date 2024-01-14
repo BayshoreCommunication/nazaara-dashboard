@@ -80,7 +80,7 @@ const ImageUpload: FC = () => {
               formData.append("file", imageFile.file);
               formData.append(
                 "upload_preset",
-                process.env.CLOUDINARY_PRESET as string
+                process.env.CLOUDINARY_PRESET_UPLOAD as string
               );
               const response = await axios.post(
                 process.env.CLOUDINARY_URL as string,
@@ -105,7 +105,7 @@ const ImageUpload: FC = () => {
         payload: { variant: updatedVariants },
       });
       refetch();
-      if (mutationData.data.status === "success") {
+      if (mutationData) {
         toast.success("Image updated successfully.", { duration: 3000 });
         router.push("/products");
       } else {

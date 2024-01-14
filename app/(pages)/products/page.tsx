@@ -11,6 +11,7 @@ import Link from "next/link";
 import Swal from "sweetalert2";
 import { useState } from "react";
 import { AiOutlineShoppingCart } from "react-icons/ai";
+import toast from "react-hot-toast";
 
 const Products: any = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -18,7 +19,6 @@ const Products: any = () => {
   const {
     data: productsData,
     isLoading: productsLoading,
-    refetch,
     error: productsError,
   } = useGetProductsQuery({ page: currentPage, limit: 10 });
 
@@ -143,10 +143,9 @@ const Products: any = () => {
       confirmButtonText: "Yes, delete it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        Swal.fire("Deleted!", "Your product has been deleted.", "success");
         const productDel = await deleteProduct(id);
         if (productDel) {
-          refetch(); // Refetch the Product list after deleting a Product
+          Swal.fire("Deleted!", "Your product has been deleted.", "success");
         }
       }
     });

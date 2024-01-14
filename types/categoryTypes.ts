@@ -31,6 +31,7 @@ export type TSubCategoryData = {
   updatedAt?: string;
   __v?: number;
   promotion?: any;
+  featureImage?: string;
 };
 
 export type TCategoryIndividual = {

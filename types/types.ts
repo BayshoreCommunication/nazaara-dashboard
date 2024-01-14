@@ -1,5 +1,8 @@
+import { TCategoryData, TSubCategoryData } from "./categoryTypes";
+
 export type ErpIdProps = {
   params: {
+    id(id: any): { data: any; isLoading: any; refetch: any };
     productID: number;
   };
 };
@@ -179,8 +182,8 @@ export type TProduct = {
   description: string;
   erpCategory: string;
   erpSubCategory: string;
-  category: string;
-  subCategory: string;
+  category: any;
+  subCategory: any;
   stock: number;
   preOrder: boolean;
   status: string;
