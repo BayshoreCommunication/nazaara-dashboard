@@ -4,12 +4,11 @@ import { FC, ChangeEvent, useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import {
-  useCreateProductMutation,
   useGetProductByIdQuery,
   useUpdateProductMutation,
 } from "@/services/productApi";
 import dynamic from "next/dynamic";
-import { ErpIdProps, TProduct } from "@/types/types";
+import { TProduct } from "@/types/types";
 import Loader from "@/components/Loader";
 // import { useGetErpDataByIdQuery } from "@/services/erpApi";
 import { toCapitalize } from "@/helpers";
@@ -132,11 +131,6 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
     preOrder: false,
     status: "",
   });
-
-  // const { data: productsData, isLoading: productsLoading } =
-  //   useGetErpDataByIdQuery({
-  //     singleProductId,
-  //   });
   const {
     data: productsData,
     isLoading: productsLoading,
@@ -166,9 +160,7 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
           color: toCapitalize(variant.color),
           imageUrl: variant.imageUrl.map((image) => image),
         })),
-        size: productsData.data.size
-          ? productsData.data.size.map((size) => size)
-          : [],
+        size: productsData.data.size.map((size) => size),
         saleIds: productsData.data.saleIds,
         festivalIds: productsData.data.festivalIds,
         description: productsData.data.description,
@@ -181,7 +173,7 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
         status: productsData.data.status,
       });
     }
-  }, [productsData, formData.status]);
+  }, [productsData]);
 
   console.log("form data", formData);
 
@@ -305,16 +297,20 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
     // color should be toCapitalize before sending to backend
 
     try {
-      const mutationData: any = await updateProduct({
-        id: params.id,
-        payload: submitData,
-      });
-      refetch();
-      if (mutationData) {
-        router.push("/products");
-        toast.success("Product updated sucessfully.", { duration: 3000 });
+      if (submitData.description === "<p><br></p>") {
+        toast.error("Please add description to proceed further");
       } else {
-        toast.error("Failed to updated product!", { duration: 3000 });
+        const mutationData: any = await updateProduct({
+          id: params.id,
+          payload: submitData,
+        });
+        refetch();
+        if (mutationData) {
+          router.push("/products");
+          toast.success("Product updated sucessfully.", { duration: 3000 });
+        } else {
+          toast.error("Failed to updated product!", { duration: 3000 });
+        }
       }
     } catch {
       toast.error("Something went wrong!", { duration: 3000 });
@@ -367,7 +363,7 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
                     <div className="bg-gray-100 py-2 flex flex-col gap-y-3 rounded-md">
                       <div>
                         <label className="font-medium" htmlFor="name">
-                          Product Name
+                          Product Name<span className="text-red-600">*</span>
                         </label>
                         <input
                           className="block w-full rounded-md p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
@@ -381,7 +377,7 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
                       </div>
                       <div>
                         <label className="font-medium" htmlFor="name">
-                          Product SKU
+                          Product SKU<span className="text-red-600">*</span>
                         </label>
                         <input
                           className="block w-full rounded-md p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
@@ -395,7 +391,7 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
                       </div>
                       <div>
                         <label className="font-medium" htmlFor="category">
-                          Web Category
+                          Web Category<span className="text-red-600">*</span>
                         </label>
                         <select
                           className="w-full h-[42px] mt-1 border border-gray-400 rounded-md p-2 focus:outline-none text-gray-500"
@@ -416,7 +412,7 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
                       </div>
                       <div>
                         <label className="font-medium" htmlFor="subCategory">
-                          Web Subcategory
+                          Web Subcategory<span className="text-red-600">*</span>
                         </label>
                         <select
                           className="w-full h-[42px] mt-1 border border-gray-400 rounded-md p-2 focus:outline-none text-gray-500"
@@ -446,12 +442,12 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
                       </div>
                       <div>
                         <label className="font-medium" htmlFor="size">
-                          Size
+                          Size<span className="text-red-600">*</span>
                         </label>
                         <Select
                           // className="w-full rounded-md focus:outline-none text-gray-500"
+                          value={defaultValueOptions}
                           onChange={handleSelectionChange}
-                          defaultValue={defaultValueOptions}
                           placeholder="Choose One"
                           styles={customStyles}
                           required
@@ -473,7 +469,7 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
                     <div className="bg-gray-100 py-3 flex flex-col gap-y-3 rounded-md">
                       <div>
                         <label className="font-medium" htmlFor="regular_price">
-                          Purchase Price
+                          Purchase Price<span className="text-red-600">*</span>
                         </label>
                         <div className="flex items-center">
                           <div className="border border-gray-400 bg-gray-100 rounded-sm p-[10px] text-sm text-gray-500 font-medium">
@@ -493,7 +489,7 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
                       </div>
                       <div>
                         <label className="font-medium" htmlFor="regular_price">
-                          Regular Price
+                          Regular Price<span className="text-red-600">*</span>
                         </label>
                         <div className="flex items-center mt-1">
                           <div className="border border-gray-400 bg-gray-100 rounded-sm p-[10px] text-sm text-gray-500 font-medium">
@@ -513,7 +509,7 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
                       </div>
                       <div>
                         <label className="font-medium" htmlFor="selling_price">
-                          Selling Price
+                          Selling Price<span className="text-red-600">*</span>
                         </label>
                         <div className="flex items-center mt-1">
                           <div className="border border-gray-400 bg-gray-100 rounded-sm p-[10px] text-sm text-gray-500 font-medium">
@@ -534,7 +530,7 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
 
                       <div>
                         <label className="font-medium" htmlFor="pre-order">
-                          Pre-Order
+                          Pre-Order<span className="text-red-600">*</span>
                         </label>
                         <div className="flex items-center">
                           <select
@@ -554,7 +550,7 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
                       </div>
                       <div>
                         <label className="font-medium" htmlFor="status">
-                          Status
+                          Status<span className="text-red-600">*</span>
                         </label>
                         <div className="flex items-center">
                           <select
@@ -589,8 +585,8 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
                         </label>
                         <Select
                           // className="w-full rounded-md focus:outline-none text-gray-500"
+                          value={defaultValueOptionsForSale}
                           onChange={handleSaleSelectionChange}
-                          defaultValue={defaultValueOptionsForSale}
                           placeholder="Choose Sale"
                           styles={customStyles}
                           theme={(theme) => ({
@@ -612,8 +608,8 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
                           Festival
                         </label>
                         <Select
+                          value={defaultValueOptionsForFestival}
                           onChange={handleFestivalSelectionChange}
-                          defaultValue={defaultValueOptionsForFestival}
                           placeholder="Choose Festival"
                           styles={customStyles}
                           theme={(theme) => ({
@@ -633,7 +629,7 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
 
                       <div>
                         <label className="font-medium" htmlFor="status">
-                          Stock
+                          Stock<span className="text-red-600">*</span>
                         </label>
                         <div className="flex items-center">
                           <input
@@ -650,7 +646,7 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
                       </div>
                       <div className="">
                         <label className="font-medium" htmlFor="promotion">
-                          Color Variants
+                          Color Variants<span className="text-red-600">*</span>
                         </label>
                         {formData.variant.map((variant, variantIndex) => (
                           <div
@@ -704,7 +700,9 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
               </div>
             </div>
             <div className="bg-basic rounded-md px-6 py-3 flex flex-col gap-y-4">
-              <h4 className="text-lg font-bold">Product Description</h4>
+              <h4 className="text-lg font-bold">
+                Product Description<span className="text-red-600">*</span>
+              </h4>
               <Editor setFormData={setFormData} formData={formData} />
             </div>
             <div className="flex justify-end gap-x-3">

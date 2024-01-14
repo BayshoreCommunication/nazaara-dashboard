@@ -65,6 +65,8 @@ const Editor = (props: any) => {
     }
   }, [props.formData?.description]);
 
+  // console.log("text ", text);
+
   return (
     <div className="quill-content">
       <ReactQuill
