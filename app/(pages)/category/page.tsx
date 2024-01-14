@@ -73,57 +73,47 @@ const Category: FC = () => {
       }
     });
   };
+  const [isOpen, setIsOpen] = useState(false);
 
   //edit modal
-  const [filteredData, setFilteredData] = useState([
-    { _id: "", title: "", status: "published" },
-  ]);
+  const [filteredData, setFilteredData] = useState({
+    _id: "",
+    title: "",
+    status: "",
+  });
 
-  const [selectedValue, setSelectedValue] = useState<string>("");
   const handleEditCategory = (id: string) => {
-    const filtered: any = categoriesData?.data?.filter(
-      (item) => item._id === id
-    );
+    const filtered: any = categoriesData?.data?.find((item) => item._id === id);
 
-    setFilteredData(filtered);
-    setSelectedValue(filtered[0].status);
-    setIsOpen(true);
+    if (filtered) {
+      setFilteredData(filtered);
+      setIsOpen(true);
+    }
   };
-
-  const [isOpen, setIsOpen] = useState(true);
 
   //update category start
   const [updateCategory] = useUpdateCategoryMutation();
-  const nameRef = useRef<HTMLInputElement>(null);
-  const statusRef = useRef<HTMLSelectElement>(null);
 
   const handleUpdateCategorySubmit = async (event: FormEvent) => {
     event.preventDefault();
+    try {
+      // const updatedData = { name, status };
+      const updatedCategory = await updateCategory({
+        id: filteredData?._id,
+        payload: {
+          title: filteredData.title,
+          status: filteredData.status,
+        },
+      }).unwrap();
 
-    if (nameRef.current && statusRef.current) {
-      const formData: any = {
-        name: nameRef.current.value,
-        status: statusRef.current.value,
-      };
-
-      const { name, status } = formData;
-
-      try {
-        const updatedData = { name, status };
-        const updatedCategory = await updateCategory({
-          id: filteredData[0]?._id,
-          payload: updatedData,
-        }).unwrap();
-
-        if (updatedCategory) {
-          toast.success("Category updated!", { duration: 3000 });
-          refetch(); // Refetch the categories list after updating
-          setIsOpen(false);
-        }
-      } catch (error) {
-        console.error("Error updating category:", error);
-        toast.error("Failed to update category.");
+      if (updatedCategory) {
+        toast.success("Category updated!", { duration: 3000 });
+        refetch(); // Refetch the categories list after updating
+        setIsOpen(false);
       }
+    } catch (error) {
+      console.error("Error updating category:", error);
+      toast.error("Failed to update category.");
     }
   };
 
@@ -153,7 +143,7 @@ const Category: FC = () => {
           {/* modal code start  */}
           <input type="checkbox" id="modal-handle" className="modal-toggle" />
 
-          {filteredData.length > 0 && (
+          {filteredData && (
             <div className="modal">
               <div className="modal-box relative">
                 <label
@@ -178,9 +168,14 @@ const Category: FC = () => {
                       <input
                         className="block w-full p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
                         type="text"
-                        ref={nameRef}
                         required
-                        defaultValue={filteredData[0].title}
+                        value={filteredData.title}
+                        onChange={(e) =>
+                          setFilteredData({
+                            ...filteredData,
+                            title: e.target.value,
+                          })
+                        }
                       />
                     </div>
                     <div className="mb-2">
@@ -189,10 +184,14 @@ const Category: FC = () => {
                       </label>
                       <select
                         className="w-full border border-gray-400 rounded-sm p-2 focus:outline-none text-gray-500"
-                        ref={statusRef}
                         required
-                        value={selectedValue}
-                        onChange={(e) => setSelectedValue(e.target.value)}
+                        value={filteredData.status}
+                        onChange={(e) =>
+                          setFilteredData({
+                            ...filteredData,
+                            status: e.target.value,
+                          })
+                        }
                       >
                         <option value="published">Publish</option>
                         <option value="draft">Draft</option>

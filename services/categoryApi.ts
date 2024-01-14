@@ -4,12 +4,15 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const categoriesApi = createApi({
   reducerPath: "categoriesApi",
   baseQuery: fetchBaseQuery({ baseUrl: `${process.env.API_URL}` }),
+  tagTypes: ["Category"],
   endpoints: (builder) => ({
     getCategories: builder.query<TCategory, void>({
       query: () => `/api/v1/category`,
+      providesTags: ["Category"],
     }),
     getCategoryById: builder.query<TCategoryData, string>({
       query: (id: string) => `/api/v1/category/${id}`,
+      providesTags: ["Category"],
     }),
     createCategory: builder.mutation<TCategoryData, Partial<TCategoryData>>({
       query: (payload) => ({
@@ -20,11 +23,7 @@ export const categoriesApi = createApi({
           "Content-type": "application/json; charset=UTF-8",
         },
       }),
-      // Update the cache after successful creation
-      async onQueryStarted(_, { dispatch, queryFulfilled }) {
-        await queryFulfilled; // Wait for the query to be fulfilled
-        await dispatch(categoriesApi.endpoints.getCategories.initiate()); // Fetch the updated category list
-      },
+      invalidatesTags: ["Category"],
     }),
     updateCategory: builder.mutation<
       TCategoryData,
@@ -38,25 +37,14 @@ export const categoriesApi = createApi({
           "Content-type": "application/json; charset=UTF-8",
         },
       }),
-      // Update the cache after successful creation
-      async onQueryStarted(data: any, { dispatch, queryFulfilled }) {
-        await queryFulfilled; // Wait for the query to be fulfilled
-        // Fetch the updated category
-        // await dispatch(categoriesApi.endpoints.getCategoryById.initiate(data._id));
-        await dispatch(categoriesApi.endpoints.getCategories.initiate()); // Fetch the updated category list
-      },
+      invalidatesTags: ["Category"],
     }),
     deleteCategory: builder.mutation({
       query: (id) => ({
         url: `/api/v1/category/${id}`,
         method: "DELETE",
       }),
-      async onQueryStarted(data: any, { dispatch, queryFulfilled }) {
-        await queryFulfilled; // Wait for the query to be fulfilled
-        // Fetch the updated category
-        // await dispatch(categoriesApi.endpoints.getCategoryById.initiate(data._id));
-        await dispatch(categoriesApi.endpoints.getCategories.initiate()); // Fetch the updated category list
-      },
+      invalidatesTags: ["Category"],
     }),
   }),
 });
