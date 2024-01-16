@@ -23,6 +23,7 @@ const CategoryList: FC<CategoryListProps> = ({
           <th>SL</th>
           <th>Category Title</th>
           <th>Category Slug</th>
+          <th>Promotion</th>
           <th>Status</th>
           <th>Actions</th>
         </tr>
@@ -46,6 +47,11 @@ const CategoryList: FC<CategoryListProps> = ({
               <td>{index + 1}</td>
               <td>{data.title}</td>
               <td>{data.slug}</td>
+              {data?.promotion && data?.promotion?.validPromotion ? (
+                <td>Available</td>
+              ) : (
+                <td>N/A</td>
+              )}
               <td
                 className={`font-medium ${
                   data.status === "draft" ? "text-red-600" : "text-green-600"

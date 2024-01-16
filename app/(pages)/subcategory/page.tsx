@@ -1,16 +1,17 @@
 "use client";
-
 import SubCategoryForm from "@/components/subCategory/SubCategoryForm";
 import SubCategoryList from "@/components/subCategory/SubCategoryList";
+import { cloudinaryImageUpload } from "@/helpers";
+import { cloudinaryImageDelete } from "@/helpers/cloudinaryImageDelete";
 import { useGetCategoriesQuery } from "@/services/categoryApi";
 import {
-  useCreateSubCategoryMutation,
   useDeleteSubCategoryMutation,
   useGetSubCategoriesQuery,
   useUpdateSubCategoryMutation,
 } from "@/services/subcategory";
 import { TSubCategoryData, TSubCategoryFrom } from "@/types/categoryTypes";
-import { FC, useState, ChangeEvent, FormEvent, useRef } from "react";
+import Image from "next/image";
+import { FC, useState, FormEvent, ChangeEvent } from "react";
 import toast from "react-hot-toast";
 import { RxCross2 } from "react-icons/rx";
 import Swal from "sweetalert2";
@@ -24,42 +25,14 @@ const SubCategory: FC = () => {
     refetch,
   } = useGetSubCategoriesQuery();
 
-  const [createSubCategory] = useCreateSubCategoryMutation();
-
-  //handle form for creating new category
-
   //crate category start
   const [formData, setFormData] = useState<TSubCategoryFrom>({
     title: "",
     status: "",
     category: "",
+    featuredImage: "",
+    featuredImagePublicId: "",
   });
-
-  const handleSubmit = async (event: FormEvent) => {
-    event.preventDefault();
-    // Perform any form validation or data processing here
-    const data = await createSubCategory(formData);
-    refetch();
-    if (data) {
-      toast.success("New SubCategory Created", { duration: 3000 });
-      // Reset form fields
-      setFormData({
-        title: "",
-        status: "",
-        category: "",
-      });
-    }
-  };
-  //crate category end
-
-  const handleChange = (
-    event: ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    setFormData({
-      ...formData,
-      [event.target.name]: event.target.value,
-    });
-  };
 
   //handle delete
   const [deleteSubCategory] = useDeleteSubCategoryMutation();
@@ -74,8 +47,18 @@ const SubCategory: FC = () => {
       confirmButtonText: "Yes, delete it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        Swal.fire("Deleted!", "Your category has been deleted.", "success");
         const categoryDel = await deleteSubCategory(id);
+
+        const categoryDelData = (categoryDel as { data?: any })?.data;
+        const featuredImagePublicId =
+          categoryDelData?.data?.featuredImagePublicId;
+
+        await cloudinaryImageDelete(featuredImagePublicId);
+
+        // await cloudinaryImageDelete(
+        //   categoryDel?.data?.data?.featuredImagePublicId
+        // );
+        Swal.fire("Deleted!", "Your category has been deleted.", "success");
         if (categoryDel) {
           refetch(); // Refetch the user list after deleting a user
         }
@@ -89,9 +72,13 @@ const SubCategory: FC = () => {
       _id: "",
       title: "",
       category: { _id: "", title: "" },
+      featuredImage: "",
+      featuredImagePublicId: "",
       status: "published",
     },
   ]);
+
+  console.log("filterd data", filteredData);
 
   const [selectedValue, setSelectedValue] = useState<string>("");
   const handleEditCategory = (id: string) => {
@@ -116,24 +103,28 @@ const SubCategory: FC = () => {
       filteredData[0] &&
       filteredData[0]?.title &&
       filteredData[0]?.category?._id &&
-      filteredData[0]?.status
+      filteredData[0]?.status &&
+      filteredData[0]?.featuredImage
     ) {
       const formData: any = {
         title: filteredData[0]?.title,
         category: filteredData[0]?.category?._id,
         status: selectedValue,
+        featuredImage: filteredData[0]?.featuredImage,
       };
 
-      const { title, status, category } = formData;
+      const { title, status, category, featuredImage } = formData;
 
       try {
-        const updatedData = { title, status, category };
-        const updatedCategory = await updateSubCategory({
+        const updatedData = { title, status, category, featuredImage };
+        const updatedSubCategory = await updateSubCategory({
           id: filteredData[0]?._id,
           payload: updatedData,
         }).unwrap();
 
-        if (updatedCategory) {
+        console.log("updated category", updatedSubCategory);
+
+        if (updatedSubCategory) {
           toast.success("Category updated!", { duration: 3000 });
           refetch(); // Refetch the categories list after updating
           setIsOpen(false);
@@ -154,6 +145,35 @@ const SubCategory: FC = () => {
     ]);
   };
 
+  const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (file) {
+      try {
+        // const secure_url = await cloudinaryImageUpload(file);
+        const { secureUrl, publicId } = await cloudinaryImageUpload(file);
+        console.log("url", secureUrl, publicId);
+
+        // setFilteredData({
+        //   ...filteredData[0],
+        //   featuredImage: secureUrl,
+        //   featuredImagePublicId: publicId,
+        // });
+
+        setFilteredData([
+          {
+            ...filteredData[0],
+            featuredImage: secureUrl,
+            featuredImagePublicId: publicId,
+          },
+        ]);
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        toast.error("Error uploading image");
+      }
+    }
+  };
+
   return (
     <div className="flex gap-10 container">
       {/* show all category  */}
@@ -169,11 +189,7 @@ const SubCategory: FC = () => {
       {/* add new category  */}
       <div className="flex-[3]">
         <h1 className="text-lg font-semibold mb-2">Add New SubCategory</h1>
-        <SubCategoryForm
-          handleSubmit={handleSubmit}
-          handleChange={handleChange}
-          formData={formData}
-        />
+        <SubCategoryForm formData={formData} setFormData={setFormData} />
       </div>
 
       {isOpen && (
@@ -247,6 +263,24 @@ const SubCategory: FC = () => {
                         <option value="published">Publish</option>
                         <option value="draft">Draft</option>
                       </select>
+                    </div>
+                    <div className="mb-2">
+                      <label className="font-medium" htmlFor="status">
+                        Feature Image:
+                      </label>
+                      <Image
+                        src={filteredData[0].featuredImage}
+                        alt="featuredImage"
+                        width={100}
+                        height={80}
+                        className="mb-2 mt-1"
+                      />
+                      <input
+                        type="file"
+                        id="imageUpload"
+                        name="imageUpload"
+                        onChange={handleImageChange}
+                      ></input>
                     </div>
                     <button
                       type="submit"

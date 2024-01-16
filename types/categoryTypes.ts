@@ -12,7 +12,7 @@ export type TCategoryData = {
   createdAt?: string;
   updatedAt?: string;
   __v?: number;
-  promotion?: string;
+  promotion?: any;
 };
 
 export type TSubCategory = {
@@ -31,7 +31,7 @@ export type TSubCategoryData = {
   updatedAt?: string;
   __v?: number;
   promotion?: any;
-  featureImage?: string;
+  featuredImage?: string;
 };
 
 export type TCategoryIndividual = {
@@ -46,4 +46,6 @@ export type TSubCategoryFrom = {
   category: string;
   status: string;
   promotion?: any;
+  featuredImage: string;
+  featuredImagePublicId: string;
 };

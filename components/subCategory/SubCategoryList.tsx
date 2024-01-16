@@ -4,6 +4,7 @@ import React, { FC } from "react";
 import { MdDelete } from "react-icons/md";
 import { TbEdit } from "react-icons/tb";
 import Loader from "../Loader";
+import Image from "next/image";
 
 interface CategoryListProps {
   subCategories: TSubCategoryData[];
@@ -21,9 +22,10 @@ const SubCategoryList: FC<CategoryListProps> = ({
       <thead>
         <tr>
           <th>SL</th>
-          <th>Sub Category Name</th>
-          <th>Slug</th>
-          <th>Category</th>
+          <th>Feature Image</th>
+          <th>Sub-Category Title</th>
+          <th>Category Title</th>
+          <th>Promotion</th>
           <th>Status</th>
           <th>Actions</th>
         </tr>
@@ -45,9 +47,22 @@ const SubCategoryList: FC<CategoryListProps> = ({
           subCategories?.map((data, index) => (
             <tr key={index}>
               <td>{index + 1}</td>
+              <td>
+                <Image
+                  src={data?.featuredImage as string}
+                  alt="Feature Image"
+                  width={60}
+                  height={60}
+                  className="rounded-md"
+                />
+              </td>
               <td>{data.title}</td>
-              <td>{data.slug}</td>
               <td>{data.category.title}</td>
+              {data?.promotion && data?.promotion?.validPromotion ? (
+                <td>Available</td>
+              ) : (
+                <td>N/A</td>
+              )}
               <td
                 className={`font-medium ${
                   data.status === "draft" ? "text-red-600" : "text-green-600"

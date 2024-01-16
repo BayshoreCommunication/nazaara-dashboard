@@ -1,24 +1,63 @@
+import { cloudinaryImageUpload } from "@/helpers";
 import { useGetCategoriesQuery } from "@/services/categoryApi";
+import { useCreateSubCategoryMutation } from "@/services/subcategory";
 import React, { ChangeEvent, FC, FormEvent } from "react";
+import toast from "react-hot-toast";
 
 interface CategoryFormProps {
-  handleSubmit: (event: FormEvent) => void;
-  handleChange: (
-    event: ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => void;
-  formData: {
-    title: string;
-    category: string;
-    status: string;
-  };
+  formData: any;
+  setFormData: any;
 }
 
-const SubCategoryForm: FC<CategoryFormProps> = ({
-  handleSubmit,
-  handleChange,
-  formData,
-}) => {
-  const { data: categories, isLoading } = useGetCategoriesQuery();
+const SubCategoryForm: FC<CategoryFormProps> = ({ setFormData, formData }) => {
+  const { data: categories } = useGetCategoriesQuery();
+  const [createSubCategory] = useCreateSubCategoryMutation();
+
+  const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (file) {
+      try {
+        // const secure_url = await cloudinaryImageUpload(file);
+        const { secureUrl, publicId } = await cloudinaryImageUpload(file);
+        console.log("url", secureUrl, publicId);
+        // console.log("url", secure_url, public_id);
+
+        setFormData({
+          ...formData,
+          featuredImage: secureUrl,
+          featuredImagePublicId: publicId,
+        });
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        toast.error("Error uploading image");
+      }
+    }
+  };
+
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+
+    try {
+      const data = await createSubCategory(formData);
+
+      console.log("data", data);
+
+      if (data) {
+        toast.success("New SubCategory Created", { duration: 3000 });
+        setFormData({
+          title: "",
+          category: "",
+          status: "",
+          featuredImageUrl: "",
+          featuredImagePublicId: "",
+        });
+      }
+    } catch (error) {
+      console.error("Error creating subcategory:", error);
+      toast.error("Error creating subcategory");
+    }
+  };
 
   return (
     <form
@@ -27,7 +66,7 @@ const SubCategoryForm: FC<CategoryFormProps> = ({
     >
       <div>
         <label className="font-medium" htmlFor="name">
-          Sub Category Title:
+          Sub-Category Title:
         </label>
         <input
           className="w-full border border-gray-400 rounded-sm p-2 focus:outline-none text-gray-500"
@@ -36,7 +75,12 @@ const SubCategoryForm: FC<CategoryFormProps> = ({
           name="title"
           placeholder="Enter Sub Category Title"
           value={formData.title}
-          onChange={handleChange}
+          onChange={(e) =>
+            setFormData({
+              ...formData,
+              title: e.target.value,
+            })
+          }
           required
         />
       </div>
@@ -49,7 +93,13 @@ const SubCategoryForm: FC<CategoryFormProps> = ({
           id="category"
           name="category"
           value={formData.category}
-          onChange={handleChange}
+          // defaultValue={""}
+          onChange={(e) =>
+            setFormData({
+              ...formData,
+              category: e.target.value,
+            })
+          }
           required
         >
           <option disabled value="">
@@ -71,15 +121,31 @@ const SubCategoryForm: FC<CategoryFormProps> = ({
           id="status"
           name="status"
           value={formData.status}
-          onChange={handleChange}
+          onChange={(e) =>
+            setFormData({
+              ...formData,
+              status: e.target.value,
+            })
+          }
           required
         >
           <option disabled value="">
             Choose Status
           </option>
-          <option value="Publish">Publish</option>
-          <option value="Draft">Draft</option>
+          <option value="published">Publish</option>
+          <option value="draft">Draft</option>
         </select>
+      </div>
+      <div className="mb-2">
+        <label className="font-medium block" htmlFor="imageUpload">
+          Featured Image:
+        </label>
+        <input
+          type="file"
+          id="imageUpload"
+          name="imageUpload"
+          onChange={handleImageChange}
+        ></input>
       </div>
       <button
         type="submit"
