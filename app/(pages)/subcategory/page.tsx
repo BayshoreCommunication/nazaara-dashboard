@@ -71,12 +71,14 @@ const SubCategory: FC = () => {
     {
       _id: "",
       title: "",
-      category: { _id: "", title: "" },
+      category: "",
       featuredImage: "",
       featuredImagePublicId: "",
       status: "published",
     },
   ]);
+
+  const [previousImage, setPreviousImage] = useState("");
 
   console.log("filterd data", filteredData);
 
@@ -85,6 +87,8 @@ const SubCategory: FC = () => {
     const filtered: any = subcategories?.data?.filter(
       (item: any) => item._id === id
     );
+
+    console.log("filterererere", filtered);
 
     setFilteredData(filtered);
     setSelectedValue(filtered[0].status);
@@ -99,40 +103,32 @@ const SubCategory: FC = () => {
   const handleUpdateCategorySubmit = async (event: FormEvent) => {
     event.preventDefault();
 
-    if (
-      filteredData[0] &&
-      filteredData[0]?.title &&
-      filteredData[0]?.category?._id &&
-      filteredData[0]?.status &&
-      filteredData[0]?.featuredImage
-    ) {
-      const formData: any = {
-        title: filteredData[0]?.title,
-        category: filteredData[0]?.category?._id,
-        status: selectedValue,
-        featuredImage: filteredData[0]?.featuredImage,
-      };
+    const formData: any = {
+      title: filteredData[0]?.title,
+      category: filteredData[0]?.category,
+      status: selectedValue,
+      featuredImage: filteredData[0]?.featuredImage,
+    };
 
-      const { title, status, category, featuredImage } = formData;
+    const { title, status, category, featuredImage } = formData;
 
-      try {
-        const updatedData = { title, status, category, featuredImage };
-        const updatedSubCategory = await updateSubCategory({
-          id: filteredData[0]?._id,
-          payload: updatedData,
-        }).unwrap();
+    try {
+      const updatedData = { title, status, category, featuredImage };
+      const updatedSubCategory = await updateSubCategory({
+        id: filteredData[0]?._id,
+        payload: updatedData,
+      }).unwrap();
 
-        console.log("updated category", updatedSubCategory);
+      // console.log("updated category", updatedSubCategory);
 
-        if (updatedSubCategory) {
-          toast.success("Category updated!", { duration: 3000 });
-          refetch(); // Refetch the categories list after updating
-          setIsOpen(false);
-        }
-      } catch (error) {
-        console.error("Error updating category:", error);
-        toast.error("Failed to update category.");
+      if (updatedSubCategory) {
+        toast.success("Category updated!", { duration: 3000 });
+        refetch(); // Refetch the categories list after updating
+        setIsOpen(false);
       }
+    } catch (error) {
+      console.error("Error updating category:", error);
+      toast.error("Failed to update category.");
     }
   };
 
@@ -150,15 +146,19 @@ const SubCategory: FC = () => {
 
     if (file) {
       try {
-        // const secure_url = await cloudinaryImageUpload(file);
+        const previousImage = filteredData[0]?.featuredImagePublicId;
+        console.log("previous image --->", previousImage);
+        if (previousImage) {
+          toast.success("image deleted successfully");
+          const deleteImage = await cloudinaryImageDelete(
+            filteredData[0].featuredImagePublicId
+          );
+          console.log("delete iamge", deleteImage);
+        }
         const { secureUrl, publicId } = await cloudinaryImageUpload(file);
-        console.log("url", secureUrl, publicId);
-
-        // setFilteredData({
-        //   ...filteredData[0],
-        //   featuredImage: secureUrl,
-        //   featuredImagePublicId: publicId,
-        // });
+        if (secureUrl && publicId) {
+          toast.success("new image added successfully");
+        }
 
         setFilteredData([
           {
@@ -235,12 +235,10 @@ const SubCategory: FC = () => {
                         className="w-full border border-gray-400 rounded-sm p-2 focus:outline-none text-gray-500"
                         required
                         name="category"
+                        defaultValue={filteredData[0].category}
                         onChange={handleChangeFormData}
-                        value={filteredData[0].category._id}
                       >
-                        <option disabled value="">
-                          Choose Category
-                        </option>
+                        <option value="">Choose Category</option>
                         {categories?.data?.map(
                           (category: any, index: number) => (
                             <option key={index} value={category._id}>
@@ -258,6 +256,7 @@ const SubCategory: FC = () => {
                         className="w-full border border-gray-400 rounded-sm p-2 focus:outline-none text-gray-500"
                         required
                         value={selectedValue}
+                        name="status"
                         onChange={(e) => setSelectedValue(e.target.value)}
                       >
                         <option value="published">Publish</option>
