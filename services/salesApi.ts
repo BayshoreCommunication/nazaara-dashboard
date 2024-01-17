@@ -1,4 +1,4 @@
-import { TSale, TSaleCreate, TSaleData } from "@/types/saleTagTypes";
+import { TSaleCreate, TSaleData } from "@/types/saleTagTypes";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const salesApi = createApi({

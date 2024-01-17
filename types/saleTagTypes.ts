@@ -7,6 +7,7 @@ export type TSaleData = {
 };
 
 export type TSale = {
+  featuredImage: string;
   _id?: string;
   title: string;
   slug: string;

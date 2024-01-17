@@ -4,8 +4,12 @@ const Select = dynamic(() => import("react-select"), {
   ssr: false,
 });
 import { useGetProductsQuery } from "@/services/productApi";
-import { FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import { TOptionSelect } from "@/types/types";
+import { cloudinaryImageUpload } from "@/helpers";
+import toast from "react-hot-toast";
+import Image from "next/image";
+import { useCreateSaleMutation } from "@/services/salesApi";
 
 const customStyles = {
   control: (provided: any, state: any) => ({
@@ -19,29 +23,65 @@ const customStyles = {
 };
 
 const SaleTagForm = () => {
+  const [formData, setFormData] = useState({
+    // _id: "",
+    title: "",
+    products: [],
+    status: "",
+    featuredImage: "",
+  });
   const { data: productsData, isLoading } = useGetProductsQuery({});
-  const [selectedOption, setSelectedOption] = useState([]);
+  const [createSale] = useCreateSaleMutation();
 
   const handleSelectChange = (option: any) => {
-    setSelectedOption(option.map((elem: TOptionSelect) => elem.value));
+    // setSelectedOption(option.map((elem: TOptionSelect) => elem.value));
+    setFormData({
+      ...formData,
+      products: option.map((elem: TOptionSelect) => elem.value),
+    });
   };
+
+  console.log("formData option", formData);
 
   const options = productsData?.product?.map((elem) => ({
     value: elem._id,
-    label: elem.slug,
+    label: elem.sku,
   }));
 
-  // use a proper type for the event argument here instead of any
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const formData = new FormData(event.currentTarget as HTMLFormElement);
-    const formDataObj = Object.fromEntries(formData);
-    const dataSubmit = {
-      ...formDataObj,
-      products: selectedOption,
-    };
+  const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
 
-    console.log("dataSubmit", dataSubmit);
+    if (file) {
+      try {
+        // const secure_url = await cloudinaryImageUpload(file);
+        const { secureUrl, publicId } = await cloudinaryImageUpload(file);
+        console.log("url", secureUrl, publicId);
+        // console.log("url", secure_url, public_id);
+
+        setFormData({
+          ...formData,
+          featuredImage: secureUrl,
+        });
+      } catch (error) {
+        console.error("Error uploading image:", error);
+        toast.error("Error uploading image");
+      }
+    }
+  };
+
+  // use a proper type for the event argument here instead of any
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const createData = await createSale(formData);
+    if (createData) {
+      toast.success("new sale created successfully");
+      setFormData({
+        title: "",
+        products: [],
+        status: "",
+        featuredImage: "",
+      });
+    }
   };
 
   return (
@@ -57,6 +97,13 @@ const SaleTagForm = () => {
             type="text"
             name="title"
             id="title"
+            value={formData.title}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                title: e.target.value,
+              })
+            }
             required
             placeholder="Title"
           />
@@ -94,8 +141,15 @@ const SaleTagForm = () => {
           <select
             className="w-full border border-gray-300 p-2 rounded outline-none focus:border-gray-500"
             name="status"
-            required
             id="status"
+            value={formData.status}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                status: e.target.value,
+              })
+            }
+            required
           >
             <option value="" disabled>
               Select Status
@@ -103,6 +157,26 @@ const SaleTagForm = () => {
             <option value="draft">Draft</option>
             <option value="published">Published</option>
           </select>
+        </div>
+        <div className="mb-4">
+          <label className="text-sm font-semibold mb-2 block" htmlFor="status">
+            Featured Image:
+          </label>
+          <input
+            type="file"
+            id="imageUpload"
+            name="imageUpload"
+            onChange={handleImageChange}
+          ></input>
+          {formData.featuredImage && (
+            <Image
+              src={formData.featuredImage}
+              alt="Feature Image"
+              width={100}
+              height={100}
+              className="mt-2"
+            />
+          )}
         </div>
         <button
           className="bg-secondary text-white py-2 rounded w-full hover:bg-secondary-hover transition duration-300 ease-in-out"

@@ -1,7 +1,6 @@
 "use client";
 import CategoryForm from "@/components/category/CategoryFrom";
 import CategoryList from "@/components/category/CategoryList";
-// import Loader from "@/components/Loader";
 import {
   useGetCategoriesQuery,
   useCreateCategoryMutation,

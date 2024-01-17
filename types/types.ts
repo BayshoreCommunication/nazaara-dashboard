@@ -265,6 +265,7 @@ export type TProductSlug = {
 };
 
 export type TGetProduct = {
+  sku: string;
   _id: string;
   slug: string;
 };
