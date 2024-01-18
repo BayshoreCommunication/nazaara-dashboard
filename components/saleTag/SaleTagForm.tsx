@@ -30,6 +30,7 @@ const SaleTagForm = () => {
     status: "",
     featuredImage: "",
   });
+  const [imageUploadLoading, setImageUploadLoading] = useState(false);
   const { data: productsData, isLoading } = useGetProductsQuery({});
   const [createSale] = useCreateSaleMutation();
 
@@ -41,7 +42,7 @@ const SaleTagForm = () => {
     });
   };
 
-  console.log("formData option", formData);
+  // console.log("formData option", formData);
 
   const options = productsData?.product?.map((elem) => ({
     value: elem._id,
@@ -49,15 +50,15 @@ const SaleTagForm = () => {
   }));
 
   const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    setImageUploadLoading(true);
     const file = e.target.files?.[0];
 
     if (file) {
       try {
-        // const secure_url = await cloudinaryImageUpload(file);
-        const { secureUrl, publicId } = await cloudinaryImageUpload(file);
-        console.log("url", secureUrl, publicId);
-        // console.log("url", secure_url, public_id);
-
+        const { secureUrl } = await cloudinaryImageUpload(file);
+        if (secureUrl) {
+          setImageUploadLoading(false);
+        }
         setFormData({
           ...formData,
           featuredImage: secureUrl,
@@ -179,10 +180,13 @@ const SaleTagForm = () => {
           )}
         </div>
         <button
-          className="bg-secondary text-white py-2 rounded w-full hover:bg-secondary-hover transition duration-300 ease-in-out"
+          className={`${
+            imageUploadLoading && "cursor-not-allowed"
+          } bg-secondary text-white py-2 rounded w-full hover:bg-secondary-hover transition duration-300 ease-in-out`}
           type="submit"
+          disabled={imageUploadLoading}
         >
-          Add Sale Tag
+          Add Sale
         </button>
       </form>
     </>
