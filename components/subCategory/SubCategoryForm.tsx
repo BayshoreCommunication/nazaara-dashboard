@@ -1,7 +1,7 @@
 import { cloudinaryImageUpload } from "@/helpers";
 import { useGetCategoriesQuery } from "@/services/categoryApi";
 import { useCreateSubCategoryMutation } from "@/services/subcategory";
-import React, { ChangeEvent, FC, FormEvent } from "react";
+import React, { ChangeEvent, FC, FormEvent, useState } from "react";
 import toast from "react-hot-toast";
 
 interface CategoryFormProps {
@@ -12,17 +12,17 @@ interface CategoryFormProps {
 const SubCategoryForm: FC<CategoryFormProps> = ({ setFormData, formData }) => {
   const { data: categories } = useGetCategoriesQuery();
   const [createSubCategory] = useCreateSubCategoryMutation();
-
+  const [imageUploadLoading, setImageUploadLoading] = useState(false);
   const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    setImageUploadLoading(true);
     const file = e.target.files?.[0];
-
     if (file) {
       try {
         // const secure_url = await cloudinaryImageUpload(file);
         const { secureUrl, publicId } = await cloudinaryImageUpload(file);
-        console.log("url", secureUrl, publicId);
-        // console.log("url", secure_url, public_id);
-
+        if (secureUrl) {
+          setImageUploadLoading(false);
+        }
         setFormData({
           ...formData,
           featuredImage: secureUrl,
@@ -148,8 +148,11 @@ const SubCategoryForm: FC<CategoryFormProps> = ({ setFormData, formData }) => {
         ></input>
       </div>
       <button
+        className={`${
+          imageUploadLoading && "cursor-not-allowed"
+        } bg-secondary py-1 px-4 rounded-md text-white w-full`}
         type="submit"
-        className="bg-secondary py-1 px-4 rounded-md text-white w-full"
+        disabled={imageUploadLoading}
       >
         Upload
       </button>

@@ -286,15 +286,16 @@ export type TCoupons = {
 };
 
 export type TCoupon = {
+  title: string;
   _id?: string;
-  name: string;
+  // name: string;
   couponCode?: string;
   expires: Date;
   freeShipping: boolean;
   discountType?: string;
   discountOff?: number;
   minimumPurchaseAmount?: number;
-  image: string;
+  valid?: boolean;
   status: string;
   createdAt?: string;
   updatedAt?: string;

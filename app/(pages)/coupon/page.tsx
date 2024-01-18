@@ -9,65 +9,74 @@ import {
   useCreateCouponMutation,
 } from "@/services/couponApi";
 import { TCoupon } from "@/types/types";
-import axios from "axios";
-import { FC, useState, FormEvent, useRef } from "react";
+import { FC, useState, FormEvent } from "react";
 import toast from "react-hot-toast";
 import { RxCross2 } from "react-icons/rx";
 import Swal from "sweetalert2";
 
 const Discount: FC = () => {
   const { data: couponData, isLoading, refetch } = useGetCouponsQuery();
+
+  console.log("coupon data", couponData);
+
   const [createCoupon] = useCreateCouponMutation();
 
   //handle form for creating new category
 
   //crate category start
   const [discountData, setDiscountData] = useState<TCoupon>({
-    name: "",
+    title: "",
     freeShipping: false,
     discountType: "",
     expires: new Date(),
     discountOff: 0,
     minimumPurchaseAmount: 0,
-    image: "",
     status: "",
   });
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    // Perform any form validation or data processing here
-    const formData = new FormData();
-    formData.append("file", discountData.image);
-    formData.append("upload_preset", process.env.OTHER_PRESET as string);
-    const response = await axios.post(
-      process.env.CLOUDINARY_URL as string,
-      formData
-    );
 
-    const data = await createCoupon({
-      name: discountData.name,
-      freeShipping: discountData.freeShipping,
-      discountType: discountData.discountType,
-      expires: discountData.expires,
-      discountOff: discountData.discountOff,
-      minimumPurchaseAmount: discountData.minimumPurchaseAmount,
-      image: response.data.secure_url,
-      status: discountData.status,
-    });
-    // refetch();
-    if (data) {
-      toast.success("New Coupon Created", { duration: 3000 });
-      // Reset form fields
-      setDiscountData({
-        name: "",
-        freeShipping: false,
-        expires: new Date(),
-        discountType: "",
-        discountOff: 0,
-        minimumPurchaseAmount: 0,
-        image: "",
-        status: "",
-      });
+    try {
+      const dataToPost = {
+        title: discountData.title,
+        freeShipping: discountData.freeShipping,
+        couponCode: discountData.couponCode,
+        discountType: discountData.discountType,
+        expires: discountData.expires,
+        discountOff: Number(discountData.discountOff),
+        minimumPurchaseAmount: Number(discountData.minimumPurchaseAmount),
+        status: discountData.status,
+      };
+
+      // console.log("data to post", dataToPost);
+
+      const data = await createCoupon(dataToPost);
+      // console.log("create data", data);
+
+      if ((data as any)?.data?.success) {
+        toast.success("New Coupon Created", { duration: 3000 });
+        // Reset form fields
+        setDiscountData({
+          title: "",
+          freeShipping: false,
+          expires: new Date(),
+          discountType: "",
+          discountOff: 0,
+          minimumPurchaseAmount: 0,
+          status: "",
+        });
+      } else {
+        if ((data as any)?.error?.data?.message?.code === 11000) {
+          toast.error("Coupon code should be unique");
+        } else {
+          toast.error(
+            "something went wrong. please check the inserted data again."
+          );
+        }
+      }
+    } catch (error: any) {
+      toast.error("Somethings went wrong!", error);
     }
   };
   //crate category end
@@ -110,13 +119,13 @@ const Discount: FC = () => {
 
   //edit modal
   const [filteredData, setFilteredData] = useState<TCoupon>({
-    name: "",
+    title: "",
     freeShipping: false,
     discountType: "",
     expires: new Date(),
     discountOff: 0,
     minimumPurchaseAmount: 0,
-    image: "",
+    // image: "",
     status: "",
   });
 
@@ -137,9 +146,7 @@ const Discount: FC = () => {
     setFilteredData({
       ...filteredData,
       [event.target.name]:
-        event.target.name === "image"
-          ? event.target.files[0]
-          : event.target.name === "freeShipping"
+        event.target.name === "freeShipping"
           ? event.target.checked
           : event.target.value,
     });
@@ -167,9 +174,9 @@ const Discount: FC = () => {
   return isLoading ? (
     <Loader height="h-[85vh]" />
   ) : (
-    <div className="flex gap-10 container">
+    <div className="flex gap-6 container">
       {/* show all category  */}
-      <div className="flex-[6] overflow-x-auto">
+      <div className="flex-[7] overflow-x-auto">
         <h1 className="text-lg font-semibold mb-2">All Coupon</h1>
         {couponData ? (
           <DiscountList
@@ -183,7 +190,7 @@ const Discount: FC = () => {
       </div>
 
       {/* add new coupon  */}
-      <div className="flex-[3]">
+      <div className="flex-[2]">
         <h1 className="text-lg font-semibold mb-2">Add Coupon</h1>
         <DiscountForm
           handleSubmit={handleSubmit}
@@ -215,18 +222,33 @@ const Discount: FC = () => {
                     className="bg-white p-3 flex flex-col gap-y-3 rounded-xl"
                   >
                     <div>
-                      <label className="font-medium" htmlFor="name">
-                        Coupon Name:
+                      <label className="font-medium" htmlFor="title">
+                        Coupon Title:
                       </label>
                       <input
                         className="block w-full p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
-                        id="name"
+                        id="title"
                         type="text"
-                        name="name"
-                        value={filteredData.name}
+                        name="title"
+                        value={filteredData.title}
                         onChange={filteredDataHandleChange}
                         required
-                        placeholder="Enter Category Name"
+                        placeholder="Enter Coupon Title"
+                      />
+                    </div>
+                    <div>
+                      <label className="font-medium" htmlFor="couponCode">
+                        Coupon Code:
+                      </label>
+                      <input
+                        className="block w-full p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
+                        id="couponCode"
+                        type="text"
+                        name="couponCode"
+                        value={filteredData.couponCode}
+                        onChange={filteredDataHandleChange}
+                        required
+                        placeholder="Enter Coupon Code"
                       />
                     </div>
                     <div className="mb-2">
@@ -317,38 +339,27 @@ const Discount: FC = () => {
                         <option value="published">Publish</option>
                       </select>
                     </div>
-                    {/* <div className="mb-2">
-                    <label className="font-medium" htmlFor="name">
-                      Image:
-                    </label>
-                    <input
-                      className="block w-full p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
-                      id="image"
-                      type="file"
-                      name="image"
-                      onChange={filteredDataHandleChange}
-                      required
-                      placeholder="Enter minimum purchase amount"
-                    />
-                  </div> */}
                     <div className="mb-2">
-                      <label
-                        className="relative inline-flex items-center cursor-pointer"
-                        // htmlFor="freeShipping"
-                      >
+                      <label className="relative inline-flex items-center cursor-pointer">
                         <input
                           type="checkbox"
                           name="freeShipping"
                           className="sr-only peer"
-                          defaultChecked={filteredData.freeShipping}
-                          onClick={handleChange}
+                          checked={filteredData.freeShipping}
+                          onChange={() =>
+                            setFilteredData((prevData) => ({
+                              ...prevData,
+                              freeShipping: !prevData.freeShipping,
+                            }))
+                          }
                         />
-                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-transparent dark:peer-focus:bg-secondary rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-red-900"></div>
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-transparent rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-900"></div>
                         <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">
                           Free Shipping
                         </span>
                       </label>
                     </div>
+
                     <button
                       type="submit"
                       className="bg-secondary py-1 px-4 rounded-md text-white w-full"

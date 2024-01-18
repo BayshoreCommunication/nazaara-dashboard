@@ -1,17 +1,16 @@
-import { ChangeEvent, FormEvent, FC } from "react";
+import { FormEvent, FC } from "react";
 
 interface CouponFormProps {
   handleSubmit: (event: FormEvent) => void;
   handleChange: (event: any) => void;
   discountData: {
-    name: string;
+    title: string;
     couponCode?: string;
     expires: Date;
     freeShipping: boolean;
     discountType?: string;
     discountOff?: number;
     minimumPurchaseAmount?: number;
-    image: string;
     status: string;
   };
 }
@@ -28,17 +27,32 @@ const DiscountForm: FC<CouponFormProps> = ({
     >
       <div>
         <label className="font-medium" htmlFor="name">
-          Coupon Name:
+          Coupon Title:
         </label>
         <input
           className="block w-full p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
-          id="name"
+          id="title"
           type="text"
-          name="name"
-          value={discountData.name}
+          name="title"
+          value={discountData.title}
           onChange={handleChange}
           required
           placeholder="Enter Category Name"
+        />
+      </div>
+      <div>
+        <label className="font-medium" htmlFor="name">
+          Coupon Code:
+        </label>
+        <input
+          className="block w-full p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
+          id="couponCode"
+          type="text"
+          name="couponCode"
+          value={discountData.couponCode}
+          onChange={handleChange}
+          required
+          placeholder="Enter Unique Coupon Code"
         />
       </div>
       <div className="mb-2">
@@ -124,20 +138,6 @@ const DiscountForm: FC<CouponFormProps> = ({
           <option value="draft">Draft</option>
           <option value="published">Publish</option>
         </select>
-      </div>
-      <div className="mb-2">
-        <label className="font-medium" htmlFor="name">
-          Image:
-        </label>
-        <input
-          className="block w-full p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
-          id="image"
-          type="file"
-          name="image"
-          onChange={handleChange}
-          required
-          placeholder="Enter minimum purchase amount"
-        />
       </div>
       <div className="mb-2">
         <label

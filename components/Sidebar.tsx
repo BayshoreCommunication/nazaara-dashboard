@@ -28,16 +28,16 @@ const Sidebar = () => {
       icon: <RxDashboard size={18} />,
     },
     {
-      _id: "101",
-      title: "Customer",
-      link: "/customers",
-      icon: <FaUserAlt size={18} />,
-    },
-    {
       _id: "102",
       title: "Analytics",
       link: "/analytics",
       icon: <SiGoogleanalytics size={18} />,
+    },
+    {
+      _id: "101",
+      title: "Customer",
+      link: "/customers",
+      icon: <FaUserAlt size={18} />,
     },
     {
       _id: "103",
@@ -45,12 +45,12 @@ const Sidebar = () => {
       link: "/orders",
       icon: <AiOutlineShoppingCart size={18} />,
     },
-    {
-      _id: "105",
-      title: "Transactions",
-      link: "/transactions",
-      icon: <BsFillFileEarmarkSpreadsheetFill size={18} />,
-    },
+    // {
+    //   _id: "105",
+    //   title: "Transactions",
+    //   link: "/transactions",
+    //   icon: <BsFillFileEarmarkSpreadsheetFill size={18} />,
+    // },
     {
       _id: "104",
       title: "ERP Products",
@@ -65,22 +65,22 @@ const Sidebar = () => {
     },
     {
       _id: "107",
-      title: "Discounts",
-      link: "/discounts",
+      title: "Coupon",
+      link: "/coupon",
       icon: <MdDiscount size={18} />,
     },
     {
       _id: "108",
-      title: "Contacts",
+      title: "User Contacts",
       link: "/contacts",
       icon: <BsChatLeftText size={18} />,
     },
-    {
-      _id: "109",
-      title: "Warehouse",
-      link: "/warehouses",
-      icon: <FaWarehouse size={18} />,
-    },
+    // {
+    //   _id: "109",
+    //   title: "Warehouse",
+    //   link: "/warehouses",
+    //   icon: <FaWarehouse size={18} />,
+    // },
     {
       _id: "110",
       title: "Promotions",

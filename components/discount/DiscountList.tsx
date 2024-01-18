@@ -25,54 +25,66 @@ const DiscountList: FC<CouponListProps> = ({
       <thead>
         <tr>
           <th>SL</th>
-          <th>Coupon Name</th>
-          <th>Discount</th>
+          <th>Coupon Title</th>
+          <th>Coupon Code</th>
+          <th>Discount Type</th>
+          <th>Discount Offer</th>
+          <th>Minimum Purchase</th>
           <th>Expires At</th>
           <th>Free Shipping</th>
+          <th>Validity</th>
           <th>Status</th>
-          <th>Actions</th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody>
         {coupons.map((data, index) => {
           const date = new Date(data.expires);
-          const currentDate = new Date();
-          console.log("current date", currentDate);
+          // const currentDate = new Date();
+          // console.log("current date", currentDate);
 
-          const isExpired = date < currentDate;
+          // const isExpired = date < currentDate;
           const day = date.getDate().toString().padStart(2, "0");
           const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Months are 0-indexed
           const year = date.getFullYear();
 
           const formattedDate = `${day}/${month}/${year}`;
-          const status = isExpired ? "expired" : data.status;
+          // const status = isExpired ? "expired" : data.status;
           // const status = isExpired ? true : false;
-          console.log("statsusssf", data.freeShipping);
+          // console.log("statsusssf", data.freeShipping);
 
           return (
             <tr key={data._id}>
               <td>{index + 1}</td>
-              <td>{data.name}</td>
+              <td>{data.title}</td>
+              <td className="font-medium">{data.couponCode}</td>
+              <td>{data.discountType}</td>
               <td>
                 {data.discountOff}
-                {data.discountType === "percentage" ? "%" : "tk"}
+                {data.discountType === "percentage" ? "%" : "/-"}
               </td>
+              <td>{data.minimumPurchaseAmount}/-</td>
               <td>{formattedDate}</td>
               <td
                 className={`font-medium ${
                   data.freeShipping ? "text-green-500" : "text-red-500"
                 }`}
               >
-                {data.freeShipping ? "true" : "false"}
+                {data.freeShipping ? "Available" : "Unavailable"}
               </td>
               <td
                 className={`font-medium ${
-                  data.status === "draft" || status === "expired"
-                    ? "text-red-600"
-                    : "text-green-600"
+                  data.valid ? "text-green-500" : "text-red-500"
                 }`}
               >
-                {status}
+                {data.valid ? "Valid" : "Invalid"}
+              </td>
+              <td
+                className={`font-medium ${
+                  data.status === "draft" ? "text-red-600" : "text-green-600"
+                }`}
+              >
+                {data.status}
               </td>
               <td>
                 <div className="flex">

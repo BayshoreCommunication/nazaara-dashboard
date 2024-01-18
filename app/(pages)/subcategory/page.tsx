@@ -34,6 +34,8 @@ const SubCategory: FC = () => {
     featuredImagePublicId: "",
   });
 
+  const [imageUploadLoading, setImageUploadLoading] = useState(false);
+
   //handle delete
   const [deleteSubCategory] = useDeleteSubCategoryMutation();
   const handleDeleteCategory = async (id: string) => {
@@ -142,21 +144,17 @@ const SubCategory: FC = () => {
   };
 
   const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    setImageUploadLoading(true);
     const file = e.target.files?.[0];
-
     if (file) {
       try {
         const previousImage = filteredData[0]?.featuredImagePublicId;
-        console.log("previous image --->", previousImage);
         if (previousImage) {
-          toast.success("image deleted successfully");
-          const deleteImage = await cloudinaryImageDelete(
-            filteredData[0].featuredImagePublicId
-          );
-          console.log("delete iamge", deleteImage);
+          await cloudinaryImageDelete(filteredData[0].featuredImagePublicId);
         }
         const { secureUrl, publicId } = await cloudinaryImageUpload(file);
         if (secureUrl && publicId) {
+          setImageUploadLoading(false);
           toast.success("new image added successfully");
         }
 
@@ -282,8 +280,11 @@ const SubCategory: FC = () => {
                       ></input>
                     </div>
                     <button
+                      className={`${
+                        imageUploadLoading && "cursor-not-allowed"
+                      } bg-secondary py-1 px-4 rounded-md text-white w-full`}
                       type="submit"
-                      className="bg-secondary py-1 px-4 rounded-md text-white w-full"
+                      disabled={imageUploadLoading}
                     >
                       Update
                     </button>
