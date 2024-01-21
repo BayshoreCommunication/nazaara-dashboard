@@ -304,26 +304,26 @@ export type TCoupon = {
 
 // ============================ Promotions =============================== //
 
-export type TPromotions = {
-  status: string;
-  data: TPromotion[];
-};
+// export type TPromotions = {
+//   status: string;
+//   data: TPromotion[];
+// };
 
-export type TPromotion = {
-  _id?: string;
-  name: string;
-  promotionOn?: string;
-  categoryName: string;
-  expires: string;
-  freeShipping?: boolean;
-  discountType?: string;
-  discountOff?: number;
-  minimumPurchaseAmount?: number;
-  status: string;
-  createdAt?: string;
-  updatedAt?: string;
-  ___v?: number;
-};
+// export type TPromotion = {
+//   _id?: string;
+//   name: string;
+//   promotionOn?: string;
+//   categoryName: string;
+//   expires: string;
+//   freeShipping?: boolean;
+//   discountType?: string;
+//   discountOff?: number;
+//   minimumPurchaseAmount?: number;
+//   status: string;
+//   createdAt?: string;
+//   updatedAt?: string;
+//   ___v?: number;
+// };
 
 // ============================ React Select Options =============================== //
 

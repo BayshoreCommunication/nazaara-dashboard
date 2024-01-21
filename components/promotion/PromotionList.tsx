@@ -1,99 +1,153 @@
-import { TCoupon } from "@/types/types";
+import { formatDate } from "@/helpers/formatDate";
+import { formatYearMonthDay } from "@/helpers/formatYearMonthDay";
+import { useGetCategoriesQuery } from "@/services/categoryApi";
+import { useDeleteAPromotionMutation } from "@/services/promotionApi";
+import { useGetSubCategoriesQuery } from "@/services/subcategory";
+import { IPromotions } from "@/types/promotionTypes";
 import { FC } from "react";
 import { MdDelete } from "react-icons/md";
 import { TbEdit } from "react-icons/tb";
+import Swal from "sweetalert2";
 
-export interface Category {
-  _id: string;
-  name: string;
-  status: string;
+interface promotionProps {
+  promotions: IPromotions;
+  handleEditPromotion: (id: string) => void;
 }
 
-interface CouponListProps {
-  coupons: TCoupon[];
-  handleEditCoupon: (id: string) => void;
-  handleDeleteCoupon: (id: string) => void;
-}
-
-const PromotionList: FC<CouponListProps> = ({
-  coupons,
-  handleEditCoupon,
-  handleDeleteCoupon,
+const PromotionList: FC<promotionProps> = ({
+  promotions,
+  handleEditPromotion,
 }) => {
+  const { data: categoryData } = useGetCategoriesQuery();
+  const { data: subCategoryData } = useGetSubCategoriesQuery();
+  const [deletePromotion] = useDeleteAPromotionMutation();
+
+  const handleDeletePromotion = async (id: string) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const couponDel = await deletePromotion(id);
+        if (couponDel) {
+          Swal.fire("Deleted!", "Your coupon has been deleted.", "success");
+        }
+      }
+    });
+  };
+
+  const getCategoryTitles = (categoryIds: string[] | undefined) => {
+    if (!categoryIds || categoryIds.length === 0) {
+      return [];
+    }
+
+    return categoryIds.map((categoryId) => {
+      const category = categoryData?.data.find(
+        (data) => data._id === categoryId
+      );
+      return (
+        <span className="bg-gray-200 px-1 !w-max">{category?.title}</span> || ""
+      );
+    });
+  };
+
+  const getSubCategoryTitles = (subCategoryIds: string[] | undefined) => {
+    if (!subCategoryIds || subCategoryIds.length === 0) {
+      return [];
+    }
+
+    return subCategoryIds.map((subCategoryId) => {
+      const category = subCategoryData?.data.find(
+        (data) => data._id === subCategoryId
+      );
+      return <span className="bg-gray-200 px-1">{category?.title}</span> || "";
+    });
+  };
+
   return (
     <table className="table bg-basic">
       <thead>
         <tr>
           <th>SL</th>
-          <th>Coupon Name</th>
-          <th>Discount</th>
-          <th>Expires At</th>
+          <th>Promotion Title</th>
+          <th>Promotion On</th>
+          <th>Cateogory</th>
+          <th>SubCategory</th>
+          <th>Start Date</th>
+          <th>Expire Date</th>
           <th>Free Shipping</th>
+          <th>Discount Type</th>
+          <th>Discount Off</th>
           <th>Status</th>
           <th>Actions</th>
         </tr>
       </thead>
-      <tbody>
-        {coupons.map((data, index) => {
-          const date = new Date(data.expires);
-          const currentDate = new Date();
-          console.log("current date", currentDate);
-
-          const isExpired = date < currentDate;
-          const day = date.getDate().toString().padStart(2, "0");
-          const month = (date.getMonth() + 1).toString().padStart(2, "0"); // Months are 0-indexed
-          const year = date.getFullYear();
-
-          const formattedDate = `${day}/${month}/${year}`;
-          const status = isExpired ? "expired" : data.status;
-          // const status = isExpired ? true : false;
-          console.log("statsusssf", data.freeShipping);
-
-          return (
-            <tr key={data._id}>
-              <td>{index + 1}</td>
-              <td>{data.name}</td>
-              <td>
+      {promotions.success && promotions.data.length > 0 && (
+        <tbody>
+          {promotions.data.map((data, index) => {
+            return (
+              <tr key={data._id}>
+                <td>{index + 1}</td>
+                <td>{data.title}</td>
+                <td>{data.promotionOn}</td>
+                <td className="flex gap-1 flex-wrap">
+                  {getCategoryTitles(data.categoryId)}
+                </td>
+                <td>{getSubCategoryTitles(data.subCategoryId)}</td>
+                <td>{formatYearMonthDay(data.startDate)}</td>
+                <td>{formatYearMonthDay(data.expireDate)}</td>
+                {/* <td>
                 {data.discountOff}
                 {data.discountType === "percentage" ? "%" : "tk"}
               </td>
-              <td>{formattedDate}</td>
-              <td
-                className={`font-medium ${
-                  data.freeShipping ? "text-green-500" : "text-red-500"
-                }`}
-              >
-                {data.freeShipping ? "true" : "false"}
-              </td>
-              <td
-                className={`font-medium ${
-                  data.status === "draft" || status === "expired"
-                    ? "text-red-600"
-                    : "text-green-600"
-                }`}
-              >
-                {status}
-              </td>
-              <td>
-                <div className="flex">
-                  <label
-                    onClick={() => handleEditCoupon(data._id as string)}
-                    className="cursor-pointer"
-                    htmlFor="modal-handle"
-                  >
-                    <TbEdit color="green" size={20} />
-                  </label>
-                  <button
-                    onClick={() => handleDeleteCoupon(data._id as string)}
-                  >
-                    <MdDelete color="red" size={20} />
-                  </button>
-                </div>
-              </td>
-            </tr>
-          );
-        })}
-      </tbody>
+              <td>{formattedDate}</td> */}
+                <td
+                  className={`font-medium ${
+                    data.freeShipping ? "text-green-500" : "text-red-500"
+                  }`}
+                >
+                  {data.freeShipping ? "true" : "false"}
+                </td>
+                <td>{data.discountType}</td>
+                <td>
+                  {data.discountOff}
+                  {data.discountType === "percentage" ? "%" : "/-"}
+                </td>
+                <td
+                  className={`font-medium ${
+                    data.status === "published"
+                      ? "text-green-500"
+                      : "text-red-500"
+                  }`}
+                >
+                  {data.status}
+                </td>
+                <td>
+                  <div className="flex">
+                    <label
+                      onClick={() => handleEditPromotion(data._id as string)}
+                      className="cursor-pointer"
+                      htmlFor="modal-handle"
+                    >
+                      <TbEdit color="green" size={20} />
+                    </label>
+                    <button
+                      onClick={() => handleDeletePromotion(data._id as string)}
+                    >
+                      <MdDelete color="red" size={20} />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      )}
     </table>
   );
 };

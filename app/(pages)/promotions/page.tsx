@@ -4,160 +4,187 @@ import DiscountList from "@/components/discount/DiscountList";
 import Loader from "@/components/Loader";
 import PromotionForm from "@/components/promotion/PromotionForm";
 import PromotionList from "@/components/promotion/PromotionList";
+import { customStyles } from "@/components/ReactSelectCustomStyle";
+import { useGetCategoriesQuery } from "@/services/categoryApi";
 import {
-  useGetCouponsQuery,
-  useDeleteCouponMutation,
-  useUpdateCouponMutation,
-  useCreateCouponMutation,
-} from "@/services/couponApi";
-import { TCoupon } from "@/types/types";
-import axios from "axios";
-import { FC, useState, FormEvent, useRef } from "react";
+  useGetAllPromotionsQuery,
+  useUpdateAPromotionMutation,
+} from "@/services/promotionApi";
+import { useGetSubCategoriesQuery } from "@/services/subcategory";
+import { IPromotion } from "@/types/promotionTypes";
+import dynamic from "next/dynamic";
+import { FC, useState, FormEvent, ChangeEvent } from "react";
 import toast from "react-hot-toast";
 import { RxCross2 } from "react-icons/rx";
-import Swal from "sweetalert2";
+const Select = dynamic(() => import("react-select"), {
+  ssr: false,
+});
 
 const Discount: FC = () => {
-  const { data: couponData, isLoading, refetch } = useGetCouponsQuery();
-  const [createCoupon] = useCreateCouponMutation();
+  const [isOpen, setIsOpen] = useState(false);
+  const { data: promotions, isLoading } = useGetAllPromotionsQuery();
+  const { data: categoryData } = useGetCategoriesQuery();
+  const { data: subCategoryData } = useGetSubCategoriesQuery();
 
-  //handle form for creating new category
-
-  //crate category start
-  const [discountData, setDiscountData] = useState<TCoupon>({
-    name: "",
-    freeShipping: false,
-    discountType: "",
-    expires: new Date(),
-    discountOff: 0,
-    minimumPurchaseAmount: 0,
-    image: "",
-    status: "",
-  });
-
-  const handleSubmit = async (event: FormEvent) => {
-    event.preventDefault();
-    // Perform any form validation or data processing here
-    const formData = new FormData();
-    formData.append("file", discountData.image);
-    formData.append("upload_preset", process.env.OTHER_PRESET as string);
-    const response = await axios.post(
-      process.env.CLOUDINARY_URL as string,
-      formData
-    );
-
-    const data = await createCoupon({
-      name: discountData.name,
-      freeShipping: discountData.freeShipping,
-      discountType: discountData.discountType,
-      expires: discountData.expires,
-      discountOff: discountData.discountOff,
-      minimumPurchaseAmount: discountData.minimumPurchaseAmount,
-      image: response.data.secure_url,
-      status: discountData.status,
-    });
-    // refetch();
-    if (data) {
-      toast.success("New Coupon Created", { duration: 3000 });
-      // Reset form fields
-      setDiscountData({
-        name: "",
-        freeShipping: false,
-        expires: new Date(),
-        discountType: "",
-        discountOff: 0,
-        minimumPurchaseAmount: 0,
-        image: "",
-        status: "",
-      });
-    }
-  };
-  //crate category end
-
-  const handleChange = (event: any) => {
-    setDiscountData({
-      ...discountData,
-      [event.target.name]:
-        event.target.name === "image"
-          ? event.target.files[0]
-          : event.target.name === "freeShipping"
-          ? event.target.checked
-          : event.target.value,
-    });
-  };
+  // const handleChange = (event: any) => {
+  //   setDiscountData({
+  //     ...discountData,
+  //     [event.target.name]:
+  //       event.target.name === "image"
+  //         ? event.target.files[0]
+  //         : event.target.name === "freeShipping"
+  //         ? event.target.checked
+  //         : event.target.value,
+  //   });
+  // };
 
   //
 
-  //handle delete
-  const [deleteCategory] = useDeleteCouponMutation();
-  const handleDeleteCoupon = async (id: string) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        Swal.fire("Deleted!", "Your coupon has been deleted.", "success");
-        const couponDel = await deleteCategory(id);
-        if (couponDel) {
-          refetch(); // Refetch the user list after deleting a user
-        }
-      }
-    });
-  };
-
   //edit modal
-  const [filteredData, setFilteredData] = useState<TCoupon>({
-    name: "",
+  const [filteredData, setFilteredData] = useState<IPromotion>({
+    _id: "",
+    title: "",
+    promotionOn: "category",
+    categoryId: [],
+    subCategoryId: [],
+    startDate: new Date(),
+    expireDate: new Date(),
     freeShipping: false,
     discountType: "",
-    expires: new Date(),
     discountOff: 0,
-    minimumPurchaseAmount: 0,
-    image: "",
     status: "",
   });
 
-  const handleEditCoupon = (id: string) => {
-    const filtered: any = couponData?.data?.filter(
-      (item) => item._id === id
-    )[0];
-    setFilteredData(filtered);
+  console.log("filtered state data", filteredData);
+
+  const handleEditPromotion = (id: string) => {
+    const filtered = promotions?.data?.find(
+      (item: IPromotion) => item._id === id
+    );
+
+    console.log("filtered", filtered);
+
+    const editDefaultData = {
+      _id: filtered?._id,
+      title: filtered?.title,
+      promotionOn: filtered?.promotionOn,
+      categoryId: (filtered?.categoryId || []).map((data) => ({
+        value: data,
+        label:
+          categoryData?.data.find((item) => item._id === data)?.title || "",
+      })),
+      subCategoryId: (filtered?.subCategoryId || []).map((data) => ({
+        value: data,
+        label:
+          subCategoryData?.data.find((item) => item._id === data)?.title || "",
+      })),
+      startDate: filtered?.startDate,
+      expireDate: filtered?.expireDate,
+      freeShipping: filtered?.freeShipping,
+      discountType: filtered?.discountType,
+      discountOff: filtered?.discountOff,
+      status: filtered?.status,
+    };
+
+    setFilteredData(editDefaultData);
     setIsOpen(true);
   };
 
-  const [isOpen, setIsOpen] = useState(true);
-
   //update category start
-  const [updateCoupon] = useUpdateCouponMutation();
+  const [updatePromotion] = useUpdateAPromotionMutation();
 
-  const filteredDataHandleChange = (event: any) => {
+  const options = categoryData?.data.map((elem) => ({
+    value: elem._id,
+    label: elem.title,
+  }));
+
+  const defaultValueOptionsforCategory = filteredData?.categoryId?.map(
+    (elem: any) => ({
+      value: elem.value,
+      label: elem.label,
+    })
+  );
+
+  const handleCategoryIdSelectionChange = (options: any | null) => {
+    if (options) {
+      setFilteredData({
+        ...filteredData,
+        categoryId: options.map((option: any) => ({
+          value: option.value,
+          label: option.label,
+        })),
+      });
+    }
+  };
+
+  const defaultValueOptionsforSubCategory = filteredData?.subCategoryId?.map(
+    (elem: any) => ({
+      value: elem.value,
+      label: elem.label,
+    })
+  );
+
+  const handleSubCategoryIdSelectionChange = (options: any | null) => {
+    if (options) {
+      setFilteredData({
+        ...filteredData,
+        subCategoryId: options.map((option: any) => ({
+          value: option.value,
+          label: option.label,
+        })),
+      });
+    }
+  };
+
+  const subCategoryOptions = subCategoryData?.data.map((elem) => ({
+    value: elem._id,
+    label: elem.title,
+  }));
+
+  const handleStartDateChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const newStartDate = new Date(e.target.value);
     setFilteredData({
       ...filteredData,
-      [event.target.name]:
-        event.target.name === "image"
-          ? event.target.files[0]
-          : event.target.name === "freeShipping"
-          ? event.target.checked
-          : event.target.value,
+      startDate: newStartDate,
     });
   };
 
-  const handleUpdateCategorySubmit = async (event: FormEvent) => {
+  const handleExpireDateChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const newExpireDate = new Date(e.target.value);
+    setFilteredData({
+      ...filteredData,
+      expireDate: newExpireDate,
+    });
+  };
+
+  const handleUpdatePromotionSubmit = async (event: FormEvent) => {
     event.preventDefault();
+
+    const updateData = {
+      title: filteredData?.title,
+      promotionOn: filteredData?.promotionOn,
+      categoryId: (filteredData?.categoryId || []).map((data) => data.value),
+      subCategoryId: (filteredData?.subCategoryId || []).map(
+        (data) => data.value
+      ),
+      startDate: filteredData?.startDate,
+      expireDate: filteredData?.expireDate,
+      freeShipping: filteredData?.freeShipping,
+      discountType: filteredData?.discountType,
+      discountOff: filteredData?.discountOff,
+      status: filteredData?.status,
+    };
+
+    console.log("updated data", updateData);
+
     try {
-      const mutationData: any = await updateCoupon({
+      const mutationData = await updatePromotion({
         id: filteredData._id as string,
-        payload: filteredData,
+        payload: updateData,
       });
-      refetch();
+      // refetch();
       if (mutationData) {
-        toast.success("Coupon updated!", { duration: 3000 });
-        refetch(); // Refetch the categories list after updating
+        toast.success("Promotion updated successfully!", { duration: 3000 });
         setIsOpen(false);
       }
     } catch (error) {
@@ -169,15 +196,14 @@ const Discount: FC = () => {
   return isLoading ? (
     <Loader height="h-[85vh]" />
   ) : (
-    <div className="flex gap-10 container">
+    <div className="flex items-start gap-6 container">
       {/* show all category  */}
-      <div className="flex-[6] overflow-x-auto">
-        <h1 className="text-lg font-semibold mb-2">All Promotion</h1>
-        {couponData ? (
+      <div className="flex-[7] overflow-x-auto">
+        <h1 className="text-lg font-semibold mb-2">All Promotions</h1>
+        {promotions ? (
           <PromotionList
-            coupons={couponData.data as TCoupon[]}
-            handleEditCoupon={handleEditCoupon}
-            handleDeleteCoupon={handleDeleteCoupon}
+            promotions={promotions}
+            handleEditPromotion={handleEditPromotion}
           />
         ) : (
           <Loader height="h-[90vh]" />
@@ -185,13 +211,9 @@ const Discount: FC = () => {
       </div>
 
       {/* add new coupon  */}
-      <div className="flex-[3]">
+      <div className="flex-[2]">
         <h1 className="text-lg font-semibold mb-2">Add Promotion</h1>
-        <PromotionForm
-          handleSubmit={handleSubmit}
-          handleChange={handleChange}
-          discountData={discountData}
-        />
+        <PromotionForm />
       </div>
 
       {isOpen && (
@@ -213,22 +235,118 @@ const Discount: FC = () => {
                     Update Promotion
                   </h2>
                   <form
-                    onSubmit={handleUpdateCategorySubmit}
+                    onSubmit={handleUpdatePromotionSubmit}
                     className="bg-white p-3 flex flex-col gap-y-3 rounded-xl"
                   >
                     <div>
                       <label className="font-medium" htmlFor="name">
-                        Promotion Name:
+                        Promotion Title<span className="text-red-600">*</span>
                       </label>
                       <input
                         className="block w-full p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
-                        id="name"
                         type="text"
-                        name="name"
-                        value={filteredData.name}
-                        onChange={filteredDataHandleChange}
+                        value={filteredData.title}
+                        onChange={(e) =>
+                          setFilteredData({
+                            ...filteredData,
+                            title: e.target.value,
+                          })
+                        }
                         required
-                        placeholder="Enter Category Name"
+                        placeholder="Enter Promotion Title"
+                      />
+                    </div>
+                    <div className="mb-2">
+                      <label className="font-medium" htmlFor="name">
+                        Promotion On<span className="text-red-600">*</span>
+                      </label>
+                      <select
+                        className="w-full border border-gray-400 rounded-sm p-2 focus:outline-none text-gray-500"
+                        id="discountType"
+                        name="discountType"
+                        value={filteredData.promotionOn}
+                        onChange={(e) =>
+                          setFilteredData({
+                            ...filteredData,
+                            promotionOn: e.target.value,
+                          })
+                        }
+                        required
+                      >
+                        <option value="category">Category</option>
+                        <option value="subCategory">Sub-Category</option>
+                      </select>
+                    </div>
+                    <div className="mb-2">
+                      <label className="font-medium" htmlFor="status">
+                        Select Category<span className="text-red-600">*</span>
+                      </label>
+                      <Select
+                        value={defaultValueOptionsforCategory}
+                        onChange={handleCategoryIdSelectionChange}
+                        className="w-full rounded-md focus:outline-none text-gray-500"
+                        placeholder="Choose Category"
+                        name="products"
+                        isDisabled={filteredData.promotionOn === "subCategory"}
+                        styles={customStyles}
+                        required
+                        theme={(theme) => ({
+                          ...theme,
+                          borderRadius: 5,
+                          outline: "none",
+                          colors: {
+                            ...theme.colors,
+                            primary25: "#ccc",
+                            primary: "#ccc",
+                          },
+                        })}
+                        options={options}
+                        isMulti={true}
+                      />
+                    </div>
+                    <div className="mb-2">
+                      <label className="font-medium" htmlFor="status">
+                        Select SubCategory
+                        <span className="text-red-600">*</span>
+                      </label>
+                      <Select
+                        value={defaultValueOptionsforSubCategory}
+                        onChange={handleSubCategoryIdSelectionChange}
+                        className="w-full rounded-md focus:outline-none text-gray-500"
+                        placeholder="Choose SubCategory"
+                        styles={customStyles}
+                        required
+                        isDisabled={filteredData.promotionOn === "category"}
+                        theme={(theme) => ({
+                          ...theme,
+                          borderRadius: 5,
+                          outline: "none",
+                          colors: {
+                            ...theme.colors,
+                            primary25: "#ccc",
+                            primary: "#ccc",
+                          },
+                        })}
+                        options={subCategoryOptions}
+                        isMulti={true}
+                      />
+                    </div>
+                    <div className="mb-2">
+                      <label className="font-medium" htmlFor="name">
+                        Start Date:
+                      </label>
+                      <input
+                        className="block w-full p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
+                        id="expires"
+                        type="date"
+                        name="expires"
+                        value={
+                          new Date(filteredData.startDate)
+                            .toISOString()
+                            .split("T")[0] as any
+                        }
+                        onChange={handleStartDateChange}
+                        required
                       />
                     </div>
                     <div className="mb-2">
@@ -241,11 +359,11 @@ const Discount: FC = () => {
                         type="date"
                         name="expires"
                         value={
-                          new Date(filteredData.expires)
+                          new Date(filteredData.expireDate)
                             .toISOString()
                             .split("T")[0] as any
                         }
-                        onChange={filteredDataHandleChange}
+                        onChange={handleExpireDateChange}
                         required
                       />
                     </div>
@@ -255,49 +373,40 @@ const Discount: FC = () => {
                       </label>
                       <select
                         className="w-full border border-gray-400 rounded-sm p-2 focus:outline-none text-gray-500"
-                        id="discountType"
-                        name="discountType"
+                        id="status"
+                        name="status"
                         value={filteredData.discountType}
-                        onChange={filteredDataHandleChange}
+                        onChange={(e) =>
+                          setFilteredData({
+                            ...filteredData,
+                            discountType: e.target.value,
+                          })
+                        }
                         required
                       >
                         <option disabled value="">
-                          Choose one
+                          Choose Discount Type
                         </option>
-                        <option value="percentage">Percentage</option>
                         <option value="amount">Amount</option>
+                        <option value="percentage">Percentage</option>
                       </select>
                     </div>
                     <div className="mb-2">
-                      <label className="font-medium" htmlFor="name">
-                        Discount amount to Off:
+                      <label className="font-medium" htmlFor="status">
+                        Discount Off:
                       </label>
                       <input
                         className="block w-full p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
-                        id="discountOff"
-                        type="number"
-                        name="discountOff"
-                        min={0}
+                        type="text"
                         value={filteredData.discountOff}
-                        onChange={filteredDataHandleChange}
+                        onChange={(e) =>
+                          setFilteredData({
+                            ...filteredData,
+                            discountOff: parseInt(e.target.value),
+                          })
+                        }
                         required
-                        placeholder="Enter discount off"
-                      />
-                    </div>
-                    <div className="mb-2">
-                      <label className="font-medium" htmlFor="name">
-                        Minimum Purchase Amount:
-                      </label>
-                      <input
-                        className="block w-full p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
-                        id="minimumPurchaseAmount"
-                        type="number"
-                        name="minimumPurchaseAmount"
-                        min={0}
-                        value={filteredData.minimumPurchaseAmount}
-                        onChange={filteredDataHandleChange}
-                        required
-                        placeholder="Enter minimum purchase amount"
+                        placeholder="Enter Promotion Title"
                       />
                     </div>
                     <div className="mb-2">
@@ -309,7 +418,12 @@ const Discount: FC = () => {
                         id="status"
                         name="status"
                         value={filteredData.status}
-                        onChange={filteredDataHandleChange}
+                        onChange={(e) =>
+                          setFilteredData({
+                            ...filteredData,
+                            status: e.target.value,
+                          })
+                        }
                         required
                       >
                         <option disabled value="">
@@ -319,33 +433,21 @@ const Discount: FC = () => {
                         <option value="published">Publish</option>
                       </select>
                     </div>
-                    {/* <div className="mb-2">
-                    <label className="font-medium" htmlFor="name">
-                      Image:
-                    </label>
-                    <input
-                      className="block w-full p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
-                      id="image"
-                      type="file"
-                      name="image"
-                      onChange={filteredDataHandleChange}
-                      required
-                      placeholder="Enter minimum purchase amount"
-                    />
-                  </div> */}
                     <div className="mb-2">
-                      <label
-                        className="relative inline-flex items-center cursor-pointer"
-                        // htmlFor="freeShipping"
-                      >
+                      <label className="relative inline-flex items-center cursor-pointer">
                         <input
                           type="checkbox"
                           name="freeShipping"
                           className="sr-only peer"
-                          defaultChecked={filteredData.freeShipping}
-                          onClick={handleChange}
+                          checked={filteredData.freeShipping}
+                          onChange={() =>
+                            setFilteredData((prevData) => ({
+                              ...prevData,
+                              freeShipping: !prevData.freeShipping,
+                            }))
+                          }
                         />
-                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-transparent dark:peer-focus:bg-secondary rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-red-900"></div>
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-transparent rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-900"></div>
                         <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">
                           Free Shipping
                         </span>
@@ -355,7 +457,7 @@ const Discount: FC = () => {
                       type="submit"
                       className="bg-secondary py-1 px-4 rounded-md text-white w-full"
                     >
-                      Upload
+                      Upload Promotion
                     </button>
                   </form>
                 </div>

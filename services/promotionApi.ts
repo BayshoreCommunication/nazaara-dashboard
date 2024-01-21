@@ -1,4 +1,4 @@
-import { TPromotion, TPromotions } from "@/types/types";
+import { IPromotion, IPromotions } from "@/types/promotionTypes";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const promotionsApi = createApi({
@@ -6,15 +6,15 @@ export const promotionsApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: `${process.env.API_URL}` }),
   tagTypes: ["Promotion"],
   endpoints: (builder) => ({
-    getAllPromotions: builder.query<TPromotions, void>({
+    getAllPromotions: builder.query<IPromotions, void>({
       query: () => `/api/v1/promotion`,
       providesTags: ["Promotion"],
     }),
-    getAPromotionById: builder.query<TPromotion, string>({
+    getAPromotionById: builder.query<IPromotion, string>({
       query: (id: string) => `/api/v1/promotion/${id}`,
       providesTags: ["Promotion"],
     }),
-    createAPromotion: builder.mutation<TPromotion, Partial<TPromotion>>({
+    createAPromotion: builder.mutation<IPromotion, Partial<IPromotion>>({
       query: (payload) => ({
         url: "/api/v1/promotion",
         method: "POST",
@@ -26,8 +26,8 @@ export const promotionsApi = createApi({
       invalidatesTags: ["Promotion"],
     }),
     updateAPromotion: builder.mutation<
-      TPromotion,
-      { id: string; payload: Partial<TPromotion> }
+      IPromotion,
+      { id: string; payload: Partial<IPromotion> }
     >({
       query: ({ id, payload }) => ({
         url: `/api/v1/promotion/${id}`,

@@ -364,7 +364,7 @@ const Discount: FC = () => {
                       type="submit"
                       className="bg-secondary py-1 px-4 rounded-md text-white w-full"
                     >
-                      Upload
+                      Update Coupon
                     </button>
                   </form>
                 </div>

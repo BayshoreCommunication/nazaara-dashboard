@@ -4,7 +4,7 @@
 
 @layer utilities {
   .container {
-    @apply w-[96%] my-6 mx-auto;
+    @apply w-[98%] my-6 mx-auto;
   }
 }
 
