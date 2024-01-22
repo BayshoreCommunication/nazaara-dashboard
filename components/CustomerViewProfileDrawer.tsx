@@ -11,6 +11,13 @@ import { useGetUserByIdQuery } from "@/services/userApi";
 import "react-modern-drawer/dist/index.css";
 import PrimaryButton from "./PrimaryButton";
 import SecondaryButton from "./SecondaryButton";
+import {
+  useGetOrderByUserIdQuery,
+  useGetOrdersQuery,
+} from "@/services/orderApi";
+import { formatYearMonthDay } from "@/helpers/formatYearMonthDay";
+import { IoEyeSharp } from "react-icons/io5";
+import Link from "next/link";
 
 interface IDrawer {
   isOpen: boolean;
@@ -26,15 +33,44 @@ const CustomerViewProfileDrawer: React.FC<IDrawer> = ({
   selectedCustomerId,
 }) => {
   const { data: singleData } = useGetUserByIdQuery(selectedCustomerId);
+  const { data: orderData } = useGetOrderByUserIdQuery(
+    singleData?.data._id as string
+  );
+
+  console.log("order Data", orderData);
+
+  //generate order book data
+  const addressBookData = () => {
+    if ((singleData as any)?.data?.addressBook?.length > 0) {
+      return singleData?.data?.addressBook?.map((data) => (
+        <div
+          className="border p-3 w-max rounded-md text-sm flex flex-col gap-1"
+          key={data._id}
+        >
+          <span className="px-2 rounded-sm bg-gray-200 text-green-600 w-max">
+            {data.addressType}
+          </span>
+          <p>{data.fullName}</p>
+          <p>{data.phone}</p>
+          <p>{data.street}</p>
+          <p>
+            {data.city},{data.country}
+          </p>
+        </div>
+      ));
+    } else {
+      return "N/A";
+    }
+  };
+
   return (
     <>
-      {/* <button onClick={toggleDrawer}>Show</button> */}
       <Drawer
         open={isOpen}
         onClose={() => toggleDrawer(selectedCustomerId)}
         direction="right"
-        className=""
-        size={800}
+        className="w-full overflow-auto"
+        size={1000}
       >
         <div className="p-6">
           <div className="flex justify-end">
@@ -44,69 +80,92 @@ const CustomerViewProfileDrawer: React.FC<IDrawer> = ({
               onClick={() => setIsOpen(false)}
             />
           </div>
-          <p className="font-medium text-lg mb-6">Information</p>
+          <p className="font-medium text-lg mb-3">User Info</p>
           <div className="flex flex-col gap-y-6">
             <div className="flex flex-col gap-y-3">
-              <p className="font-medium">Personal</p>
               <div className="flex flex-col gap-y-2">
                 <p>Name: {singleData?.data.fullName}</p>
                 <p>
-                  Phone:{" "}
+                  Gender:{" "}
+                  {singleData?.data.gender != ""
+                    ? singleData?.data.gender
+                    : " N/A"}
+                </p>
+                <p>
+                  Phone:
                   {singleData?.data.phone != ""
                     ? singleData?.data.phone
-                    : "None"}
+                    : " N/A"}
                 </p>
                 <p>Email: {singleData?.data.email}</p>
-                <p>User Type: {singleData?.data.userType}</p>
+                <p>User-Type: {singleData?.data.userType}</p>
               </div>
-              <p>Remarks:</p>
-              <p>Nazara Invoice No: 100055</p>
-              <div className="flex gap-2">
+              <p>Refund: {singleData?.data.refund}/-</p>
+              <div>
+                <p className="font-semibold mb-1">Address Book: </p>
+                <div className="flex flex-wrap gap-3">{addressBookData()}</div>
+              </div>
+              {/* <div className="flex gap-2">
                 <PrimaryButton name="Delete" />
                 <SecondaryButton name="Edit" />
-              </div>
+              </div> */}
             </div>
-            <div className="my-3 flex flex-col gap-y-2 items-start">
+            {/* <div className="my-3 flex flex-col gap-y-2 items-start">
               <p>Accounts Receivable: 8000</p>
               <p>History:</p>
               <PrimaryButton name="Print out" />
-            </div>
+            </div> */}
             <div>
+              <h2 className="mb-1 font-semibold">Order History: </h2>
               <div className="overflow-x-auto">
                 <table className="table border">
                   {/* head */}
                   <thead>
                     <tr>
                       <th>SL</th>
-                      <th>Date</th>
-                      <th>Invoice No</th>
-                      <th>Total Qty</th>
-                      <th>Total price</th>
-                      <th>Paid amount</th>
-                      <th>Due amount</th>
+                      <th>Order-Date</th>
+                      <th>Transaction-ID</th>
+                      <th>Total-Price</th>
+                      <th>Total-Pay</th>
+                      <th>Due-Amount</th>
+                      <th>Product</th>
+                      <th>Delivery</th>
+                      <th>Details</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {/* row 1 */}
-                    <tr>
-                      <th>1</th>
-                      <td>2023-6-6</td>
-                      <td>6565745745</td>
-                      <td>2</td>
-                      <td>18000</td>
-                      <td>10000</td>
-                      <td>8000</td>
-                    </tr>
-                    {/* row 2 */}
-                    <tr>
-                      <th>Total</th>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td>18000</td>
-                      <td>10000</td>
-                      <td>8000</td>
-                    </tr>
+                    {(orderData as any)?.data?.length > 0 ? (
+                      <>
+                        {orderData?.data.map((data: any, index) => (
+                          <tr key={data._id}>
+                            <th>{index + 1}</th>
+                            <td>{formatYearMonthDay(data.createdAt)}</td>
+                            <td>{data.transactionId}</td>
+                            <td>{data.totalAmount}</td>
+                            <td>{data.totalPay}</td>
+                            <td>{data.due}</td>
+                            <td className="flex flex-wrap gap-1">
+                              {data.product.map((data: any) => (
+                                <span
+                                  className="bg-gray-200 px-1 text-xs"
+                                  key={data._id}
+                                >
+                                  {data.sku}
+                                </span>
+                              ))}
+                            </td>
+                            <td>{data.deliveryStatus}</td>
+                            <td>
+                              <Link href={`orders/${data._id}`}>
+                                <IoEyeSharp color="blue" size={18} />
+                              </Link>
+                            </td>
+                          </tr>
+                        ))}
+                      </>
+                    ) : (
+                      <p className="py-6">No Order Found!</p>
+                    )}
                   </tbody>
                 </table>
               </div>

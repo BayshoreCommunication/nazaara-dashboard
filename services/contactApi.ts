@@ -39,12 +39,15 @@ interface AddContact {
 export const contactsApi = createApi({
   reducerPath: "contactsApi",
   baseQuery: fetchBaseQuery({ baseUrl: `${process.env.API_URL}` }),
+  tagTypes: ["Contact"],
   endpoints: (builder) => ({
     getContacts: builder.query<Contact, void>({
       query: () => `/api/v1/contact`,
+      providesTags: ["Contact"],
     }),
     getContactByID: builder.query<ContactByID, string>({
       query: (id: string) => `/api/v1/contact/${id}`,
+      providesTags: ["Contact"],
     }),
     addContact: builder.mutation<AddContact, Partial<AddContact>>({
       query: (body) => ({
@@ -52,6 +55,14 @@ export const contactsApi = createApi({
         method: "POST",
         body,
       }),
+      invalidatesTags: ["Contact"],
+    }),
+    deleteContact: builder.mutation({
+      query: (id) => ({
+        url: `/api/v1/contact/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Contact"],
     }),
   }),
 });
@@ -60,4 +71,5 @@ export const {
   useGetContactsQuery,
   useGetContactByIDQuery,
   useAddContactMutation,
+  useDeleteContactMutation,
 } = contactsApi;

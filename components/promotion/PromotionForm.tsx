@@ -99,6 +99,18 @@ const PromotionForm = () => {
 
       if ((promotion as any)?.data?.success) {
         toast.success("Promotion created successfully", { duration: 3000 });
+        setPromotionData({
+          title: "",
+          promotionOn: "category",
+          categoryId: [],
+          subCategoryId: [],
+          startDate: new Date(),
+          expireDate: new Date(),
+          freeShipping: false,
+          discountType: "",
+          discountOff: 0,
+          status: "",
+        });
       } else {
         toast.error("something went wrong!please try again.");
       }

@@ -1,20 +1,60 @@
 "use client";
 import CustomerViewProfileDrawer from "@/components/CustomerViewProfileDrawer";
-import UtilityBtn from "@/components/UtilityBtn";
 import Loader from "@/components/Loader";
-import { useGetUserByIdQuery, useGetUsersQuery } from "@/services/userApi";
-import { useState } from "react";
-import { AiOutlineDownload, AiOutlineShoppingCart } from "react-icons/ai";
+import { useGetUsersQuery } from "@/services/userApi";
+import { useEffect, useState } from "react";
+import { AiOutlineShoppingCart } from "react-icons/ai";
+import Image from "next/image";
+import Fuse from "fuse.js";
+// import fuse from "fuse.js";
+
+const fuseOptions = {
+  // isCaseSensitive: false,
+  // includeScore: false,
+  // shouldSort: true,
+  // includeMatches: false,
+  // findAllMatches: false,
+  // minMatchCharLength: 1,
+  // location: 0,
+  threshold: 0.1,
+  // distance: 100,
+  // useExtendedSearch: false,
+  // ignoreLocation: false,
+  // ignoreFieldNorm: false,
+  // fieldNormWeight: 1,
+  keys: ["email", "phone"],
+};
 
 const Customers = () => {
   const [selectedCustomerId, setSelectedCustomerId] = useState("");
+  const [searchText, setSearchText] = useState("");
+  const [searchData, setSearchData] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const [itemsPerPage, setItemsPerPage] = useState(2);
+
   const toggleDrawer = (id: string) => {
     setIsOpen((prevState) => !prevState);
     setSelectedCustomerId(id);
   };
 
   const { data: customersData, isLoading } = useGetUsersQuery();
+
+  useEffect(() => {
+    const fuse = new Fuse(customersData?.data as any, fuseOptions);
+    if (searchText) {
+      const currentSearchData = fuse.search(searchText);
+      setSearchData(currentSearchData as any);
+    }
+  }, [customersData?.data, searchText]);
+
+  // Paginate data based on current page and items per page
+  // const indexOfLastItem = currentPage * itemsPerPage;
+  // const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  // const currentData =
+  //   searchData.length > 0 ? searchData : customersData?.data || [];
+  // const currentItems = currentData.slice(indexOfFirstItem, indexOfLastItem);
+  // const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   return isLoading ? (
     <Loader height="h-[85vh]" />
@@ -25,39 +65,122 @@ const Customers = () => {
           <AiOutlineShoppingCart size={18} color="gray" />
           <span className="font-medium text-lg">All Customer</span>
         </div>
-        <UtilityBtn name="Export" icon={<AiOutlineDownload color="white" />} />
+        {/* search user  */}
+        <div>
+          <label
+            htmlFor="search"
+            className="text-sm text-gray-600 font-semibold"
+          >
+            Search:{" "}
+          </label>
+          <input
+            type="text"
+            id="search"
+            onChange={(e) => setSearchText(e.target.value)}
+            className="border border-gray-300 outline-none hover:outline-none px-2 py-1 rounded-md text-gray-600 text-sm"
+          />
+        </div>
       </div>
       <div className="overflow-x-auto">
         <table className="table bg-basic">
           {/* head */}
           <thead className="">
             <tr>
+              <th>Image</th>
               <th>Name</th>
+              <th>Gender</th>
               <th>Phone</th>
               <th>Email</th>
+              <th>Type</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            {customersData?.data.map((cus, index) => {
-              if (cus.userType === "user") {
-                return (
-                  <tr key={index}>
-                    <td>{cus.fullName}</td>
-                    <td>{cus.phone === "" ? "None" : cus.phone}</td>
-                    <td>{cus.email}</td>
-                    <td>
-                      <button
-                        onClick={() => toggleDrawer(cus._id)}
-                        className="bg-secondary p-2 text-white rounded-md shadow-md"
-                      >
-                        View Details
-                      </button>
-                    </td>
-                  </tr>
-                );
-              }
-            })}
+            {searchData && searchText ? (
+              <>
+                {searchData.map((cus: any, index) => {
+                  return (
+                    <tr key={index}>
+                      <td>
+                        {cus.item.imageUrl ? (
+                          <Image
+                            src={cus.item.imageUrl}
+                            alt="User-Image"
+                            width={40}
+                            height={40}
+                            className="rounded-full"
+                          />
+                        ) : (
+                          <Image
+                            src={"/images/no-image.jpg"}
+                            alt="User-Image"
+                            width={40}
+                            height={40}
+                            className="rounded-full"
+                          />
+                        )}
+                      </td>
+                      <td>{cus.item.fullName}</td>
+                      <td>
+                        {cus.item.gender === "" ? "N/A" : cus.item.gender}
+                      </td>
+                      <td>{cus.item.phone === "" ? "N/A" : cus.item.phone}</td>
+                      <td>{cus.item.email}</td>
+                      <td>{cus.item.userType}</td>
+                      <td>
+                        <button
+                          onClick={() => toggleDrawer(cus.item._id)}
+                          className="bg-secondary p-2 text-white rounded-md shadow-md"
+                        >
+                          View Details
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </>
+            ) : (
+              <>
+                {customersData?.data.map((cus, index) => {
+                  return (
+                    <tr key={index}>
+                      <td>
+                        {cus.imageUrl ? (
+                          <Image
+                            src={cus.imageUrl}
+                            alt="User-Image"
+                            width={40}
+                            height={40}
+                            className="rounded-full"
+                          />
+                        ) : (
+                          <Image
+                            src={"/images/no-image.jpg"}
+                            alt="User-Image"
+                            width={40}
+                            height={40}
+                            className="rounded-full"
+                          />
+                        )}
+                      </td>
+                      <td>{cus.fullName}</td>
+                      <td>{cus.gender === "" ? "N/A" : cus.gender}</td>
+                      <td>{cus.phone === "" ? "N/A" : cus.phone}</td>
+                      <td>{cus.email}</td>
+                      <td>{cus.userType}</td>
+                      <td>
+                        <button
+                          onClick={() => toggleDrawer(cus._id)}
+                          className="bg-secondary p-2 text-white rounded-md shadow-md"
+                        >
+                          View Details
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </>
+            )}
           </tbody>
         </table>
         <CustomerViewProfileDrawer
@@ -67,6 +190,39 @@ const Customers = () => {
           selectedCustomerId={selectedCustomerId}
         />
       </div>
+      {/* <div className="join">
+        <button className="join-item btn btn-sm bg-secondary text-white hover:bg-secondary-hover">
+          1
+        </button>
+        <button className="join-item btn btn-sm bg-secondary text-white hover:bg-secondary-hover">
+          2
+        </button>
+        <button className="join-item btn btn-sm btn-disabled">...</button>
+        <button className="join-item btn btn-sm bg-secondary text-white hover:bg-secondary-hover">
+          99
+        </button>
+        <button className="join-item btn btn-sm bg-secondary text-white hover:bg-secondary-hover">
+          100
+        </button>
+      </div> */}
+      {/* <div className="join">
+        {Array.from(
+          { length: Math.ceil(currentData.length / itemsPerPage) },
+          (_, i) => (
+            <button
+              key={i}
+              className={`join-item btn btn-sm ${
+                currentPage === i + 1
+                  ? "bg-secondary text-white hover:bg-secondary-hover"
+                  : "bg-secondary text-white hover:bg-secondary-hover"
+              }`}
+              onClick={() => paginate(i + 1)}
+            >
+              {i + 1}
+            </button>
+          )
+        )}
+      </div> */}
     </div>
   );
 };

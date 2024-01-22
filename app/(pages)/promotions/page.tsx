@@ -1,6 +1,4 @@
 "use client";
-import DiscountForm from "@/components/discount/DiscountForm";
-import DiscountList from "@/components/discount/DiscountList";
 import Loader from "@/components/Loader";
 import PromotionForm from "@/components/promotion/PromotionForm";
 import PromotionList from "@/components/promotion/PromotionList";
@@ -26,20 +24,6 @@ const Discount: FC = () => {
   const { data: categoryData } = useGetCategoriesQuery();
   const { data: subCategoryData } = useGetSubCategoriesQuery();
 
-  // const handleChange = (event: any) => {
-  //   setDiscountData({
-  //     ...discountData,
-  //     [event.target.name]:
-  //       event.target.name === "image"
-  //         ? event.target.files[0]
-  //         : event.target.name === "freeShipping"
-  //         ? event.target.checked
-  //         : event.target.value,
-  //   });
-  // };
-
-  //
-
   //edit modal
   const [filteredData, setFilteredData] = useState<IPromotion>({
     _id: "",
@@ -55,14 +39,14 @@ const Discount: FC = () => {
     status: "",
   });
 
-  console.log("filtered state data", filteredData);
+  // console.log("filtered state data", filteredData);
 
   const handleEditPromotion = (id: string) => {
     const filtered = promotions?.data?.find(
       (item: IPromotion) => item._id === id
     );
 
-    console.log("filtered", filtered);
+    // console.log("filtered", filtered);
 
     const editDefaultData = {
       _id: filtered?._id,
@@ -86,7 +70,7 @@ const Discount: FC = () => {
       status: filtered?.status,
     };
 
-    setFilteredData(editDefaultData);
+    setFilteredData(editDefaultData as any);
     setIsOpen(true);
   };
 
@@ -163,9 +147,11 @@ const Discount: FC = () => {
     const updateData = {
       title: filteredData?.title,
       promotionOn: filteredData?.promotionOn,
-      categoryId: (filteredData?.categoryId || []).map((data) => data.value),
+      categoryId: (filteredData?.categoryId || []).map(
+        (data: any) => data.value
+      ),
       subCategoryId: (filteredData?.subCategoryId || []).map(
-        (data) => data.value
+        (data: any) => data.value
       ),
       startDate: filteredData?.startDate,
       expireDate: filteredData?.expireDate,
@@ -175,7 +161,7 @@ const Discount: FC = () => {
       status: filteredData?.status,
     };
 
-    console.log("updated data", updateData);
+    // console.log("updated data", updateData);
 
     try {
       const mutationData = await updatePromotion({
@@ -457,7 +443,7 @@ const Discount: FC = () => {
                       type="submit"
                       className="bg-secondary py-1 px-4 rounded-md text-white w-full"
                     >
-                      Upload Promotion
+                      Update Promotion
                     </button>
                   </form>
                 </div>

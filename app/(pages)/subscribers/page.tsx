@@ -7,6 +7,7 @@ import { BiMailSend } from "react-icons/bi";
 import { useGetSubscriberQuery } from "@/services/subscriberApi";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { formatDate } from "@/helpers/formatDate";
 export interface ISubscriber {
   status: string;
   data: IData[];
@@ -55,8 +56,8 @@ const Subscriber = () => {
             <tr>
               <th>SL</th>
               <th>Email</th>
-              <th>Created At</th>
-              <th>Actions</th>
+              <th>Subscribe At</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -64,7 +65,7 @@ const Subscriber = () => {
               <tr key={index}>
                 <td>{index + 1}</td>
                 <td>{data?.email}</td>
-                <td>{data?.createdAt}</td>
+                <td>{formatDate(data?.createdAt)}</td>
                 <td>
                   <div className="flex">
                     {/* <label className="cursor-pointer" htmlFor="modal-handle">

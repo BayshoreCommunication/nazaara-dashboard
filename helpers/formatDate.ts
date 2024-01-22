@@ -1,6 +1,6 @@
-export function formatDate(createdAt: string) {
+export function formatDate(createdAt: Date) {
   const formattedDate = new Date(createdAt).toLocaleString("en-US", {
-    timeZone: "UTC", // Make sure to set the correct time zone
+    timeZone: "Asia/Dhaka",
     year: "numeric",
     month: "long",
     day: "numeric",
