@@ -2,15 +2,15 @@
 import Link from "next/link";
 import React from "react";
 import { AiOutlineShoppingCart } from "react-icons/ai";
-import { useGetProductsQuery } from "@/services/productApi";
+import { useGetTopOrdersProductQuery } from "@/services/orderApi";
 import Image from "next/image";
 import Loader from "../Loader";
 
 const TopSellingProduct = () => {
-  const { data: productsData, isLoading: productsLoading } =
-    useGetProductsQuery({ page: 1, limit: 5 });
+  const { data: ordersData, isLoading: orderLoading } =
+    useGetTopOrdersProductQuery();
 
-  return productsLoading ? (
+  return orderLoading ? (
     <Loader height="h-[85vh]" />
   ) : (
     <div className="container">
@@ -28,47 +28,34 @@ const TopSellingProduct = () => {
             <tr>
               <th>Image</th>
               <th>Product Name</th>
-              <th>Category</th>
+              <th>Total Order</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            {productsData?.product.map((elem, index) => (
-              <tr key={index}>
+            {ordersData?.data.map((elem, i) => (
+              <tr key={i}>
                 <td>
                   <Image
-                    src="/images/container.png"
-                    alt="nazaara main logo"
-                    width={248}
-                    height={248}
-                    className="w-[70px] h-[70px]"
+                    src={elem.product[0].imgUrl}
+                    alt=""
+                    width={60}
+                    height={60}
+                    className="rounded-md"
                   />
                 </td>
-                <td>{elem.productName}</td>
-                <td>{elem.category}</td>
+                <td>{`${elem.product[0].title.slice(0, 25)}...`}</td>
+                <td>{elem.product.length}</td>
                 <td>
                   <div>
+                    <span className="text-[#3b7ffd]"> </span>
                     <Link
-                      href={{
-                        pathname: "/products/image-upload",
-                        query: { id: `${elem._id}` },
-                      }}
-                      className="text-[#5B94FC]"
-                    >
-                      Image
-                    </Link>
-                    <span className="text-[#3b7ffd]"> | </span>
-                    <Link
-                      href={{
-                        pathname: "/products/update-product",
-                        query: { id: `${elem._id}` },
-                      }}
+                      href={`/products/update-product/${elem._id}`}
                       className="text-[#5B94FC]"
                     >
                       Edit
                     </Link>
                   </div>
-                  <button className="text-[#5B94FC]">Quick View</button>
                 </td>
               </tr>
             ))}

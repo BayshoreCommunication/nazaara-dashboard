@@ -13,12 +13,12 @@ const DonutChart: React.FC = () => {
     const fetchApexCharts = async () => {
       const ApexCharts = await import("apexcharts");
       const options = {
-        series: [44, 55, 13, 43, 22],
+        series: [44, 55, 13, 43],
         chart: {
           width: 480,
           type: "donut",
         },
-        labels: ["Team A", "Team B", "Team C", "Team D", "Team E"],
+        labels: ["In Stock", "Stock Out", "On Delivery", "On Draft"],
         responsive: [
           {
             breakpoint: 480,

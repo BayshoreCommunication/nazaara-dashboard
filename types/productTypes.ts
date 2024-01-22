@@ -27,3 +27,8 @@ export interface Variant {
   imageUrl: string[];
   _id: string;
 }
+
+ 
+
+
+

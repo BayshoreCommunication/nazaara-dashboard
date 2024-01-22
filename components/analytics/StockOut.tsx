@@ -1,26 +1,24 @@
 "use client";
-import { useGetProductsQuery } from "@/services/productApi";
-import Image from "next/image";
 import Link from "next/link";
+import React from "react";
 import { AiOutlineShoppingCart } from "react-icons/ai";
+import { useGetStockOutQuery } from "@/services/productApi";
+import Image from "next/image";
 import Loader from "../Loader";
 
-const RecentProducts = () => {
-  const { data: productsData, isLoading: productsLoading } =
-    useGetProductsQuery({ page: 1, limit: 8 });
-
-  return productsLoading ? (
+const StockOut = () => {
+  const { data: productsData, isLoading: productLoading } =
+    useGetStockOutQuery();
+  console.log(productsData);
+  return productLoading ? (
     <Loader height="h-[85vh]" />
   ) : (
     <div className="container">
       <div className="flex items-center justify-between mb-3">
         <div className="flex gap-2 items-center">
           <AiOutlineShoppingCart size={18} color="gray" />
-          <span className="font-medium text-lg">Recent Products</span>
+          <span className="font-medium text-md">Stock Out Product</span>
         </div>
-        {/* <Link href="/products/add-product">
-      <UtilityBtn name="Add Product" icon={<BsPlus color="white" />} />
-    </Link> */}
       </div>
       {/* product component  */}
       <div className="overflow-x-auto">
@@ -50,8 +48,8 @@ const RecentProducts = () => {
                   />
                 </td>
                 <td>{elem.productName.substr(0, 15)}</td>
-                <td>{elem.category}</td>
-                <td>{elem.subCategory}</td>
+                <td>{elem.erpCategory}</td>
+                <td>{elem.erpSubCategory}</td>
                 <td>{elem.salePrice}</td>
                 <td>{elem.regularPrice}</td>
                 <td>{elem.stock}</td>
@@ -75,4 +73,4 @@ const RecentProducts = () => {
   );
 };
 
-export default RecentProducts;
+export default StockOut;

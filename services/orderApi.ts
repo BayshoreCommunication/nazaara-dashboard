@@ -1,5 +1,7 @@
 import { IOrders, IOrdersById } from "@/types/ordersTypes";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import {IOrderProductData} from "@/types/ordersTypes";
+import {OrderProductCount} from "@/types/ordersTypes";
 
 export const orderApi = createApi({
   reducerPath: "ordersApi",
@@ -8,6 +10,7 @@ export const orderApi = createApi({
     getOrders: builder.query<IOrders, void>({
       query: () => `/api/v1/order`,
     }),
+   
     getOrderById: builder.query<IOrdersById, string>({
       query: (id: string) => `/api/v1/order/${id}`,
     }),
@@ -48,6 +51,9 @@ export const orderApi = createApi({
         method: "DELETE",
       }),
     }),
+    getTopOrdersProduct: builder.query<OrderProductCount, void>({
+      query: () => `/api/v1/order`,
+    }),
   }),
 });
 
@@ -57,4 +63,5 @@ export const {
   useCreateOrderMutation,
   useUpdateOrderMutation,
   useDeleteOrderMutation,
+  useGetTopOrdersProductQuery,
 } = orderApi;
