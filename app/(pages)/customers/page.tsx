@@ -48,14 +48,6 @@ const Customers = () => {
     }
   }, [customersData?.data, searchText]);
 
-  // Paginate data based on current page and items per page
-  // const indexOfLastItem = currentPage * itemsPerPage;
-  // const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  // const currentData =
-  //   searchData.length > 0 ? searchData : customersData?.data || [];
-  // const currentItems = currentData.slice(indexOfFirstItem, indexOfLastItem);
-  // const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-
   return isLoading ? (
     <Loader height="h-[85vh]" />
   ) : (
@@ -190,39 +182,6 @@ const Customers = () => {
           selectedCustomerId={selectedCustomerId}
         />
       </div>
-      {/* <div className="join">
-        <button className="join-item btn btn-sm bg-secondary text-white hover:bg-secondary-hover">
-          1
-        </button>
-        <button className="join-item btn btn-sm bg-secondary text-white hover:bg-secondary-hover">
-          2
-        </button>
-        <button className="join-item btn btn-sm btn-disabled">...</button>
-        <button className="join-item btn btn-sm bg-secondary text-white hover:bg-secondary-hover">
-          99
-        </button>
-        <button className="join-item btn btn-sm bg-secondary text-white hover:bg-secondary-hover">
-          100
-        </button>
-      </div> */}
-      {/* <div className="join">
-        {Array.from(
-          { length: Math.ceil(currentData.length / itemsPerPage) },
-          (_, i) => (
-            <button
-              key={i}
-              className={`join-item btn btn-sm ${
-                currentPage === i + 1
-                  ? "bg-secondary text-white hover:bg-secondary-hover"
-                  : "bg-secondary text-white hover:bg-secondary-hover"
-              }`}
-              onClick={() => paginate(i + 1)}
-            >
-              {i + 1}
-            </button>
-          )
-        )}
-      </div> */}
     </div>
   );
 };
