@@ -1,89 +1,103 @@
 export interface IOrders {
-  status: string
-  total: number
-  data: IOrderData[]
+  success: boolean;
+  total: number;
+  data: IOrderData[];
 }
 
 export interface IOrdersById {
-    status: string
-    data: IOrderData[]
-  }
+  success: boolean;
+  data: IOrderData[];
+}
 
 export interface IOrderData {
-  shippingAddress: IOrderShippingAddress
-  _id: string
-  paymentId: string
-  quantity: number
-  paymentMethod: string
-  remark: string
-  totalCost: number
-  coupon: string
-  product: IOrderProduct
-  user?: IOrderUser
-  sizeChart: IOrderSizeChart
-  paymentStatus: string
-  deliveryStatus: string
-  createdAt: string
-  updatedAt: string
-  __v: number
+  _id?: string;
+  shippingAddress: IOrderShippingAddress;
+  transactionDetails?: IOrderTransactionDetails;
+  transactionId: string;
+  paymentMethod: string;
+  shippingMethod: string;
+  subTotal: string;
+  vatIncluded: number;
+  coupon?: any;
+  shippingCharge: number;
+  totalAmount: number;
+  discountAmount: number;
+  advancePay: number;
+  totalPay: number;
+  due: number;
+  user?: any;
+  product: IOrderProduct[];
+  paymentStatus: string;
+  deliveryStatus: string;
+  cardId?: any;
+  createdAt?: Date;
 }
 
 export interface IOrderShippingAddress {
-  street: string
-  city: string
-  state: string
-  country: string
-  zip: number
-  phoneNumber: string
+  fullName: string;
+  phone: string;
+  street?: string;
+  country: string;
+  city: string;
+  postalCode?: string;
+  details?: string;
+}
+export interface IOrderTransactionDetails {
+  bankTranId?: string;
+  cardType?: string;
+  cardNo?: string;
+  cardIssuer?: string;
+  cardBrand?: string;
+  cardCategory?: string;
+  cardIssuerCountry?: string;
+  cardIssuerCountryCode?: string;
+  currencyType?: string;
+  tranDate?: string;
 }
 
 export interface IOrderProduct {
-  _id: string
-  slug: string
-  productName: string
-  regularPrice: number
-  salePrice: number
-  category: string
-}
-
-export interface IOrderUser {
-  _id: string
-  fullName: string
-  email: string
-  phone: string
-  refund: number
+  _id?: string;
+  productDetails: any;
+  slug: string;
+  sku: string;
+  title: string;
+  imgUrl: string;
+  quantity: number;
+  color: string;
+  size: string;
+  sizeChart?: any;
 }
 
 export interface IOrderSizeChart {
-  tops: ITops
-  bottom: IBottom
-  _id: string
-  topType: string
-  bottomType: string
-  note: string
+  tops: ITops;
+  bottom: IBottom;
+  _id: string;
+  topType: string;
+  bottomType: string;
+  note: string;
 }
 
 export interface ITops {
-  chest: number
-  waist: number
-  hip: number
-  end: number
-  armHole: number
-  sleeveLength: number
-  muscle: number
-  handOpening: number
-  length: number
-  slit: number
-  neckDeepf: number
-  neckDeepb: number
-  halfBody: number
+  chest: number;
+  waist: number;
+  hip: number;
+  end: number;
+  armHole: number;
+  sleeveLength: number;
+  muscle: number;
+  handOpening: number;
+  length: number;
+  slit: number;
+  neckDeepf: number;
+  neckDeepb: number;
+  halfBody: number;
 }
 
 export interface IBottom {
-  length: number
-  waist: number
-  hip: number
-  thigh: number
-  knee: number
-  legOpening: number
+  length: number;
+  waist: number;
+  hip: number;
+  thigh: number;
+  knee: number;
+  legOpening: number;
 }

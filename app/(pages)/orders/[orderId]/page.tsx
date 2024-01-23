@@ -1,4 +1,5 @@
 "use client";
+import OrderMeasurement from "@/components/OrderMeasurement";
 import OutlineButton from "@/components/OutlineButton";
 import PrimaryButton from "@/components/PrimaryButton";
 import UtilityBtn from "@/components/UtilityBtn";
@@ -10,6 +11,7 @@ import {
   AiOutlineShoppingCart,
   AiTwotoneDelete,
 } from "react-icons/ai";
+import { FaRulerHorizontal } from "react-icons/fa";
 import Select from "react-select";
 
 const deliveryOptions = [
@@ -31,12 +33,14 @@ const paymentStatusOptions = [
 ];
 const OrderUpdate = ({ params }: any) => {
   const [orderData, setOrderData] = useState<any>();
+  const [openSizeChartModal, setOpenSizeChartModal] = useState(false);
+  const [sizeChartId, setSizeChartId] = useState("");
 
   useEffect(() => {
     const fetchOrderData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8000/api/v1/order/${params.orderId}`
+          `${process.env.API_URL}/api/v1/order/${params.orderId}`
         );
         setOrderData(response.data.data);
       } catch (error) {
@@ -45,6 +49,8 @@ const OrderUpdate = ({ params }: any) => {
     };
     fetchOrderData(); // Call the fetchOrderData function
   }, [params.orderId]);
+
+  console.log("order data", orderData);
 
   const totalQuantity =
     orderData &&
@@ -92,6 +98,13 @@ const OrderUpdate = ({ params }: any) => {
     }
   }, [orderData]);
 
+  const handleSizeChart = (id: string) => {
+    setOpenSizeChartModal(true);
+    if (id) {
+      setSizeChartId(id);
+    }
+  };
+
   return (
     <div className="container">
       {orderData && (
@@ -108,7 +121,7 @@ const OrderUpdate = ({ params }: any) => {
           </div>
           <div className="bg-basic rounded-lg px-6 py-3 flex flex-col gap-y-4">
             <div>
-              <p className="py-2 bg-gray-200 w-full pl-2">Update Invoice</p>
+              <p className="py-2 bg-gray-200 w-full pl-2">Update Order</p>
               <div className="flex gap-x-4 w-full mt-3 border p-2">
                 <div className="w-full">
                   <p className="font-medium mb-1">Invoice No</p>
@@ -319,39 +332,9 @@ const OrderUpdate = ({ params }: any) => {
                 </div>
               </div>
               {/* new part 2 */}
-              <div className="px-6">
-                <h3 className="font-semibold mb-6 text-xl ">Product</h3>
-                {orderData.product.map((el: any, i: number) => (
-                  <div
-                    className="flex items-center mb-6 gap-4 xl:gap-8 border-b pb-4"
-                    key={i}
-                  >
-                    <Image
-                      src={el.imageUrl}
-                      alt={el.slug}
-                      width={432}
-                      height={558}
-                      className="w-12 h-16"
-                    />
-                    <div>
-                      <p className="text-sm">Color: {el.color}</p>
-                      <p className="text-sm">Size: {el.size}</p>
-                      <p className="text-sm">Quantity: {el.quantity}</p>
-                    </div>
-                    <div className="font-semibold">Price: {el.price}</div>
-                    {el.coupon ? (
-                      <div>Coupon: {el.coupon}</div>
-                    ) : (
-                      <div className="text-red-500 text-sm">
-                        No Coupon applied
-                      </div>
-                    )}
-                  </div>
-                ))}
-              </div>
 
               {/* end part  */}
-              {/* <div className="px-6">
+              <div className="px-6">
                 <p className="text-lg font-medium mb-4">History</p>
                 <ol className="relative border-l border-gray-200 ml-2">
                   <li className="mb-10 ml-6 text-sm">
@@ -454,13 +437,62 @@ const OrderUpdate = ({ params }: any) => {
                     </div>
                   </li>
                 </ol>
-              </div> */}
+              </div>
+            </div>
+            <div className="">
+              <h3 className="font-semibold mb-2 text-xl ">Products:</h3>
+              {orderData.product.map((el: any, i: number) => (
+                <div
+                  className="flex items-center mb-6 justify-between border p-4 rounded-md"
+                  key={i}
+                >
+                  <div className="flex gap-3 items-center">
+                    <Image
+                      src={el.imgUrl}
+                      alt={el.slug}
+                      width={80}
+                      height={60}
+                      className="rounded-md"
+                    />
+                    <div className="text-gray-600 flex flex-col gap-1">
+                      <p className="text-base font-semibold">{el.title}</p>
+                      <p className="text-sm">
+                        <span className="font-medium">Sku:</span> {el.sku}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-gray-600 flex flex-col gap-1">
+                    <p className="text-sm">
+                      <span className="font-medium">Color:</span> {el.color}
+                    </p>
+                    <p className="text-sm">
+                      <span className="font-medium">Size:</span> {el.size}
+                    </p>
+                    <p className="text-sm">
+                      <span className="font-medium">Quantity:</span>{" "}
+                      {el.quantity}
+                    </p>
+                  </div>
+                  <label
+                    htmlFor="my-modal-3"
+                    onClick={() => handleSizeChart(el?.sizeChart?._id)}
+                    className="text-[#5B94FC] cursor-pointer flex items-center gap-1 text-sm"
+                  >
+                    <FaRulerHorizontal size={18} className="mt-[2px]" /> Size
+                    Chart
+                  </label>
+                </div>
+              ))}
             </div>
             <div className="flex gap-x-2">
               <PrimaryButton name="Update" />
               <OutlineButton name="Cancel" />
             </div>
           </div>
+          <OrderMeasurement
+            sizeChartId={sizeChartId}
+            openModal={openSizeChartModal}
+          />
         </>
       )}
     </div>
