@@ -6,7 +6,7 @@ export interface IOrders {
 
 export interface IOrdersById {
   success: boolean;
-  data: IOrderData[];
+  data: IOrderData;
 }
 
 export interface IOrderData {

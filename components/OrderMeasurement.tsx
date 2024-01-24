@@ -1,19 +1,25 @@
-import { useState } from "react";
-import Editor from "./Editor";
-import OutlineButton from "./OutlineButton";
+import { useEffect, useState } from "react";
 import PrimaryButton from "./PrimaryButton";
+import axios from "axios";
+import toast from "react-hot-toast";
+import Swal from "sweetalert2";
+import { useUpdateOrderMutation } from "@/services/orderApi";
 
 interface OrderMeasurementProps {
   openModal: boolean;
   sizeChartId: string;
+  orderData: any;
+  uniqId: string;
 }
 
 const OrderMeasurement: React.FC<OrderMeasurementProps> = ({
   sizeChartId,
   openModal,
+  orderData,
+  uniqId,
 }) => {
+  const [updateOrder] = useUpdateOrderMutation();
   const [formData, setFormData] = useState({
-    _id: "",
     topType: "",
     bottomType: "",
     note: "",
@@ -44,6 +50,55 @@ const OrderMeasurement: React.FC<OrderMeasurementProps> = ({
   });
 
   console.log("size chart id", sizeChartId);
+  console.log("uniqId", uniqId);
+  console.log("formData", formData);
+  console.log("orderData", orderData);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (sizeChartId) {
+          const url = `${process.env.API_URL}/api/v1/size-chart/${sizeChartId}`;
+          const response = await axios.get(url);
+          const data = response.data.data;
+          setFormData({
+            topType: data.topType,
+            bottomType: data.bottomType,
+            note: data.note,
+            tops: {
+              chest: data.tops.chest,
+              waist: data.tops.waist,
+              hip: data.tops.hip,
+              end: data.tops.end,
+              shoulder: data.tops.shoulder,
+              armHole: data.tops.armHole,
+              sleeveLength: data.tops.sleeveLength,
+              muscle: data.tops.muscle,
+              handOpening: data.tops.handOpening,
+              length: data.tops.length,
+              slit: data.tops.slit,
+              neckDeepf: data.tops.neckDeepf,
+              neckDeepb: data.tops.neckDeepb,
+              halfBody: data.tops.halfBody,
+            },
+            bottom: {
+              length: data.bottom.length,
+              waist: data.bottom.waist,
+              hip: data.bottom.hip,
+              thigh: data.bottom.thigh,
+              knee: data.bottom.knee,
+              legOpening: data.bottom.legOpening,
+            },
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    if (sizeChartId) {
+      fetchData();
+    }
+  }, [sizeChartId]);
 
   const handleInputChange = (
     category: string,
@@ -59,10 +114,115 @@ const OrderMeasurement: React.FC<OrderMeasurementProps> = ({
     }));
   };
 
-  console.log("form data", formData);
+  const handleStateClear = () => {
+    if (orderData.data.product.length > 1) {
+      setFormData({
+        topType: "",
+        bottomType: "",
+        note: "",
+        tops: {
+          chest: null,
+          waist: null,
+          hip: null,
+          end: null,
+          shoulder: null,
+          armHole: null,
+          sleeveLength: null,
+          muscle: null,
+          handOpening: null,
+          length: null,
+          slit: null,
+          neckDeepf: null,
+          neckDeepb: null,
+          halfBody: null,
+        },
+        bottom: {
+          length: null,
+          waist: null,
+          hip: null,
+          thigh: null,
+          knee: null,
+          legOpening: null,
+        },
+      });
+    }
+  };
 
-  const handleFormSubmit = (e: any) => {
+  const handleFormSubmit = async (e: any) => {
     e.preventDefault();
+    if (sizeChartId) {
+      try {
+        Swal.fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, update it!",
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            const url = `${process.env.API_URL}/api/v1/size-chart/${sizeChartId}`;
+            const response = await axios.patch(url, formData);
+            if (response.data.success) {
+              Swal.fire("Updated!", "Size chart has been updated.", "success");
+            }
+          }
+        });
+      } catch (error) {
+        toast.error(`Error updating size chart, ${error}`);
+      }
+    } else {
+      try {
+        Swal.fire({
+          title: "Are you sure?",
+          text: "You won't be able to revert this!",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Yes, create it!",
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            const url = `${process.env.API_URL}/api/v1/size-chart`;
+            const response = await axios.post(url, formData);
+            if (response.data.success) {
+              const updatedProducts = orderData.data.product.map(
+                (product: any) => {
+                  if (product._id === uniqId) {
+                    return { ...product, sizeChart: response.data.data._id };
+                  }
+                  return product;
+                }
+              );
+
+              console.log("updated product", updatedProducts);
+
+              // const updateResponse = await axios.patch(url, {
+              //   product: updatedProducts,
+              // });
+              const updateResponse = await updateOrder({
+                id: orderData.data._id,
+                payload: {
+                  product: updatedProducts,
+                },
+              });
+              console.log("updated response", updateResponse);
+
+              if (updateResponse) {
+                Swal.fire(
+                  "Created!",
+                  "Size chart has been created.",
+                  "success"
+                );
+              }
+            }
+          }
+        });
+      } catch (error) {
+        toast.error(`Error updating size chart, ${error}`);
+      }
+    }
   };
 
   return (
@@ -72,9 +232,16 @@ const OrderMeasurement: React.FC<OrderMeasurementProps> = ({
           <input type="checkbox" id="my-modal-3" className="modal-toggle" />
           <div className="modal overflow-y-scroll lg:overflow-auto">
             <div className="modal-box bg-white max-h-min min-w-max mt-[29rem] lg:mt-0">
-              <div className="bg-gray-200 py-2 flex justify-between px-4">
+              <div className="bg-gray-200 py-2 flex justify-between px-4 items-center">
                 <h3 className="text-lg font-bold ">Measurement Details</h3>
-                <label htmlFor="my-modal-3" className="btn btn-sm btn-circle">
+                {!sizeChartId && (
+                  <p className="text-sm">{`user don't have any size chart available`}</p>
+                )}
+                <label
+                  onClick={handleStateClear}
+                  htmlFor="my-modal-3"
+                  className="btn btn-sm btn-circle"
+                >
                   ✕
                 </label>
               </div>
@@ -578,13 +745,24 @@ const OrderMeasurement: React.FC<OrderMeasurementProps> = ({
                         name="note"
                         className="border w-full min-h-[20rem] p-2 box-border outline-none"
                         placeholder="Type your note here"
+                        value={formData.note}
+                        onChange={(e) =>
+                          setFormData((prevData) => ({
+                            ...prevData,
+                            note: e.target.value,
+                          }))
+                        }
                       ></textarea>
                     </div>
                   </div>
                 </div>
                 <div className="modal-action">
                   <label className="flex gap-2" htmlFor="my-modal-3">
-                    <PrimaryButton name="Update" />
+                    <PrimaryButton
+                      name={`${
+                        sizeChartId ? "Update SizeChart" : "Create SizeChart"
+                      }`}
+                    />
                   </label>
                 </div>
               </form>

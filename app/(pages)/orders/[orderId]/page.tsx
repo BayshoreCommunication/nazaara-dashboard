@@ -1,16 +1,15 @@
 "use client";
+import Loader from "@/components/Loader";
 import OrderMeasurement from "@/components/OrderMeasurement";
 import OutlineButton from "@/components/OutlineButton";
 import PrimaryButton from "@/components/PrimaryButton";
 import UtilityBtn from "@/components/UtilityBtn";
+import { formatDate } from "@/helpers/formatDate";
+import { useGetOrderByIdQuery } from "@/services/orderApi";
 import axios from "axios";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import {
-  AiOutlineDownload,
-  AiOutlineShoppingCart,
-  AiTwotoneDelete,
-} from "react-icons/ai";
+import { AiOutlineDownload, AiOutlineShoppingCart } from "react-icons/ai";
 import { FaRulerHorizontal } from "react-icons/fa";
 import Select from "react-select";
 
@@ -32,78 +31,88 @@ const paymentStatusOptions = [
   { value: "cancel", label: "Cancel" },
 ];
 const OrderUpdate = ({ params }: any) => {
-  const [orderData, setOrderData] = useState<any>();
+  // const [orderData, setOrderData] = useState<any>();
   const [openSizeChartModal, setOpenSizeChartModal] = useState(false);
   const [sizeChartId, setSizeChartId] = useState("");
+  const [uniqId, setUniqId] = useState("");
 
-  useEffect(() => {
-    const fetchOrderData = async () => {
-      try {
-        const response = await axios.get(
-          `${process.env.API_URL}/api/v1/order/${params.orderId}`
-        );
-        setOrderData(response.data.data);
-      } catch (error) {
-        console.error("Request error:", error);
-      }
-    };
-    fetchOrderData(); // Call the fetchOrderData function
-  }, [params.orderId]);
+  const { data: orderData, isLoading } = useGetOrderByIdQuery(params.orderId);
 
-  console.log("order data", orderData);
+  console.log("order data bal", orderData);
 
-  const totalQuantity =
-    orderData &&
-    orderData.product.reduce(
-      (total: any, item: any) => total + item.quantity,
-      0
-    );
-  const totalPrice =
-    orderData &&
-    orderData.product.reduce(
-      (total: any, item: any) => total + item.price,
-      orderData.deliveryCharge
-    );
+  // useEffect(() => {
+  //   const fetchOrderData = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         `${process.env.API_URL}/api/v1/order/${params.orderId}`
+  //       );
+  //       setOrderData(response.data.data);
+  //     } catch (error) {
+  //       console.error("Request error:", error);
+  //     }
+  //   };
+  //   fetchOrderData(); // Call the fetchOrderData function
+  // }, [params.orderId]);
 
   // console.log("order data", orderData);
-  const [deliveryCharge, setDeliveryCharge] = useState();
-  const [paymentMethod, setPaymentMethod] = useState();
-  const [paymentStatus, setPaymentStatus] = useState<any>(
-    paymentStatusOptions[0]
-  );
-  const [remark, setRemark] = useState();
 
-  const [selectedOption, setSelectedOption] = useState<any>(deliveryOptions[0]);
-  const [shippingAddress, setShippingAddress] = useState({
-    street: "",
-    city: "",
-    country: "",
-  });
-  useEffect(() => {
-    const defaultOption = deliveryOptions.find(
-      (option) => option.value === orderData?.deliveryStatus
-    );
-    if (orderData) {
-      setDeliveryCharge(orderData.deliveryCharge);
-      setPaymentMethod(orderData.paymentMethod);
-      setSelectedOption(defaultOption);
-      setRemark(orderData.remark);
+  // const totalQuantity =
+  //   orderData &&
+  //   orderData.product.reduce(
+  //     (total: any, item: any) => total + item.quantity,
+  //     0
+  //   );
+  // const totalPrice =
+  //   orderData &&
+  //   orderData.product.reduce(
+  //     (total: any, item: any) => total + item.price,
+  //     orderData.deliveryCharge
+  //   );
 
-      // Update each field in the shippingAddress object
-      setShippingAddress({
-        street: orderData.shippingAddress.street,
-        city: orderData.shippingAddress.city,
-        country: orderData.shippingAddress.country,
-      });
-    }
-  }, [orderData]);
+  // console.log("order data from single order", orderData);
+  // const [deliveryCharge, setDeliveryCharge] = useState();
+  // const [paymentMethod, setPaymentMethod] = useState();
+  // const [paymentStatus, setPaymentStatus] = useState<any>(
+  //   paymentStatusOptions[0]
+  // );
+  // const [remark, setRemark] = useState();
 
-  const handleSizeChart = (id: string) => {
+  // const [selectedOption, setSelectedOption] = useState<any>(deliveryOptions[0]);
+  // const [shippingAddress, setShippingAddress] = useState({
+  //   street: "",
+  //   city: "",
+  //   country: "",
+  // });
+  // useEffect(() => {
+  //   const defaultOption = deliveryOptions.find(
+  //     (option) => option.value === orderData?.deliveryStatus
+  //   );
+  //   if (orderData) {
+  //     setDeliveryCharge(orderData.deliveryCharge);
+  //     setPaymentMethod(orderData.paymentMethod);
+  //     setSelectedOption(defaultOption);
+  //     setRemark(orderData.remark);
+
+  //     // Update each field in the shippingAddress object
+  //     setShippingAddress({
+  //       street: orderData.shippingAddress.street,
+  //       city: orderData.shippingAddress.city,
+  //       country: orderData.shippingAddress.country,
+  //     });
+  //   }
+  // }, [orderData]);
+
+  if (isLoading) {
+    return <Loader height="h-[50vh]" />;
+  }
+
+  const handleSizeChart = (id: string, uniqId: string) => {
     setOpenSizeChartModal(true);
-    if (id) {
-      setSizeChartId(id);
-    }
+    setSizeChartId(id);
+    setUniqId(uniqId);
   };
+
+  console.log("order data 44", orderData);
 
   return (
     <div className="container">
@@ -114,139 +123,189 @@ const OrderUpdate = ({ params }: any) => {
               <AiOutlineShoppingCart size={18} color="gray" />
               <span className="font-medium text-lg">Orders</span>
             </div>
-            <UtilityBtn
+            {/* <UtilityBtn
               name="Export"
               icon={<AiOutlineDownload color="white" />}
-            />
+            /> */}
           </div>
           <div className="bg-basic rounded-lg px-6 py-3 flex flex-col gap-y-4">
             <div>
-              <p className="py-2 bg-gray-200 w-full pl-2">Update Order</p>
-              <div className="flex gap-x-4 w-full mt-3 border p-2">
-                <div className="w-full">
-                  <p className="font-medium mb-1">Invoice No</p>
-                  <p className="text-sm">{orderData.paymentId}</p>
+              <p className="py-2 bg-gray-200 w-full pl-2 font-semibold">
+                Update Order
+              </p>
+              <div className="w-full mt-3 border p-2">
+                <div className="flex flex-wrap gap-4 justify-between border mb-3 p-2">
+                  <div className="">
+                    <p className="font-semibold mb-1">Transaction Id</p>
+                    <p className="text-sm text-gray-600 font-medium">
+                      {orderData.data.transactionId}
+                    </p>
+                  </div>
+                  <div className="">
+                    <p className="font-semibold mb-1">Issue Date</p>
+                    <p className="text-sm text-gray-600 font-medium">
+                      {formatDate(orderData.data.createdAt as Date)}
+                    </p>
+                  </div>
+                  <div className="">
+                    <p className="font-semibold mb-1">Payment Method</p>
+                    <p className="text-sm text-gray-600 font-medium">
+                      {orderData.data.paymentMethod}
+                    </p>
+                  </div>
+                  <div className="">
+                    <p className="font-semibold mb-1">Payment Status</p>
+                    <p className="text-sm text-gray-600 font-medium">
+                      {orderData.data.paymentStatus}
+                    </p>
+                  </div>
+                  <div className="">
+                    <p className="font-semibold mb-1">Shipping Method</p>
+                    <p className="text-sm text-gray-600 font-medium">
+                      {orderData.data.shippingMethod}
+                    </p>
+                  </div>
+                  <div className="">
+                    <p className="font-semibold mb-1">Sub-Total</p>
+                    <p className="text-sm text-gray-600 font-medium">
+                      {orderData.data.subTotal}/-
+                    </p>
+                  </div>
+                  <div className="">
+                    <p className="font-semibold mb-1">Vat Included</p>
+                    <p className="text-sm text-gray-600 font-medium">
+                      {orderData.data.vatIncluded}/-
+                    </p>
+                  </div>
                 </div>
-                <div className="w-full">
-                  <p className="font-medium mb-1">Issue Date</p>
-                  <p className="text-sm">June 6, 2023</p>
+                <div className="flex flex-wrap gap-4 justify-between border p-2">
+                  <div className="">
+                    <p className="font-medium mb-1">Shipping Charge</p>
+                    <p className="text-sm text-gray-600 font-medium">
+                      {orderData.data.shippingCharge}/-
+                    </p>
+                  </div>
+                  <div className="">
+                    <p className="font-medium mb-1">Total Bill</p>
+                    <p className="text-sm text-gray-600 font-medium">
+                      {orderData.data.totalAmount}/-
+                    </p>
+                  </div>
+                  <div className="">
+                    <p className="font-medium mb-1">Total Pay</p>
+                    <p className="text-sm text-gray-600 font-medium">
+                      {orderData.data.totalPay}/-
+                    </p>
+                  </div>
+                  <div className="">
+                    <p className="font-medium mb-1">Due</p>
+                    <p className="text-sm text-gray-600 font-medium">
+                      {orderData.data.due}/-
+                    </p>
+                  </div>
+                  <div className="">
+                    <p className="font-medium mb-1">Discount</p>
+                    <p className="text-sm text-gray-600 font-medium">
+                      {orderData.data.discountAmount}/-
+                    </p>
+                  </div>
+                  <div className="">
+                    <p className="font-medium mb-1">Delivery Status</p>
+                    <p className="text-sm text-gray-600 font-medium">
+                      {orderData.data.deliveryStatus}
+                    </p>
+                  </div>
                 </div>
-                <div className="w-full">
-                  <p className="font-medium mb-1">Quantity</p>
-                  <p className="text-sm">{totalQuantity}</p>
-                </div>
-                <div className="w-full">
-                  <p className="font-medium mb-1">Total Bill</p>
-                  <p className="text-sm">{totalPrice}</p>
-                </div>
-                <div className="w-full">
-                  <p className="font-medium mb-1">Payment</p>
-                  <p className="text-sm">{orderData.totalPay}</p>
-                </div>
-                <div className="w-full">
-                  <p className="font-medium mb-1">Due</p>
-                  <p className="text-sm">{`${(
-                    totalPrice - orderData.totalPay
-                  ).toFixed(2)}`}</p>
-                </div>
-                <div className="w-full">
-                  <p className="font-medium mb-1">Discount</p>
-                  <p className="text-sm">0</p>
-                </div>
-                {/* <div className="w-full">
-                  <p className="font-medium mb-1">VAT</p>
-                  <p className="text-sm">2,000</p>
-                </div> */}
-                {/* <div className="w-full">
-                  <p className="font-medium mb-1">Coupon</p>
-                  <p className="text-sm">PEIEHF</p>
-                </div> */}
               </div>
             </div>
-            {/* middel three section  */}
+
             <div className="grid grid-cols-3 gap-6">
-              {/* start part  */}
-              <div className="flex flex-col gap-y-4">
-                <div className="flex items-center">
-                  <label className="w-56" htmlFor="status">
-                    *Payment status:{" "}
-                  </label>
-                  <div className="w-full">
-                    <Select
-                      defaultValue={paymentStatus}
-                      onChange={setPaymentStatus}
-                      options={paymentStatusOptions}
-                    />
+              <div>
+                <h2 className="font-semibold mb-2">Payment Details: </h2>
+                <div className="flex flex-col gap-y-2 border p-3">
+                  <div className="flex items-center">
+                    <label className="w-48 font-semibold">
+                      Bank Transaction Id:
+                    </label>
+                    <p className="text-gray-500 font-medium">
+                      {orderData.data.transactionDetails?.bankTranId}
+                    </p>
                   </div>
-                </div>
 
-                <div className="flex items-center">
-                  <label className="w-56" htmlFor="payment">
-                    Payment Method:
-                  </label>
-                  <input
-                    className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
-                    id="deliveryCharge"
-                    type="text"
-                    placeholder="Input Here"
-                    value={paymentMethod}
-                    onChange={(e: any) => setPaymentMethod(e.target.value)}
-                  />
-                </div>
-
-                <div className="flex items-center">
-                  <label className="w-56" htmlFor="deliveryCharge">
-                    *Delivery Charge:
-                  </label>
-                  <input
-                    className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
-                    id="deliveryCharge"
-                    type="text"
-                    placeholder="Input Here"
-                    value={deliveryCharge}
-                    onChange={(e: any) => setDeliveryCharge(e.target.value)}
-                  />
-                </div>
-
-                <div className="flex items-center">
-                  <label className="w-56" htmlFor="deliveryDate">
-                    *Delivery Status:
-                  </label>
-                  <div className="w-full">
-                    <Select
-                      defaultValue={selectedOption}
-                      onChange={setSelectedOption}
-                      options={deliveryOptions}
-                    />
+                  <div className="flex items-center">
+                    <label className="w-48 font-semibold">Card Type:</label>
+                    <p className="text-gray-500 font-medium">
+                      {orderData.data.transactionDetails?.cardType}
+                    </p>
                   </div>
-                </div>
-                {/* <div className="flex items-center">
-                  <label className="w-56" htmlFor="shippingAddress">
-                    Shipping Address:
-                  </label>
-                  <input
-                    className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
-                    id="shippingAddress"
-                    type="text"
-                    placeholder="Input Here"
-                  />
-                </div> */}
-                <div className="flex items-center">
-                  <label className="w-56" htmlFor="shippingAddress">
-                    Remarks:
-                  </label>
-                  <textarea
-                    className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
-                    id="shippingAddress"
-                    placeholder="Input Here"
-                    value={remark}
-                    onChange={(e: any) => setRemark(e.target.value)}
-                  />
+
+                  <div className="flex items-center">
+                    <label className="w-48 font-semibold">Card No:</label>
+                    <p className="text-gray-500 font-medium">
+                      {orderData.data.transactionDetails?.cardNo}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center">
+                    <label className="w-48 font-semibold">Card Issuer:</label>
+                    <p className="text-gray-500 font-medium">
+                      {orderData.data.transactionDetails?.cardIssuer}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center">
+                    <label className="w-48 font-semibold">Card Brand:</label>
+                    <p className="text-gray-500 font-medium">
+                      {orderData.data.transactionDetails?.cardBrand}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center">
+                    <label className="w-48 font-semibold">Card Category:</label>
+                    <p className="text-gray-500 font-medium">
+                      {orderData.data.transactionDetails?.cardCategory}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center">
+                    <label className="w-48 font-semibold">
+                      Card Issuer Country:
+                    </label>
+                    <p className="text-gray-500 font-medium">
+                      {orderData.data.transactionDetails?.cardIssuerCountry}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center">
+                    <label className="w-48 font-semibold">
+                      Card Issuer Country Code:
+                    </label>
+                    <p className="text-gray-500 font-medium">
+                      {orderData.data.transactionDetails?.cardIssuerCountryCode}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center">
+                    <label className="w-48 font-semibold">Currency Type:</label>
+                    <p className="text-gray-500 font-medium">
+                      {orderData.data.transactionDetails?.currencyType}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center">
+                    <label className="w-48 font-semibold">
+                      Transaction Time:
+                    </label>
+                    <p className="text-gray-500 font-medium">
+                      {formatDate(
+                        orderData.data.transactionDetails?.tranDate as string
+                      )}
+                    </p>
+                  </div>
                 </div>
               </div>
 
-              {/* new part */}
-              <div className="px-6">
+              {/* <div className="px-6">
                 <h3 className="font-semibold mb-4 text-xl">Shipping Address</h3>
 
                 <div className="flex items-center mb-4">
@@ -330,10 +389,8 @@ const OrderUpdate = ({ params }: any) => {
                     }}
                   />
                 </div>
-              </div>
-              {/* new part 2 */}
+              </div> */}
 
-              {/* end part  */}
               <div className="px-6">
                 <p className="text-lg font-medium mb-4">History</p>
                 <ol className="relative border-l border-gray-200 ml-2">
@@ -441,7 +498,7 @@ const OrderUpdate = ({ params }: any) => {
             </div>
             <div className="">
               <h3 className="font-semibold mb-2 text-xl ">Products:</h3>
-              {orderData.product.map((el: any, i: number) => (
+              {(orderData as any).data.product.map((el: any, i: number) => (
                 <div
                   className="flex items-center mb-6 justify-between border p-4 rounded-md"
                   key={i}
@@ -475,7 +532,7 @@ const OrderUpdate = ({ params }: any) => {
                   </div>
                   <label
                     htmlFor="my-modal-3"
-                    onClick={() => handleSizeChart(el?.sizeChart?._id)}
+                    onClick={() => handleSizeChart(el?.sizeChart?._id, el._id)}
                     className="text-[#5B94FC] cursor-pointer flex items-center gap-1 text-sm"
                   >
                     <FaRulerHorizontal size={18} className="mt-[2px]" /> Size
@@ -490,7 +547,9 @@ const OrderUpdate = ({ params }: any) => {
             </div>
           </div>
           <OrderMeasurement
+            orderData={orderData}
             sizeChartId={sizeChartId}
+            uniqId={uniqId}
             openModal={openSizeChartModal}
           />
         </>
