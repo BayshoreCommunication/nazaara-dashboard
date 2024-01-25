@@ -329,3 +329,15 @@ export type TOptionSelect = {
   value: string;
   label: string;
 };
+
+ 
+export type StockInfo = {
+  status: string;
+  total: number;
+  totalPages: number;
+  currentPage: number;
+  previousPage: any;
+  nextPage: number;
+  product: TProduct[];
+  totalStockOut: number;
+};

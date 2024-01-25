@@ -6,7 +6,7 @@ import {
   TProductSlugData,
   TProducts,
 } from "@/types/types";
-import { ProductStocks} from "@/types/productTypes";
+import { StockInfo} from "@/types/types";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const productsApi = createApi({
@@ -72,11 +72,14 @@ export const productsApi = createApi({
       }),
       invalidatesTags: ["Product"],
     }),
-    getStockOut: builder.query<TProducts, void>({
+    getStockDtls: builder.query<StockInfo, void>({
+      query: () => `/api/v1/product/productStockDtls`,
+      providesTags: ["Product"],
+    }),
+    getStockProductDtls: builder.query<StockInfo, void>({
       query: () => `/api/v1/product/productStockOut`,
       providesTags: ["Product"],
     }),
-   
   }),
 });
 
@@ -89,5 +92,6 @@ export const {
   useCreateProductMutation,
   useUpdateProductMutation,
   useDeleteProductMutation,
-  useGetStockOutQuery,
+  useGetStockDtlsQuery,
+  useGetStockProductDtlsQuery,
 } = productsApi;
