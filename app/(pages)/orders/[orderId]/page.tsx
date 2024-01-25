@@ -1,106 +1,73 @@
 "use client";
 import Loader from "@/components/Loader";
 import OrderMeasurement from "@/components/OrderMeasurement";
-import OutlineButton from "@/components/OutlineButton";
-import PrimaryButton from "@/components/PrimaryButton";
-import UtilityBtn from "@/components/UtilityBtn";
 import { formatDate } from "@/helpers/formatDate";
-import { useGetOrderByIdQuery } from "@/services/orderApi";
-import axios from "axios";
+import { getAuthenticateUserInfo } from "@/helpers/getAuthenticateUser";
+import {
+  useGetOrderByIdQuery,
+  useUpdateOrderMutation,
+} from "@/services/orderApi";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { AiOutlineDownload, AiOutlineShoppingCart } from "react-icons/ai";
+import { AiOutlineShoppingCart } from "react-icons/ai";
 import { FaRulerHorizontal } from "react-icons/fa";
-import Select from "react-select";
+import Swal from "sweetalert2";
 
-const deliveryOptions = [
-  { value: "pending", label: "Pending" },
-  { value: "order_received", label: "Order Received" },
-  { value: "on_process", label: "On Process" },
-  { value: "ready_to_deliver", label: "Ready to Deliver" },
-  { value: "shipped", label: "Shipped" },
-  { value: "delivered", label: "Delivered" },
-];
-
-const paymentStatusOptions = [
-  { value: "pending", label: "Pending" },
-  { value: "partial_request", label: "Partial Request" },
-  { value: "full_request", label: "Full Request" },
-  { value: "partial_successful", label: "Partial Successful" },
-  { value: "full_successful", label: "Full Successful" },
-  { value: "cancel", label: "Cancel" },
-];
 const OrderUpdate = ({ params }: any) => {
-  // const [orderData, setOrderData] = useState<any>();
   const [openSizeChartModal, setOpenSizeChartModal] = useState(false);
   const [sizeChartId, setSizeChartId] = useState("");
   const [uniqId, setUniqId] = useState("");
+  const [showAll, setShowAll] = useState(false);
+  const [shippingAddressData, setShippingAddressData] = useState({
+    shippingAddress: {
+      fullName: "",
+      phone: "",
+      city: "",
+      country: "",
+      street: "",
+      postalCode: "",
+      details: "",
+    },
+    remark: "",
+    updateHistory: [
+      {
+        updatedBy: "",
+        updatedAt: new Date(),
+      },
+    ],
+  });
+
+  const updatedTimeAndPerson: any = [];
+
+  console.log("updatedTimeAndPerson", updatedTimeAndPerson);
 
   const { data: orderData, isLoading } = useGetOrderByIdQuery(params.orderId);
 
-  console.log("order data bal", orderData);
+  const [updateOrder] = useUpdateOrderMutation();
 
-  // useEffect(() => {
-  //   const fetchOrderData = async () => {
-  //     try {
-  //       const response = await axios.get(
-  //         `${process.env.API_URL}/api/v1/order/${params.orderId}`
-  //       );
-  //       setOrderData(response.data.data);
-  //     } catch (error) {
-  //       console.error("Request error:", error);
-  //     }
-  //   };
-  //   fetchOrderData(); // Call the fetchOrderData function
-  // }, [params.orderId]);
+  useEffect(() => {
+    if (orderData && orderData.data) {
+      setShippingAddressData({
+        shippingAddress: {
+          fullName: orderData.data.shippingAddress.fullName || "",
+          phone: orderData.data.shippingAddress.phone || "",
+          city: orderData.data.shippingAddress.city || "",
+          country: orderData.data.shippingAddress.country || "",
+          street: orderData.data.shippingAddress.street || "",
+          postalCode: orderData.data.shippingAddress.postalCode || "",
+          details: orderData.data.shippingAddress.details || "",
+        },
+        remark: orderData.data.remark || "",
+        updateHistory:
+          orderData?.data?.updateHistory?.map((history: any) => ({
+            updatedBy: history.updatedBy,
+            updatedAt: history.updatedAt,
+          })) || [],
+      });
+    }
+  }, [orderData]);
 
-  // console.log("order data", orderData);
-
-  // const totalQuantity =
-  //   orderData &&
-  //   orderData.product.reduce(
-  //     (total: any, item: any) => total + item.quantity,
-  //     0
-  //   );
-  // const totalPrice =
-  //   orderData &&
-  //   orderData.product.reduce(
-  //     (total: any, item: any) => total + item.price,
-  //     orderData.deliveryCharge
-  //   );
-
-  // console.log("order data from single order", orderData);
-  // const [deliveryCharge, setDeliveryCharge] = useState();
-  // const [paymentMethod, setPaymentMethod] = useState();
-  // const [paymentStatus, setPaymentStatus] = useState<any>(
-  //   paymentStatusOptions[0]
-  // );
-  // const [remark, setRemark] = useState();
-
-  // const [selectedOption, setSelectedOption] = useState<any>(deliveryOptions[0]);
-  // const [shippingAddress, setShippingAddress] = useState({
-  //   street: "",
-  //   city: "",
-  //   country: "",
-  // });
-  // useEffect(() => {
-  //   const defaultOption = deliveryOptions.find(
-  //     (option) => option.value === orderData?.deliveryStatus
-  //   );
-  //   if (orderData) {
-  //     setDeliveryCharge(orderData.deliveryCharge);
-  //     setPaymentMethod(orderData.paymentMethod);
-  //     setSelectedOption(defaultOption);
-  //     setRemark(orderData.remark);
-
-  //     // Update each field in the shippingAddress object
-  //     setShippingAddress({
-  //       street: orderData.shippingAddress.street,
-  //       city: orderData.shippingAddress.city,
-  //       country: orderData.shippingAddress.country,
-  //     });
-  //   }
-  // }, [orderData]);
+  // console.log("order data bal", orderData);
 
   if (isLoading) {
     return <Loader height="h-[50vh]" />;
@@ -112,7 +79,74 @@ const OrderUpdate = ({ params }: any) => {
     setUniqId(uniqId);
   };
 
-  console.log("order data 44", orderData);
+  // console.log("order data 44", orderData);
+
+  // console.log("shipping address data from state", shippingAddressData);
+
+  const authenticateUserInfo = getAuthenticateUserInfo();
+  // console.log("authenticate user info", authenticateUserInfo);
+
+  const handleShippingUpdate = async (e: any) => {
+    e.preventDefault();
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, update it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const updatedShippingResponse = await updateOrder({
+            id: params.orderId,
+            payload: {
+              shippingAddress: {
+                fullName: shippingAddressData.shippingAddress.fullName,
+                phone: shippingAddressData.shippingAddress.phone,
+                city: shippingAddressData.shippingAddress.city,
+                country: shippingAddressData.shippingAddress.country,
+                street: shippingAddressData.shippingAddress.street,
+                postalCode: shippingAddressData.shippingAddress.postalCode,
+                details: shippingAddressData.shippingAddress.details,
+              },
+              remark: shippingAddressData.remark,
+              updateHistory: [
+                ...shippingAddressData.updateHistory,
+                {
+                  updatedAt: new Date(),
+                  updatedBy: authenticateUserInfo._id,
+                },
+              ],
+            },
+          }).unwrap();
+
+          // console.log("updated Shipping Response", updatedShippingResponse);
+
+          if (updatedShippingResponse?.success) {
+            Swal.fire(
+              "Updated!",
+              "Shipping address has been updated.",
+              "success"
+            );
+          } else {
+            throw new Error("Shipping address update failed.");
+          }
+        } catch (error) {
+          Swal.fire(
+            "Error!",
+            "Failed to update shipping address.Please recheck and try again..",
+            "error"
+          );
+        }
+      }
+    });
+  };
+
+  const visibleHistory = showAll
+    ? orderData?.data?.updateHistory
+    : orderData?.data?.updateHistory?.slice(0, 5);
 
   return (
     <div className="container">
@@ -221,7 +255,9 @@ const OrderUpdate = ({ params }: any) => {
 
             <div className="grid grid-cols-3 gap-6">
               <div>
-                <h2 className="font-semibold mb-2">Payment Details: </h2>
+                <h2 className="font-semibold mb-2 text-lg text-gray-600">
+                  Payment Details:{" "}
+                </h2>
                 <div className="flex flex-col gap-y-2 border p-3">
                   <div className="flex items-center">
                     <label className="w-48 font-semibold">
@@ -305,195 +341,287 @@ const OrderUpdate = ({ params }: any) => {
                 </div>
               </div>
 
-              {/* <div className="px-6">
-                <h3 className="font-semibold mb-4 text-xl">Shipping Address</h3>
+              <div className="px-6">
+                <h3 className="font-semibold mb-2 text-lg text-gray-600">
+                  Shipping Address:
+                </h3>
 
-                <div className="flex items-center mb-4">
-                  <label className="w-56" htmlFor="name">
-                    Name:
-                  </label>
-                  <input
-                    className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
-                    id="name"
-                    type="text"
-                    placeholder="Input Here"
-                    value={orderData.shippingAddress.fullName}
-                  />
-                </div>
+                <form
+                  onSubmit={(e) => handleShippingUpdate(e)}
+                  className="border p-3"
+                >
+                  <div className="flex items-center">
+                    <label
+                      className="w-56 font-medium text-gray-500"
+                      htmlFor="name"
+                    >
+                      Name:
+                    </label>
+                    <input
+                      className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
+                      type="text"
+                      id="name"
+                      required
+                      placeholder="Enter Name"
+                      value={shippingAddressData.shippingAddress.fullName}
+                      onChange={(e) =>
+                        setShippingAddressData({
+                          ...shippingAddressData,
+                          shippingAddress: {
+                            ...shippingAddressData.shippingAddress,
+                            fullName: e.target.value,
+                          },
+                        })
+                      }
+                    />
+                  </div>
 
-                <div className="flex items-center mb-4">
-                  <label className="w-56" htmlFor="phone">
-                    Phone number:
-                  </label>
-                  <input
-                    className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
-                    id="phone"
-                    type="text"
-                    placeholder="Input Here"
-                    value={orderData.shippingAddress.phone}
-                  />
-                </div>
+                  <div className="flex items-center">
+                    <label
+                      className="w-56 font-medium text-gray-500"
+                      htmlFor="phone"
+                    >
+                      Phone number:
+                    </label>
+                    <input
+                      className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
+                      id="phone"
+                      type="number"
+                      placeholder="Enter Phone"
+                      required
+                      value={shippingAddressData.shippingAddress.phone}
+                      onChange={(e) =>
+                        setShippingAddressData({
+                          ...shippingAddressData,
+                          shippingAddress: {
+                            ...shippingAddressData.shippingAddress,
+                            phone: e.target.value,
+                          },
+                        })
+                      }
+                    />
+                  </div>
 
-                <div className="flex items-center mb-4">
-                  <label className="w-56" htmlFor="street">
-                    Street:
-                  </label>
-                  <input
-                    className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
-                    id="street"
-                    type="text"
-                    placeholder="Input Here"
-                    value={shippingAddress.street}
-                    onChange={(e: any) => {
-                      setShippingAddress({
-                        ...shippingAddress,
-                        street: e.target.value,
-                      });
-                    }}
-                  />
-                </div>
-                <div className="flex items-center  mb-4">
-                  <label className="w-56" htmlFor="city">
-                    City:
-                  </label>
-                  <input
-                    className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
-                    id="city"
-                    type="text"
-                    placeholder="Input Here"
-                    value={shippingAddress.city}
-                    onChange={(e: any) => {
-                      setShippingAddress({
-                        ...shippingAddress,
-                        city: e.target.value,
-                      });
-                    }}
-                  />
-                </div>
+                  <div className="flex items-center">
+                    <label
+                      className="w-56 font-medium text-gray-500"
+                      htmlFor="street"
+                    >
+                      Street:
+                    </label>
+                    <input
+                      className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
+                      id="street"
+                      type="text"
+                      placeholder="Input Here"
+                      required
+                      value={shippingAddressData.shippingAddress.street}
+                      onChange={(e) =>
+                        setShippingAddressData({
+                          ...shippingAddressData,
+                          shippingAddress: {
+                            ...shippingAddressData.shippingAddress,
+                            street: e.target.value,
+                          },
+                        })
+                      }
+                    />
+                  </div>
 
-                <div className="flex items-center  mb-4">
-                  <label className="w-56" htmlFor="country">
-                    Country:
-                  </label>
-                  <input
-                    className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
-                    id="city"
-                    type="text"
-                    placeholder="Input Here"
-                    value={shippingAddress.country}
-                    onChange={(e: any) => {
-                      setShippingAddress({
-                        ...shippingAddress,
-                        country: e.target.value,
-                      });
-                    }}
-                  />
-                </div>
-              </div> */}
+                  <div className="flex items-center">
+                    <label
+                      className="w-56 font-medium text-gray-500"
+                      htmlFor="city"
+                    >
+                      City:
+                    </label>
+                    <input
+                      className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
+                      type="text"
+                      id="city"
+                      placeholder="Enter City"
+                      required
+                      value={shippingAddressData.shippingAddress.city}
+                      onChange={(e) =>
+                        setShippingAddressData({
+                          ...shippingAddressData,
+                          shippingAddress: {
+                            ...shippingAddressData.shippingAddress,
+                            city: e.target.value,
+                          },
+                        })
+                      }
+                    />
+                  </div>
+
+                  <div className="flex items-center">
+                    <label
+                      className="w-56 font-medium text-gray-500"
+                      htmlFor="country"
+                    >
+                      Country:
+                    </label>
+                    <input
+                      className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
+                      type="text"
+                      id="country"
+                      required
+                      placeholder="Enter Country"
+                      value={shippingAddressData.shippingAddress.country}
+                      onChange={(e) =>
+                        setShippingAddressData({
+                          ...shippingAddressData,
+                          shippingAddress: {
+                            ...shippingAddressData.shippingAddress,
+                            country: e.target.value,
+                          },
+                        })
+                      }
+                    />
+                  </div>
+
+                  <div className="flex items-center">
+                    <label
+                      className="w-56 font-medium text-gray-500"
+                      htmlFor="postalCode"
+                    >
+                      Postal Code:
+                    </label>
+                    <input
+                      className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
+                      id="postalCode"
+                      type="text"
+                      placeholder="Enter Postal Code"
+                      value={shippingAddressData.shippingAddress.postalCode}
+                      onChange={(e) =>
+                        setShippingAddressData({
+                          ...shippingAddressData,
+                          shippingAddress: {
+                            ...shippingAddressData.shippingAddress,
+                            postalCode: e.target.value,
+                          },
+                        })
+                      }
+                    />
+                  </div>
+
+                  <div className="flex items-center">
+                    <label
+                      className="w-56 font-medium text-gray-500"
+                      htmlFor="details"
+                    >
+                      Details:
+                    </label>
+                    <input
+                      className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
+                      type="text"
+                      id="details"
+                      placeholder="Enter Any Info"
+                      value={shippingAddressData.shippingAddress.details}
+                      onChange={(e) =>
+                        setShippingAddressData({
+                          ...shippingAddressData,
+                          shippingAddress: {
+                            ...shippingAddressData.shippingAddress,
+                            details: e.target.value,
+                          },
+                        })
+                      }
+                    />
+                  </div>
+
+                  <div className="flex items-center">
+                    <label
+                      className="w-56 font-medium text-gray-500"
+                      htmlFor="remark"
+                    >
+                      Remark:
+                    </label>
+
+                    <textarea
+                      name="note"
+                      className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1 box-border outline-none"
+                      id="remark"
+                      placeholder="Enter Remarks"
+                      value={shippingAddressData.remark}
+                      onChange={(e) =>
+                        setShippingAddressData({
+                          ...shippingAddressData,
+                          remark: e.target.value,
+                        })
+                      }
+                    ></textarea>
+                  </div>
+                  <div className="flex justify-end mt-3">
+                    <button
+                      type="submit"
+                      className="bg-secondary py-1 px-4 rounded-md text-white"
+                    >
+                      Update
+                    </button>
+                  </div>
+                </form>
+              </div>
 
               <div className="px-6">
-                <p className="text-lg font-medium mb-4">History</p>
-                <ol className="relative border-l border-gray-200 ml-2">
-                  <li className="mb-10 ml-6 text-sm">
-                    <span className="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -left-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
-                      <svg
-                        aria-hidden="true"
-                        className="w-3 h-3 text-blue-800"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          fill-rule="evenodd"
-                          d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
-                          clip-rule="evenodd"
-                        ></path>
-                      </svg>
-                    </span>
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-sm font-semibold text-gray-900">
-                        Updated by Md. Rasel
-                      </h3>
-                      <time className="block mb-2 text-sm font-normal leading-none text-gray-400">
-                        2023-06-06 5.26 PM
-                      </time>
-                    </div>
+                <p className="font-semibold mb-2 text-lg text-gray-600">
+                  History:
+                </p>
+                <div className="border p-4">
+                  <ol className="relative border-l border-gray-200 ml-2">
+                    {visibleHistory?.map((history: any) => (
+                      <li key={history._id} className="mb-8 ml-6 text-sm">
+                        <span className="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -left-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                          <svg
+                            aria-hidden="true"
+                            className="w-3 h-3 text-blue-800"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              fill-rule="evenodd"
+                              d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                              clip-rule="evenodd"
+                            ></path>
+                          </svg>
+                        </span>
+                        <div className="flex items-center gap-1 mb-1">
+                          <Image
+                            alt="user image"
+                            src={history.updatedBy.imageUrl}
+                            width={50}
+                            height={50}
+                            className="rounded-full w-6 h-6"
+                          />
+                          <h3 className="text-sm font-semibold text-gray-900">
+                            {history.updatedBy.fullName}
+                          </h3>
+                        </div>
 
-                    <div className="flex justify-between">
-                      <div className="flex gap-x-2">
-                        <p className="text-sm font-normal text-gray-500">Tax</p>
-                        <p>125.40</p>
+                        <time className="block mb-2 text-sm font-normal leading-none">
+                          <span className="text-gray-600 font-semibold">
+                            Updated at:{" "}
+                          </span>
+                          <span className="text-gray-400">
+                            {formatDate(history.updatedAt)}
+                          </span>
+                        </time>
+                      </li>
+                    ))}
+                  </ol>
+                  {(orderData as any)?.data?.updateHistory?.length > 5 &&
+                    !showAll && (
+                      <div className="flex justify-center">
+                        <button
+                          onClick={() => setShowAll(true)}
+                          className="text-secondary font-semibold cursor-pointer text-sm"
+                        >
+                          show more
+                        </button>
                       </div>
-                      <p>125.43252563452352</p>
-                    </div>
-                  </li>
-                  <li className="mb-10 ml-6 text-sm">
-                    <span className="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -left-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
-                      <svg
-                        aria-hidden="true"
-                        className="w-3 h-3 text-blue-800"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          fill-rule="evenodd"
-                          d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
-                          clip-rule="evenodd"
-                        ></path>
-                      </svg>
-                    </span>
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-sm font-semibold text-gray-900">
-                        Updated by Md. Rasel
-                      </h3>
-                      <time className="block mb-2 text-sm font-normal leading-none text-gray-400">
-                        2023-06-06 5.26 PM
-                      </time>
-                    </div>
-
-                    <div className="flex justify-between">
-                      <div className="flex gap-x-2">
-                        <p className="text-sm font-normal text-gray-500">Tax</p>
-                        <p>125.40</p>
-                      </div>
-                      <p>125.43252563452352</p>
-                    </div>
-                  </li>
-                  <li className="mb-10 ml-6 text-sm">
-                    <span className="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -left-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
-                      <svg
-                        aria-hidden="true"
-                        className="w-3 h-3 text-blue-800"
-                        fill="currentColor"
-                        viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          fill-rule="evenodd"
-                          d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
-                          clip-rule="evenodd"
-                        ></path>
-                      </svg>
-                    </span>
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-sm font-semibold text-gray-900">
-                        Updated by Md. Rasel
-                      </h3>
-                      <time className="block mb-2 text-sm font-normal leading-none text-gray-400">
-                        2023-06-06 5.26 PM
-                      </time>
-                    </div>
-
-                    <div className="flex justify-between">
-                      <div className="flex gap-x-2">
-                        <p className="text-sm font-normal text-gray-500">Tax</p>
-                        <p>125.40</p>
-                      </div>
-                      <p>125.43252563452352</p>
-                    </div>
-                  </li>
-                </ol>
+                    )}
+                </div>
               </div>
             </div>
             <div className="">
@@ -541,10 +669,10 @@ const OrderUpdate = ({ params }: any) => {
                 </div>
               ))}
             </div>
-            <div className="flex gap-x-2">
+            {/* <div className="flex gap-x-2">
               <PrimaryButton name="Update" />
               <OutlineButton name="Cancel" />
-            </div>
+            </div> */}
           </div>
           <OrderMeasurement
             orderData={orderData}

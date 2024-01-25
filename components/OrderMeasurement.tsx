@@ -4,6 +4,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 import { useUpdateOrderMutation } from "@/services/orderApi";
+import { getAuthenticateUserInfo } from "@/helpers/getAuthenticateUser";
 
 interface OrderMeasurementProps {
   openModal: boolean;
@@ -53,6 +54,8 @@ const OrderMeasurement: React.FC<OrderMeasurementProps> = ({
   console.log("uniqId", uniqId);
   console.log("formData", formData);
   console.log("orderData", orderData);
+
+  const authenticateUserInfo = getAuthenticateUserInfo();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -166,6 +169,18 @@ const OrderMeasurement: React.FC<OrderMeasurementProps> = ({
             const response = await axios.patch(url, formData);
             if (response.data.success) {
               Swal.fire("Updated!", "Size chart has been updated.", "success");
+              await updateOrder({
+                id: orderData.data._id,
+                payload: {
+                  updateHistory: [
+                    ...orderData.data.updateHistory,
+                    {
+                      updatedAt: new Date(),
+                      updatedBy: authenticateUserInfo._id,
+                    },
+                  ],
+                },
+              });
             }
           }
         });
@@ -195,19 +210,19 @@ const OrderMeasurement: React.FC<OrderMeasurementProps> = ({
                   return product;
                 }
               );
-
-              console.log("updated product", updatedProducts);
-
-              // const updateResponse = await axios.patch(url, {
-              //   product: updatedProducts,
-              // });
               const updateResponse = await updateOrder({
                 id: orderData.data._id,
                 payload: {
                   product: updatedProducts,
+                  updateHistory: [
+                    ...orderData.data.updateHistory,
+                    {
+                      updatedAt: new Date(),
+                      updatedBy: authenticateUserInfo._id,
+                    },
+                  ],
                 },
               });
-              console.log("updated response", updateResponse);
 
               if (updateResponse) {
                 Swal.fire(
@@ -311,7 +326,7 @@ const OrderMeasurement: React.FC<OrderMeasurementProps> = ({
                             </label>
                             <input
                               id="chest"
-                              type="text"
+                              type="number"
                               className="input border border-gray-300 w-20 h-8 rounded-none"
                               value={formData.tops.chest || ""}
                               onChange={(e) =>
@@ -329,7 +344,7 @@ const OrderMeasurement: React.FC<OrderMeasurementProps> = ({
                             </label>
                             <input
                               id="waist"
-                              type="text"
+                              type="number"
                               className="input border border-gray-300 w-20 h-8 rounded-none"
                               value={formData.tops.waist || ""}
                               onChange={(e) =>
@@ -347,7 +362,7 @@ const OrderMeasurement: React.FC<OrderMeasurementProps> = ({
                             </label>
                             <input
                               id="hip"
-                              type="text"
+                              type="number"
                               className="input border border-gray-300 w-20 h-8 rounded-none"
                               value={formData.tops.hip || ""}
                               onChange={(e) =>
@@ -361,7 +376,7 @@ const OrderMeasurement: React.FC<OrderMeasurementProps> = ({
                             </label>
                             <input
                               id="end"
-                              type="text"
+                              type="number"
                               className="input border border-gray-300 w-20 h-8 rounded-none"
                               value={formData.tops.end || ""}
                               onChange={(e) =>
@@ -375,7 +390,7 @@ const OrderMeasurement: React.FC<OrderMeasurementProps> = ({
                             </label>
                             <input
                               id="shoulder"
-                              type="text"
+                              type="number"
                               className="input border border-gray-300 w-20 h-8 rounded-none"
                               value={formData.tops.shoulder || ""}
                               onChange={(e) =>
@@ -393,7 +408,7 @@ const OrderMeasurement: React.FC<OrderMeasurementProps> = ({
                             </label>
                             <input
                               id="armHole"
-                              type="text"
+                              type="number"
                               className="input border border-gray-300 w-20 h-8 rounded-none"
                               value={formData.tops.armHole || ""}
                               onChange={(e) =>
@@ -411,7 +426,7 @@ const OrderMeasurement: React.FC<OrderMeasurementProps> = ({
                             </label>
                             <input
                               id="sleeveL"
-                              type="text"
+                              type="number"
                               className="input border border-gray-300 w-20 h-8 rounded-none"
                               value={formData.tops.sleeveLength || ""}
                               onChange={(e) =>
@@ -429,7 +444,7 @@ const OrderMeasurement: React.FC<OrderMeasurementProps> = ({
                             </label>
                             <input
                               id="muscle"
-                              type="text"
+                              type="number"
                               className="input border border-gray-300 w-20 h-8 rounded-none"
                               value={formData.tops.muscle || ""}
                               onChange={(e) =>
@@ -449,7 +464,7 @@ const OrderMeasurement: React.FC<OrderMeasurementProps> = ({
                             </label>
                             <input
                               id="handOpening"
-                              type="text"
+                              type="number"
                               className="input border border-gray-300 w-20 h-8 rounded-none"
                               value={formData.tops.handOpening || ""}
                               onChange={(e) =>
@@ -467,7 +482,7 @@ const OrderMeasurement: React.FC<OrderMeasurementProps> = ({
                             </label>
                             <input
                               id="length"
-                              type="text"
+                              type="number"
                               className="input border border-gray-300 w-20 h-8 rounded-none"
                               value={formData.tops.length || ""}
                               onChange={(e) =>
@@ -485,7 +500,7 @@ const OrderMeasurement: React.FC<OrderMeasurementProps> = ({
                             </label>
                             <input
                               id="slit"
-                              type="text"
+                              type="number"
                               className="input border border-gray-300 w-20 h-8 rounded-none"
                               value={formData.tops.slit || ""}
                               onChange={(e) =>
@@ -503,7 +518,7 @@ const OrderMeasurement: React.FC<OrderMeasurementProps> = ({
                             </label>
                             <input
                               id="neckDeepF"
-                              type="text"
+                              type="number"
                               className="input border border-gray-300 w-20 h-8 rounded-none"
                               value={formData.tops.neckDeepf || ""}
                               onChange={(e) =>
@@ -521,7 +536,7 @@ const OrderMeasurement: React.FC<OrderMeasurementProps> = ({
                             </label>
                             <input
                               id="neckDeepB"
-                              type="text"
+                              type="number"
                               className="input border border-gray-300 w-20 h-8 rounded-none"
                               value={formData.tops.neckDeepb || ""}
                               onChange={(e) =>
@@ -539,7 +554,7 @@ const OrderMeasurement: React.FC<OrderMeasurementProps> = ({
                             </label>
                             <input
                               id="halfBody"
-                              type="text"
+                              type="number"
                               className="input border border-gray-300 w-20 h-8 rounded-none"
                               value={formData.tops.halfBody || ""}
                               onChange={(e) =>
@@ -634,7 +649,7 @@ const OrderMeasurement: React.FC<OrderMeasurementProps> = ({
                           </label>
                           <input
                             id="length2"
-                            type="text"
+                            type="number"
                             className="input border border-gray-300 w-40 h-8 rounded-none"
                             value={formData.bottom.length || ""}
                             onChange={(e) =>
@@ -652,7 +667,7 @@ const OrderMeasurement: React.FC<OrderMeasurementProps> = ({
                           </label>
                           <input
                             id="waist2"
-                            type="text"
+                            type="number"
                             className="input border border-gray-300 w-40 h-8 rounded-none"
                             value={formData.bottom.waist || ""}
                             onChange={(e) =>
@@ -670,7 +685,7 @@ const OrderMeasurement: React.FC<OrderMeasurementProps> = ({
                           </label>
                           <input
                             id="hip2"
-                            type="text"
+                            type="number"
                             className="input border border-gray-300 w-40 h-8 rounded-none"
                             value={formData.bottom.hip || ""}
                             onChange={(e) =>
@@ -684,7 +699,7 @@ const OrderMeasurement: React.FC<OrderMeasurementProps> = ({
                           </label>
                           <input
                             id="thigh2"
-                            type="text"
+                            type="number"
                             className="input border border-gray-300 w-40 h-8 rounded-none"
                             value={formData.bottom.thigh || ""}
                             onChange={(e) =>
@@ -702,7 +717,7 @@ const OrderMeasurement: React.FC<OrderMeasurementProps> = ({
                           </label>
                           <input
                             id="knee2"
-                            type="text"
+                            type="number"
                             className="input border border-gray-300 w-40 h-8 rounded-none"
                             value={formData.bottom.knee || ""}
                             onChange={(e) =>
@@ -720,7 +735,7 @@ const OrderMeasurement: React.FC<OrderMeasurementProps> = ({
                           </label>
                           <input
                             id="legOpenning2"
-                            type="text"
+                            type="number"
                             className="input border border-gray-300 w-40 h-8 rounded-none"
                             value={formData.bottom.legOpening || ""}
                             onChange={(e) =>

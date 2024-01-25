@@ -31,6 +31,8 @@ export interface IOrderData {
   deliveryStatus: string;
   cardId?: any;
   createdAt?: Date;
+  remark?: string;
+  updateHistory?: [{ updatedBy: string; updatedAt: Date }];
 }
 
 export interface IOrderShippingAddress {
