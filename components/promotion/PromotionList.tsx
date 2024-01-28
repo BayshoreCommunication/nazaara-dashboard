@@ -84,6 +84,7 @@ const PromotionList: FC<promotionProps> = ({
           <th>Discount Type</th>
           <th>Discount Off</th>
           <th>Status</th>
+          <th>Validity</th>
           <th>Actions</th>
         </tr>
       </thead>
@@ -126,6 +127,13 @@ const PromotionList: FC<promotionProps> = ({
                   }`}
                 >
                   {data.status}
+                </td>
+                <td
+                  className={`font-medium ${
+                    data.validPromotion ? "text-green-500" : "text-red-500"
+                  }`}
+                >
+                  {data.validPromotion ? "valid" : "invalid"}
                 </td>
                 <td>
                   <div className="flex">
