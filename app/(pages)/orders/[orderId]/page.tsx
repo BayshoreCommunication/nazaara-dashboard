@@ -1,16 +1,19 @@
 "use client";
 import Loader from "@/components/Loader";
+import Image from "next/image";
 import OrderMeasurement from "@/components/OrderMeasurement";
+import PrimaryButton from "@/components/PrimaryButton";
 import { formatDate } from "@/helpers/formatDate";
+import { formatYearMonthDay } from "@/helpers/formatYearMonthDay";
 import { getAuthenticateUserInfo } from "@/helpers/getAuthenticateUser";
 import {
   useGetOrderByIdQuery,
   useUpdateOrderMutation,
 } from "@/services/orderApi";
-import Image from "next/image";
+
 import { useEffect, useState } from "react";
 import { AiOutlineShoppingCart } from "react-icons/ai";
-import { FaRulerHorizontal } from "react-icons/fa";
+import { FaFileInvoice, FaRulerHorizontal } from "react-icons/fa";
 import Swal from "sweetalert2";
 
 const OrderUpdate = ({ params }: any) => {
@@ -19,6 +22,17 @@ const OrderUpdate = ({ params }: any) => {
   const [uniqId, setUniqId] = useState("");
   const [showAll, setShowAll] = useState(false);
   const [shippingAddressData, setShippingAddressData] = useState({
+    paymentMethod: "",
+    shippingMethod: "",
+    subTotal: 0,
+    vatIncluded: 0,
+    shippingCharge: 0,
+    totalAmount: 0,
+    discountAmount: 0,
+    totalPay: 0,
+    due: 0,
+    paymentStatus: "",
+    deliveryStatus: "",
     shippingAddress: {
       fullName: "",
       phone: "",
@@ -37,10 +51,6 @@ const OrderUpdate = ({ params }: any) => {
     ],
   });
 
-  const updatedTimeAndPerson: any = [];
-
-  console.log("updatedTimeAndPerson", updatedTimeAndPerson);
-
   const { data: orderData, isLoading } = useGetOrderByIdQuery(params.orderId);
 
   const [updateOrder] = useUpdateOrderMutation();
@@ -48,6 +58,17 @@ const OrderUpdate = ({ params }: any) => {
   useEffect(() => {
     if (orderData && orderData.data) {
       setShippingAddressData({
+        paymentMethod: orderData.data.paymentMethod,
+        shippingMethod: orderData.data.shippingMethod,
+        subTotal: orderData.data.subTotal,
+        vatIncluded: orderData.data.vatIncluded,
+        shippingCharge: orderData.data.shippingCharge,
+        totalAmount: orderData.data.totalAmount,
+        discountAmount: orderData.data.discountAmount,
+        totalPay: orderData.data.totalPay,
+        due: orderData.data.due,
+        paymentStatus: orderData.data.paymentStatus,
+        deliveryStatus: orderData.data.deliveryStatus,
         shippingAddress: {
           fullName: orderData.data.shippingAddress.fullName || "",
           phone: orderData.data.shippingAddress.phone || "",
@@ -102,6 +123,17 @@ const OrderUpdate = ({ params }: any) => {
           const updatedShippingResponse = await updateOrder({
             id: params.orderId,
             payload: {
+              paymentMethod: shippingAddressData.paymentMethod,
+              shippingMethod: shippingAddressData.shippingMethod,
+              subTotal: shippingAddressData.subTotal,
+              vatIncluded: shippingAddressData.vatIncluded,
+              shippingCharge: shippingAddressData.shippingCharge,
+              totalAmount: shippingAddressData.totalAmount,
+              discountAmount: shippingAddressData.discountAmount,
+              totalPay: shippingAddressData.totalPay,
+              due: shippingAddressData.due,
+              paymentStatus: shippingAddressData.paymentStatus,
+              deliveryStatus: shippingAddressData.deliveryStatus,
               shippingAddress: {
                 fullName: shippingAddressData.shippingAddress.fullName,
                 phone: shippingAddressData.shippingAddress.phone,
@@ -157,10 +189,13 @@ const OrderUpdate = ({ params }: any) => {
               <AiOutlineShoppingCart size={18} color="gray" />
               <span className="font-medium text-lg">Orders</span>
             </div>
-            {/* <UtilityBtn
-              name="Export"
-              icon={<AiOutlineDownload color="white" />}
-            /> */}
+            <label
+              htmlFor="invoice-model"
+              // onClick={() => handleSizeChart(el?.sizeChart?._id, el._id)}
+              className="text-[#5B94FC] cursor-pointer flex items-center gap-[2px] text-sm font-semibold"
+            >
+              <FaFileInvoice size={14} className="mt-[2px]" /> Invoice
+            </label>
           </div>
           <div className="bg-basic rounded-lg px-6 py-3 flex flex-col gap-y-4">
             <div>
@@ -243,6 +278,14 @@ const OrderUpdate = ({ params }: any) => {
                       {orderData.data.discountAmount}/-
                     </p>
                   </div>
+                  {orderData.data.coupon && (
+                    <div className="">
+                      <p className="font-medium mb-1">Coupon Code</p>
+                      <p className="text-sm text-gray-600 font-medium">
+                        {orderData.data?.coupon?.couponCode}/-
+                      </p>
+                    </div>
+                  )}
                   <div className="">
                     <p className="font-medium mb-1">Delivery Status</p>
                     <p className="text-sm text-gray-600 font-medium">
@@ -252,6 +295,477 @@ const OrderUpdate = ({ params }: any) => {
                 </div>
               </div>
             </div>
+
+            <form onSubmit={(e) => handleShippingUpdate(e)} className="border">
+              <div className="flex gap-4">
+                <div className="px-6 mt-2">
+                  <h3 className="font-semibold mb-2 text-lg text-gray-600">
+                    Order Details:
+                  </h3>
+
+                  <div className="border p-3 flex gap-6">
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center">
+                        <label
+                          className="w-56 font-medium text-gray-500"
+                          htmlFor="name"
+                        >
+                          Shipping Method:
+                        </label>
+                        <select
+                          className="w-full border border-gray-400 rounded-sm px-2 py-1 focus:outline-none text-gray-500"
+                          required
+                          value={shippingAddressData.shippingMethod}
+                          onChange={(e) =>
+                            setShippingAddressData({
+                              ...shippingAddressData,
+                              shippingMethod: e.target.value,
+                            })
+                          }
+                        >
+                          <option value="inside-dhaka">Inside Dhaka</option>
+                          <option value="outside-dhaka">Outside Dhaka</option>
+                          <option value="shop-pickup">Shop Pickup</option>
+                        </select>
+                      </div>
+
+                      <div className="flex items-center">
+                        <label
+                          className="w-56 font-medium text-gray-500"
+                          htmlFor="name"
+                        >
+                          Payment Method:
+                        </label>
+                        <select
+                          className="w-full border border-gray-400 rounded-sm px-2 py-1 focus:outline-none text-gray-500"
+                          required
+                          value={shippingAddressData.paymentMethod}
+                          onChange={(e) =>
+                            setShippingAddressData({
+                              ...shippingAddressData,
+                              paymentMethod: e.target.value,
+                            })
+                          }
+                        >
+                          <option value="partial-payment">
+                            Partial Payment
+                          </option>
+                          <option value="full-payment">Full Payment</option>
+                        </select>
+                      </div>
+
+                      <div className="flex items-center">
+                        <label
+                          className="w-56 font-medium text-gray-500"
+                          htmlFor="name"
+                        >
+                          Payment Status:
+                        </label>
+                        <select
+                          className="w-full border border-gray-400 rounded-sm px-2 py-1 focus:outline-none text-gray-500"
+                          required
+                          value={shippingAddressData.paymentStatus}
+                          onChange={(e) =>
+                            setShippingAddressData({
+                              ...shippingAddressData,
+                              paymentStatus: e.target.value,
+                            })
+                          }
+                        >
+                          <option value="pending">Pending</option>
+                          <option value="partial request">
+                            Partial Request
+                          </option>
+                          <option value="full request">Full Request</option>
+                          <option value="partial successful">
+                            Partial Successful
+                          </option>
+                          <option value="full successful">
+                            Full Successful
+                          </option>
+                        </select>
+                      </div>
+                      <div className="flex items-center">
+                        <label
+                          className="w-56 font-medium text-gray-500"
+                          htmlFor="name"
+                        >
+                          Delivery Status:
+                        </label>
+                        <select
+                          className="w-full border border-gray-400 rounded-sm px-2 py-1 focus:outline-none text-gray-500"
+                          required
+                          value={shippingAddressData.deliveryStatus}
+                          onChange={(e) =>
+                            setShippingAddressData({
+                              ...shippingAddressData,
+                              deliveryStatus: e.target.value,
+                            })
+                          }
+                        >
+                          <option value="pending">Pending</option>
+                          <option value="order received">Order Received</option>
+                          <option value="on process">On Process</option>
+                          <option value="ready to deliver">
+                            Ready To Deliver
+                          </option>
+                          <option value="shipped">Shipped</option>
+                          <option value="delivered">Delivered</option>
+                        </select>
+                      </div>
+
+                      <div className="flex items-center">
+                        <label
+                          className="w-56 font-medium text-gray-500"
+                          htmlFor="phone"
+                        >
+                          Shipping Charge:
+                        </label>
+                        <input
+                          className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500"
+                          type="number"
+                          placeholder="Enter Shipping Charge"
+                          required
+                          value={shippingAddressData.shippingCharge}
+                          onChange={(e) =>
+                            setShippingAddressData({
+                              ...shippingAddressData,
+                              shippingCharge: Number(e.target.value),
+                            })
+                          }
+                        />
+                      </div>
+                      <div className="flex items-center">
+                        <label className="w-56 font-medium text-gray-500">
+                          Sub Total:
+                        </label>
+                        <input
+                          className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500"
+                          type="number"
+                          placeholder="Enter Sub Total"
+                          required
+                          value={shippingAddressData.subTotal}
+                          onChange={(e) =>
+                            setShippingAddressData({
+                              ...shippingAddressData,
+                              subTotal: Number(e.target.value),
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center">
+                        <label className="w-56 font-medium text-gray-500">
+                          Vat Included:
+                        </label>
+                        <input
+                          className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500"
+                          type="number"
+                          placeholder="Enter Vat"
+                          required
+                          value={shippingAddressData.vatIncluded}
+                          onChange={(e) =>
+                            setShippingAddressData({
+                              ...shippingAddressData,
+                              vatIncluded: Number(e.target.value),
+                            })
+                          }
+                        />
+                      </div>
+
+                      <div className="flex items-center">
+                        <label className="w-56 font-medium text-gray-500">
+                          Discount Amount:
+                        </label>
+                        <input
+                          className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500"
+                          type="number"
+                          required
+                          placeholder="Enter Discount Amount"
+                          value={shippingAddressData.discountAmount}
+                          onChange={(e) =>
+                            setShippingAddressData({
+                              ...shippingAddressData,
+                              discountAmount: Number(e.target.value),
+                            })
+                          }
+                        />
+                      </div>
+
+                      <div className="flex items-center">
+                        <label className="w-56 font-medium text-gray-500">
+                          Total Amount:
+                        </label>
+                        <input
+                          className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500"
+                          type="number"
+                          placeholder="Enter Total Amount"
+                          value={shippingAddressData.totalAmount}
+                          onChange={(e) =>
+                            setShippingAddressData({
+                              ...shippingAddressData,
+                              totalAmount: Number(e.target.value),
+                            })
+                          }
+                        />
+                      </div>
+
+                      <div className="flex items-center">
+                        <label className="w-56 font-medium text-gray-500">
+                          Total Pay:
+                        </label>
+                        <input
+                          className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500"
+                          type="number"
+                          placeholder="Enter Total Pay"
+                          value={shippingAddressData.totalPay}
+                          onChange={(e) =>
+                            setShippingAddressData({
+                              ...shippingAddressData,
+                              totalPay: Number(e.target.value),
+                            })
+                          }
+                        />
+                      </div>
+                      <div className="flex items-center">
+                        <label className="w-56 font-medium text-gray-500">
+                          Due:
+                        </label>
+                        <input
+                          className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500"
+                          type="number"
+                          placeholder="Enter Due"
+                          value={shippingAddressData.due}
+                          onChange={(e) =>
+                            setShippingAddressData({
+                              ...shippingAddressData,
+                              due: Number(e.target.value),
+                            })
+                          }
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="px-6 mt-2">
+                  <h3 className="font-semibold mb-2 text-lg text-gray-600">
+                    Shipping Address:
+                  </h3>
+
+                  <div className="border p-3">
+                    <div className="flex items-center">
+                      <label
+                        className="w-56 font-medium text-gray-500"
+                        htmlFor="name"
+                      >
+                        Name:
+                      </label>
+                      <input
+                        className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
+                        type="text"
+                        id="name"
+                        required
+                        placeholder="Enter Name"
+                        value={shippingAddressData.shippingAddress.fullName}
+                        onChange={(e) =>
+                          setShippingAddressData({
+                            ...shippingAddressData,
+                            shippingAddress: {
+                              ...shippingAddressData.shippingAddress,
+                              fullName: e.target.value,
+                            },
+                          })
+                        }
+                      />
+                    </div>
+
+                    <div className="flex items-center">
+                      <label
+                        className="w-56 font-medium text-gray-500"
+                        htmlFor="phone"
+                      >
+                        Phone number:
+                      </label>
+                      <input
+                        className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
+                        id="phone"
+                        type="number"
+                        placeholder="Enter Phone"
+                        required
+                        value={shippingAddressData.shippingAddress.phone}
+                        onChange={(e) =>
+                          setShippingAddressData({
+                            ...shippingAddressData,
+                            shippingAddress: {
+                              ...shippingAddressData.shippingAddress,
+                              phone: e.target.value,
+                            },
+                          })
+                        }
+                      />
+                    </div>
+
+                    <div className="flex items-center">
+                      <label
+                        className="w-56 font-medium text-gray-500"
+                        htmlFor="street"
+                      >
+                        Street:
+                      </label>
+                      <input
+                        className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
+                        id="street"
+                        type="text"
+                        placeholder="Input Here"
+                        required
+                        value={shippingAddressData.shippingAddress.street}
+                        onChange={(e) =>
+                          setShippingAddressData({
+                            ...shippingAddressData,
+                            shippingAddress: {
+                              ...shippingAddressData.shippingAddress,
+                              street: e.target.value,
+                            },
+                          })
+                        }
+                      />
+                    </div>
+
+                    <div className="flex items-center">
+                      <label
+                        className="w-56 font-medium text-gray-500"
+                        htmlFor="city"
+                      >
+                        City:
+                      </label>
+                      <input
+                        className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
+                        type="text"
+                        id="city"
+                        placeholder="Enter City"
+                        required
+                        value={shippingAddressData.shippingAddress.city}
+                        onChange={(e) =>
+                          setShippingAddressData({
+                            ...shippingAddressData,
+                            shippingAddress: {
+                              ...shippingAddressData.shippingAddress,
+                              city: e.target.value,
+                            },
+                          })
+                        }
+                      />
+                    </div>
+
+                    <div className="flex items-center">
+                      <label
+                        className="w-56 font-medium text-gray-500"
+                        htmlFor="country"
+                      >
+                        Country:
+                      </label>
+                      <input
+                        className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
+                        type="text"
+                        id="country"
+                        required
+                        placeholder="Enter Country"
+                        value={shippingAddressData.shippingAddress.country}
+                        onChange={(e) =>
+                          setShippingAddressData({
+                            ...shippingAddressData,
+                            shippingAddress: {
+                              ...shippingAddressData.shippingAddress,
+                              country: e.target.value,
+                            },
+                          })
+                        }
+                      />
+                    </div>
+
+                    <div className="flex items-center">
+                      <label
+                        className="w-56 font-medium text-gray-500"
+                        htmlFor="postalCode"
+                      >
+                        Postal Code:
+                      </label>
+                      <input
+                        className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
+                        id="postalCode"
+                        type="text"
+                        placeholder="Enter Postal Code"
+                        value={shippingAddressData.shippingAddress.postalCode}
+                        onChange={(e) =>
+                          setShippingAddressData({
+                            ...shippingAddressData,
+                            shippingAddress: {
+                              ...shippingAddressData.shippingAddress,
+                              postalCode: e.target.value,
+                            },
+                          })
+                        }
+                      />
+                    </div>
+
+                    <div className="flex items-center">
+                      <label
+                        className="w-56 font-medium text-gray-500"
+                        htmlFor="details"
+                      >
+                        Details:
+                      </label>
+                      <input
+                        className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
+                        type="text"
+                        id="details"
+                        placeholder="Enter Any Info"
+                        value={shippingAddressData.shippingAddress.details}
+                        onChange={(e) =>
+                          setShippingAddressData({
+                            ...shippingAddressData,
+                            shippingAddress: {
+                              ...shippingAddressData.shippingAddress,
+                              details: e.target.value,
+                            },
+                          })
+                        }
+                      />
+                    </div>
+
+                    <div className="flex items-center">
+                      <label
+                        className="w-56 font-medium text-gray-500"
+                        htmlFor="remark"
+                      >
+                        Remark:
+                      </label>
+
+                      <textarea
+                        name="note"
+                        className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1 box-border outline-none"
+                        id="remark"
+                        placeholder="Enter Remarks"
+                        value={shippingAddressData.remark}
+                        onChange={(e) =>
+                          setShippingAddressData({
+                            ...shippingAddressData,
+                            remark: e.target.value,
+                          })
+                        }
+                      ></textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button
+                type="submit"
+                className="bg-secondary py-1 px-4 rounded-md text-white translate-x-6 -translate-y-6"
+              >
+                Update Details
+              </button>
+            </form>
 
             <div className="grid grid-cols-3 gap-6">
               <div>
@@ -340,287 +854,81 @@ const OrderUpdate = ({ params }: any) => {
                   </div>
                 </div>
               </div>
-
-              <div className="px-6">
-                <h3 className="font-semibold mb-2 text-lg text-gray-600">
-                  Shipping Address:
-                </h3>
-
-                <form
-                  onSubmit={(e) => handleShippingUpdate(e)}
-                  className="border p-3"
-                >
-                  <div className="flex items-center">
-                    <label
-                      className="w-56 font-medium text-gray-500"
-                      htmlFor="name"
-                    >
-                      Name:
-                    </label>
-                    <input
-                      className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
-                      type="text"
-                      id="name"
-                      required
-                      placeholder="Enter Name"
-                      value={shippingAddressData.shippingAddress.fullName}
-                      onChange={(e) =>
-                        setShippingAddressData({
-                          ...shippingAddressData,
-                          shippingAddress: {
-                            ...shippingAddressData.shippingAddress,
-                            fullName: e.target.value,
-                          },
-                        })
-                      }
-                    />
-                  </div>
-
-                  <div className="flex items-center">
-                    <label
-                      className="w-56 font-medium text-gray-500"
-                      htmlFor="phone"
-                    >
-                      Phone number:
-                    </label>
-                    <input
-                      className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
-                      id="phone"
-                      type="number"
-                      placeholder="Enter Phone"
-                      required
-                      value={shippingAddressData.shippingAddress.phone}
-                      onChange={(e) =>
-                        setShippingAddressData({
-                          ...shippingAddressData,
-                          shippingAddress: {
-                            ...shippingAddressData.shippingAddress,
-                            phone: e.target.value,
-                          },
-                        })
-                      }
-                    />
-                  </div>
-
-                  <div className="flex items-center">
-                    <label
-                      className="w-56 font-medium text-gray-500"
-                      htmlFor="street"
-                    >
-                      Street:
-                    </label>
-                    <input
-                      className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
-                      id="street"
-                      type="text"
-                      placeholder="Input Here"
-                      required
-                      value={shippingAddressData.shippingAddress.street}
-                      onChange={(e) =>
-                        setShippingAddressData({
-                          ...shippingAddressData,
-                          shippingAddress: {
-                            ...shippingAddressData.shippingAddress,
-                            street: e.target.value,
-                          },
-                        })
-                      }
-                    />
-                  </div>
-
-                  <div className="flex items-center">
-                    <label
-                      className="w-56 font-medium text-gray-500"
-                      htmlFor="city"
-                    >
-                      City:
-                    </label>
-                    <input
-                      className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
-                      type="text"
-                      id="city"
-                      placeholder="Enter City"
-                      required
-                      value={shippingAddressData.shippingAddress.city}
-                      onChange={(e) =>
-                        setShippingAddressData({
-                          ...shippingAddressData,
-                          shippingAddress: {
-                            ...shippingAddressData.shippingAddress,
-                            city: e.target.value,
-                          },
-                        })
-                      }
-                    />
-                  </div>
-
-                  <div className="flex items-center">
-                    <label
-                      className="w-56 font-medium text-gray-500"
-                      htmlFor="country"
-                    >
-                      Country:
-                    </label>
-                    <input
-                      className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
-                      type="text"
-                      id="country"
-                      required
-                      placeholder="Enter Country"
-                      value={shippingAddressData.shippingAddress.country}
-                      onChange={(e) =>
-                        setShippingAddressData({
-                          ...shippingAddressData,
-                          shippingAddress: {
-                            ...shippingAddressData.shippingAddress,
-                            country: e.target.value,
-                          },
-                        })
-                      }
-                    />
-                  </div>
-
-                  <div className="flex items-center">
-                    <label
-                      className="w-56 font-medium text-gray-500"
-                      htmlFor="postalCode"
-                    >
-                      Postal Code:
-                    </label>
-                    <input
-                      className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
-                      id="postalCode"
-                      type="text"
-                      placeholder="Enter Postal Code"
-                      value={shippingAddressData.shippingAddress.postalCode}
-                      onChange={(e) =>
-                        setShippingAddressData({
-                          ...shippingAddressData,
-                          shippingAddress: {
-                            ...shippingAddressData.shippingAddress,
-                            postalCode: e.target.value,
-                          },
-                        })
-                      }
-                    />
-                  </div>
-
-                  <div className="flex items-center">
-                    <label
-                      className="w-56 font-medium text-gray-500"
-                      htmlFor="details"
-                    >
-                      Details:
-                    </label>
-                    <input
-                      className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
-                      type="text"
-                      id="details"
-                      placeholder="Enter Any Info"
-                      value={shippingAddressData.shippingAddress.details}
-                      onChange={(e) =>
-                        setShippingAddressData({
-                          ...shippingAddressData,
-                          shippingAddress: {
-                            ...shippingAddressData.shippingAddress,
-                            details: e.target.value,
-                          },
-                        })
-                      }
-                    />
-                  </div>
-
-                  <div className="flex items-center">
-                    <label
-                      className="w-56 font-medium text-gray-500"
-                      htmlFor="remark"
-                    >
-                      Remark:
-                    </label>
-
-                    <textarea
-                      name="note"
-                      className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1 box-border outline-none"
-                      id="remark"
-                      placeholder="Enter Remarks"
-                      value={shippingAddressData.remark}
-                      onChange={(e) =>
-                        setShippingAddressData({
-                          ...shippingAddressData,
-                          remark: e.target.value,
-                        })
-                      }
-                    ></textarea>
-                  </div>
-                  <div className="flex justify-end mt-3">
-                    <button
-                      type="submit"
-                      className="bg-secondary py-1 px-4 rounded-md text-white"
-                    >
-                      Update
-                    </button>
-                  </div>
-                </form>
-              </div>
-
               <div className="px-6">
                 <p className="font-semibold mb-2 text-lg text-gray-600">
                   History:
                 </p>
                 <div className="border p-4">
-                  <ol className="relative border-l border-gray-200 ml-2">
-                    {visibleHistory?.map((history: any) => (
-                      <li key={history._id} className="mb-8 ml-6 text-sm">
-                        <span className="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -left-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
-                          <svg
-                            aria-hidden="true"
-                            className="w-3 h-3 text-blue-800"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              fill-rule="evenodd"
-                              d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
-                              clip-rule="evenodd"
-                            ></path>
-                          </svg>
-                        </span>
-                        <div className="flex items-center gap-1 mb-1">
-                          <Image
-                            alt="user image"
-                            src={history.updatedBy.imageUrl}
-                            width={50}
-                            height={50}
-                            className="rounded-full w-6 h-6"
-                          />
-                          <h3 className="text-sm font-semibold text-gray-900">
-                            {history.updatedBy.fullName}
-                          </h3>
-                        </div>
+                  {(visibleHistory as any)?.length > 0 ? (
+                    <>
+                      <ol className="relative border-l border-gray-200 ml-2">
+                        {visibleHistory?.map((history: any) => (
+                          <li key={history._id} className="mb-8 ml-6 text-sm">
+                            <span className="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -left-3 ring-8 ring-white dark:ring-gray-900 dark:bg-blue-900">
+                              <svg
+                                aria-hidden="true"
+                                className="w-3 h-3 text-blue-800"
+                                fill="currentColor"
+                                viewBox="0 0 20 20"
+                                xmlns="http://www.w3.org/2000/svg"
+                              >
+                                <path
+                                  fill-rule="evenodd"
+                                  d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                                  clip-rule="evenodd"
+                                ></path>
+                              </svg>
+                            </span>
+                            <div className="flex items-center gap-1 mb-1">
+                              <Image
+                                alt="user image"
+                                src={history.updatedBy.imageUrl}
+                                width={50}
+                                height={50}
+                                className="rounded-full w-6 h-6"
+                              />
+                              <h3 className="text-sm font-semibold text-gray-900">
+                                {history.updatedBy.fullName}
+                              </h3>
+                            </div>
 
-                        <time className="block mb-2 text-sm font-normal leading-none">
-                          <span className="text-gray-600 font-semibold">
-                            Updated at:{" "}
-                          </span>
-                          <span className="text-gray-400">
-                            {formatDate(history.updatedAt)}
-                          </span>
-                        </time>
-                      </li>
-                    ))}
-                  </ol>
+                            <time className="block mb-2 text-sm font-normal leading-none">
+                              <span className="text-gray-600 font-semibold">
+                                Updated at:{" "}
+                              </span>
+                              <span className="text-gray-400">
+                                {formatDate(history.updatedAt)}
+                              </span>
+                            </time>
+                          </li>
+                        ))}
+                      </ol>
+                    </>
+                  ) : (
+                    <p className="text-gray-600 font-medium">
+                      No history available
+                    </p>
+                  )}
                   {(orderData as any)?.data?.updateHistory?.length > 5 &&
-                    !showAll && (
-                      <div className="flex justify-center">
-                        <button
-                          onClick={() => setShowAll(true)}
-                          className="text-secondary font-semibold cursor-pointer text-sm"
-                        >
-                          show more
-                        </button>
-                      </div>
-                    )}
+                  !showAll ? (
+                    <div className="flex justify-center">
+                      <button
+                        onClick={() => setShowAll(true)}
+                        className="text-secondary font-semibold cursor-pointer text-xs"
+                      >
+                        SHOW MORE
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex justify-center">
+                      <button
+                        onClick={() => setShowAll(false)}
+                        className="text-secondary font-semibold cursor-pointer text-xs"
+                      >
+                        SHOW LESS
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -669,10 +977,6 @@ const OrderUpdate = ({ params }: any) => {
                 </div>
               ))}
             </div>
-            {/* <div className="flex gap-x-2">
-              <PrimaryButton name="Update" />
-              <OutlineButton name="Cancel" />
-            </div> */}
           </div>
           <OrderMeasurement
             orderData={orderData}
@@ -682,6 +986,110 @@ const OrderUpdate = ({ params }: any) => {
           />
         </>
       )}
+
+      {/* invoice model  */}
+      <>
+        <input type="checkbox" id="invoice-model" className="modal-toggle" />
+        <div className="modal overflow-y-scroll lg:overflow-auto">
+          <div
+            // ref={invoiceContentRef}
+            className="modal-box bg-white max-h-min min-w-max mt-[29rem] lg:mt-0"
+          >
+            <div className="bg-gray-200 py-2 flex justify-between px-4 items-center">
+              <Image
+                alt="Nazaara logo"
+                src={"/images/nazaara-logo.png"}
+                width={120}
+                height={30}
+              />
+              <label htmlFor="invoice-model" className="btn btn-sm btn-circle">
+                ✕
+              </label>
+            </div>
+            <div className="flex flex-col gap-y-4">
+              <div className="flex items-center justify-between mt-2 border-b border-gray-300 pb-1 text-gray-600 font-medium">
+                <p>Transaction ID: {orderData?.data?.transactionId}</p>
+                <p>
+                  Order Date:{" "}
+                  {formatYearMonthDay(orderData?.data?.createdAt as Date)}
+                </p>
+              </div>
+              <div className="flex flex-col gap-1 text-gray-600">
+                <span>Client Name: {orderData?.data?.user?.fullName}</span>
+                {orderData?.data?.user?.phone && (
+                  <span>Contact: {orderData?.data?.user?.phone}</span>
+                )}
+                {(orderData?.data?.user?.street ||
+                  orderData?.data?.user?.city) && (
+                  <span>
+                    Shipping Address: {orderData?.data?.user?.street},
+                    {orderData?.data?.user?.city},{" "}
+                    {orderData?.data?.user?.country}
+                  </span>
+                )}
+              </div>
+              <table className="table bg-basic border">
+                {/* head */}
+                <thead className="">
+                  <tr>
+                    <th>SL</th>
+                    <th>PRODUCT</th>
+                    <th>RATE</th>
+                    <th>QUANTITY</th>
+                    <th>AMOUNT</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <>
+                    {orderData?.data.product.map(
+                      (product: any, index: number) => {
+                        return (
+                          <tr key={product._id}>
+                            <td>{index + 1}</td>
+                            <td>{product.sku}</td>
+                            {product?.offeredPrice ? (
+                              <td>{product?.offeredPrice}/-</td>
+                            ) : (
+                              <td>{product?.salePrice}/-</td>
+                            )}
+                            <td>{product.quantity}</td>
+                            {product?.offeredPrice ? (
+                              <td>
+                                {product?.offeredPrice * product.quantity}/-
+                              </td>
+                            ) : (
+                              <td>{product?.salePrice * product.quantity}/-</td>
+                            )}
+                          </tr>
+                        );
+                      }
+                    )}
+                  </>
+                </tbody>
+              </table>
+              <div className="flex justify-between text-gray-600">
+                <div className="flex flex-col gap-1">
+                  <p>Payment Method: {orderData?.data?.paymentMethod}</p>
+                  <p>Sub Total: {orderData?.data?.subTotal}/-</p>
+                  <p>Vat Included: {orderData?.data?.vatIncluded}/-</p>
+                  <p>Shipping Cost: {orderData?.data?.shippingCharge}/-</p>
+                  <p>Discount: {orderData?.data?.discountAmount}/-</p>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <p>Total Amount: {orderData?.data?.totalAmount}/-</p>
+                  <p>Total Pay: {orderData?.data?.totalPay}/-</p>
+                  <p>Due: {orderData?.data?.due}/-</p>
+                </div>
+              </div>
+              <div className="modal-action">
+                <label className="flex gap-2" htmlFor="invoice-model">
+                  <PrimaryButton name={`Download Invoice`} />
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </>
     </div>
   );
 };

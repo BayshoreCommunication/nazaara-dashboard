@@ -136,32 +136,34 @@ const CustomerViewProfileDrawer: React.FC<IDrawer> = ({
                   <tbody>
                     {(orderData as any)?.data?.length > 0 ? (
                       <>
-                        {orderData?.data.map((data: any, index) => (
-                          <tr key={data._id}>
-                            <th>{index + 1}</th>
-                            <td>{formatYearMonthDay(data.createdAt)}</td>
-                            <td>{data.transactionId}</td>
-                            <td>{data.totalAmount}</td>
-                            <td>{data.totalPay}</td>
-                            <td>{data.due}</td>
-                            <td className="flex flex-wrap gap-1">
-                              {data.product.map((data: any) => (
-                                <span
-                                  className="bg-gray-200 px-1 text-xs"
-                                  key={data._id}
-                                >
-                                  {data.sku}
-                                </span>
-                              ))}
-                            </td>
-                            <td>{data.deliveryStatus}</td>
-                            <td>
-                              <Link href={`orders/${data._id}`}>
-                                <IoEyeSharp color="blue" size={18} />
-                              </Link>
-                            </td>
-                          </tr>
-                        ))}
+                        {(orderData as any)?.data?.map(
+                          (data: any, index: number) => (
+                            <tr key={data._id}>
+                              <th>{index + 1}</th>
+                              <td>{formatYearMonthDay(data.createdAt)}</td>
+                              <td>{data.transactionId}</td>
+                              <td>{data.totalAmount}</td>
+                              <td>{data.totalPay}</td>
+                              <td>{data.due}</td>
+                              <td className="flex flex-wrap gap-1">
+                                {data.product.map((data: any) => (
+                                  <span
+                                    className="bg-gray-200 px-1 text-xs"
+                                    key={data._id}
+                                  >
+                                    {data.sku}
+                                  </span>
+                                ))}
+                              </td>
+                              <td>{data.deliveryStatus}</td>
+                              <td>
+                                <Link href={`orders/${data._id}`}>
+                                  <IoEyeSharp color="blue" size={18} />
+                                </Link>
+                              </td>
+                            </tr>
+                          )
+                        )}
                       </>
                     ) : (
                       <p className="py-6">No Order Found!</p>

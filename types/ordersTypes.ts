@@ -16,7 +16,7 @@ export interface IOrderData {
   transactionId: string;
   paymentMethod: string;
   shippingMethod: string;
-  subTotal: string;
+  subTotal: number;
   vatIncluded: number;
   coupon?: any;
   shippingCharge: number;

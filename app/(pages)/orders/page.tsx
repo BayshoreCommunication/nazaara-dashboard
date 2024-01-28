@@ -18,33 +18,32 @@ const Orders = () => {
   const [searchText, setSearchText] = useState("");
   const [searchData, setSearchData] = useState([]);
 
-  const fuseOptions = {
-    // isCaseSensitive: false,
-    // includeScore: false,
-    // shouldSort: true,
-    // includeMatches: false,
-    // findAllMatches: false,
-    // minMatchCharLength: 1,
-    // location: 0,
-    //threshold: 0.6, // 0.6 means it show similar search item
-    threshold: 0.1, // 0.1 means it match with exact string
-    // distance: 100,
-    // useExtendedSearch: false,
-    // ignoreLocation: false,
-    // ignoreFieldNorm: false,
-    // fieldNormWeight: 1,
-    keys: [
-      "transactionId",
-      "user.fullName",
-      "user.phone",
-      "user.email",
-      "deliveryStatus",
-      "paymentStatus",
-      "paymentMethod",
-    ],
-  };
-
   useEffect(() => {
+    const fuseOptions = {
+      // isCaseSensitive: false,
+      // includeScore: false,
+      // shouldSort: true,
+      // includeMatches: false,
+      // findAllMatches: false,
+      // minMatchCharLength: 1,
+      // location: 0,
+      //threshold: 0.6, // 0.6 means it show similar search item
+      threshold: 0.1, // 0.1 means it match with exact string
+      // distance: 100,
+      // useExtendedSearch: false,
+      // ignoreLocation: false,
+      // ignoreFieldNorm: false,
+      // fieldNormWeight: 1,
+      keys: [
+        "transactionId",
+        "user.fullName",
+        "user.phone",
+        "user.email",
+        "deliveryStatus",
+        "paymentStatus",
+        "paymentMethod",
+      ],
+    };
     const fuse = new Fuse(data?.data as any, fuseOptions);
     if (searchText) {
       const currentSearchData = fuse.search(searchText);
