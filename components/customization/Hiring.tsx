@@ -104,17 +104,6 @@ const Category: FC = () => {
 
   const [selectedValue, setSelectedValue] = useState<string>("");
 
-  // const handleEditCategory = (id: string) => {
-  //   const filtered = hiringsData?.data?.find((item) => item._id === id);
-
-  //   setFilteredData(filtered);
-  //   setSelectedValue(filtered?.status || "");
-  //   setIsOpen(true);
-
-  //   // Set the Quill editor content with the description of the selected category
-  //   setText(filtered?.description || "");
-  // };
-
   const handleEditCategory = (id: string) => {
     const filtered = hiringsData?.data?.find((item) => item._id === id);
 
@@ -134,37 +123,6 @@ const Category: FC = () => {
   const [updateCategory] = useUpdateHiringCustomizationMutation();
   const nameRef = useRef<HTMLInputElement>(null);
   const statusRef = useRef<HTMLSelectElement>(null);
-
-  // const handleUpdateCategorySubmit = async (event: React.FormEvent) => {
-  //   event.preventDefault();
-
-  //   if (nameRef.current && statusRef.current) {
-  //     const formData: any = {
-  //       title: nameRef.current.value,
-  //       description: text,
-  //       status: statusRef.current.value,
-  //     };
-  //     const { title, description, status } = formData;
-
-  //     try {
-  //       const updatedData = { title, description, status };
-  //       const updatedCategory = await updateCategory({
-  //         // id: filteredData[0]?._id,
-  //         id: filteredData?._id,
-  //         payload: updatedData,
-  //       }).unwrap();
-
-  //       if (updatedCategory) {
-  //         toast.success("Hiring updated!", { duration: 3000 });
-  //         refetch();
-  //         setIsOpen(false);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error updating hiring:", error);
-  //       toast.error("Failed to update hiring.");
-  //     }
-  //   }
-  // };
 
   const handleUpdateCategorySubmit = async (event: React.FormEvent) => {
     event.preventDefault();

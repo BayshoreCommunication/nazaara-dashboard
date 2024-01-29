@@ -20,6 +20,9 @@ const DeliveryPartner = () => {
   const imageUrl = image?.data.deliveryPartnerImages;
 
   const [images, setImages] = useState<{ data_url: string }[]>([]);
+
+  console.log("images", images);
+
   const maxNumber = 20;
 
   const onChangeHandle = (imageList: any) => {
@@ -46,7 +49,10 @@ const DeliveryPartner = () => {
         if (image.file) {
           const formData = new FormData();
           formData.append("file", image.file);
-          formData.append("upload_preset", process.env.OTHER_PRESET as string);
+          formData.append(
+            "upload_preset",
+            process.env.CLOUDINARY_PRESET_UPLOAD as string
+          );
           const response = await axios.post(
             process.env.CLOUDINARY_URL as string,
             formData
@@ -57,6 +63,8 @@ const DeliveryPartner = () => {
         }
       })
     );
+
+    console.log("images upload", imagesUpload);
 
     try {
       const updatedDeliveryPartner: any = await updateCustomization({

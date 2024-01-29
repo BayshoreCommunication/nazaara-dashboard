@@ -5,13 +5,6 @@ import React from "react";
 import { MdDelete } from "react-icons/md";
 import { TbEdit } from "react-icons/tb";
 
-// export interface Category {
-//   _id: string;
-//   title: string;
-//   description: string;
-//   status: string;
-// }
-
 interface CategoryListProps {
   hirings: IHiringData[];
   handleEditCategory: (id: string) => void;
@@ -44,14 +37,16 @@ const HiringList: React.FC<CategoryListProps> = ({
                   <td>{index + 1}</td>
                   <td>{data.title}</td>
                   <td>{truncateDescription(description, 200)}</td>
-                  <td
-                    className={`font-medium ${
-                      data.status === "published"
-                        ? "text-green-500"
-                        : "text-red-500"
-                    }`}
-                  >
-                    {data.status}
+                  <td>
+                    <span
+                      className={`text-white px-2 rounded-md text-sm capitalize py-[2px] font-base ${
+                        data.status === "published"
+                          ? "bg-green-500"
+                          : "bg-red-500"
+                      }`}
+                    >
+                      {data.status}
+                    </span>
                   </td>
                   <td>
                     <div className="flex">
