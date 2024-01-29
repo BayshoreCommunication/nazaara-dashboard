@@ -1,6 +1,7 @@
 import DonutChart from "@/components/analytics/DonutChart";
 import MostViewedProduct from "@/components/analytics/MostViewedProduct";
 import RecentProducts from "@/components/analytics/RecentProducts";
+import StockOut from "@/components/analytics/StockOut";
 import TopSellingProduct from "@/components/analytics/TopSellingProduct";
 import { TbBrandGoogleAnalytics } from "react-icons/tb";
 
@@ -22,16 +23,11 @@ const page = () => {
           <TopSellingProduct />
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-6">
-        <div className="bg-white">
-          <div className="flex items-center justify-center h-full">
-            <MostViewedProduct />
-          </div>
-        </div>
-        <div className="bg-white">
-          <TopSellingProduct />
-        </div>
+
+      <div className="bg-white">
+        <StockOut />
       </div>
+
       <div className="bg-white">
         <RecentProducts />
       </div>

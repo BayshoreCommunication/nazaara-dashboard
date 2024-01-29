@@ -7,7 +7,7 @@ import Loader from "../Loader";
 
 const RecentProducts = () => {
   const { data: productsData, isLoading: productsLoading } =
-    useGetProductsQuery({ page: 1, limit: 5 });
+    useGetProductsQuery({ page: 1, limit: 8 });
 
   return productsLoading ? (
     <Loader height="h-[85vh]" />
@@ -31,8 +31,9 @@ const RecentProducts = () => {
               <th>Image</th>
               <th>Product Name</th>
               <th>Category</th>
-              <th>Product Code</th>
-              <th>Price</th>
+              <th>Sub Category</th>
+              <th>Sale Price</th>
+              <th>Regular Price</th>
               <th>Stock</th>
               <th>Action</th>
             </tr>
@@ -42,41 +43,28 @@ const RecentProducts = () => {
               <tr key={index}>
                 <td>
                   <Image
-                    src="/images/container.png"
-                    alt="nazaara main logo"
-                    width={248}
-                    height={248}
-                    className="w-[70px] h-[70px]"
+                    src={elem.variant[0].imageUrl[0]}
+                    alt=""
+                    width={60}
+                    height={60}
                   />
                 </td>
-                <td>{elem.productName}</td>
+                <td>{elem.productName.substr(0, 15)}</td>
                 <td>{elem.category}</td>
                 <td>{elem.subCategory}</td>
                 <td>{elem.salePrice}</td>
+                <td>{elem.regularPrice}</td>
                 <td>{elem.stock}</td>
                 <td>
                   <div>
+                    <span className="text-[#3b7ffd]"> </span>
                     <Link
-                      href={{
-                        pathname: "/products/image-upload",
-                        query: { id: `${elem._id}` },
-                      }}
-                      className="text-[#5B94FC]"
-                    >
-                      Image
-                    </Link>
-                    <span className="text-[#3b7ffd]"> | </span>
-                    <Link
-                      href={{
-                        pathname: "/products/update-product",
-                        query: { id: `${elem._id}` },
-                      }}
+                      href={`/products/update-product/${elem._id}`}
                       className="text-[#5B94FC]"
                     >
                       Edit
                     </Link>
                   </div>
-                  <button className="text-[#5B94FC]">Quick View</button>
                 </td>
               </tr>
             ))}
