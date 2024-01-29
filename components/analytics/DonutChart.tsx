@@ -19,7 +19,7 @@ const DonutChart: React.FC = () => {
   let onDelivery = 0;
   let onDelivered = 0;
   if (result) {
-    result.product.map((el, i) => {
+    result.product.map((el) => {
       if (el.stock > 0) {
         stockIn++;
       }
@@ -91,7 +91,15 @@ const DonutChart: React.FC = () => {
     };
 
     fetchApexCharts();
-  }, [result, orderResult]);
+  }, [
+    result,
+    orderResult,
+    stockIn,
+    stockOut,
+    onDelivery,
+    draftCount,
+    onDelivered,
+  ]);
 
   return <div id="chart" ref={chartRef}></div>;
 };

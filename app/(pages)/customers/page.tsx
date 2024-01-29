@@ -22,7 +22,7 @@ const fuseOptions = {
   // ignoreLocation: false,
   // ignoreFieldNorm: false,
   // fieldNormWeight: 1,
-  keys: ["email", "phone"],
+  keys: ["email", "phone", "fullName", "userType"],
 };
 
 const Customers = () => {
@@ -39,6 +39,8 @@ const Customers = () => {
   };
 
   const { data: customersData, isLoading } = useGetUsersQuery();
+
+  // console.log("customers data", customersData);
 
   useEffect(() => {
     const fuse = new Fuse(customersData?.data as any, fuseOptions);
@@ -57,6 +59,9 @@ const Customers = () => {
           <AiOutlineShoppingCart size={18} color="gray" />
           <span className="font-medium text-lg">All Customer</span>
         </div>
+        <small className="text-gray-600 font-medium">
+          *search through email, phone, fullName, userType*
+        </small>
         {/* search user  */}
         <div>
           <label

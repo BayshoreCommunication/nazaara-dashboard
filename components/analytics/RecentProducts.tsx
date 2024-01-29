@@ -49,7 +49,7 @@ const RecentProducts = () => {
                     height={60}
                   />
                 </td>
-                <td>{elem.productName.substr(0, 15)}</td>
+                <td>{elem.productName.slice(0, 15)}</td>
                 <td>{elem.category}</td>
                 <td>{elem.subCategory}</td>
                 <td>{elem.salePrice}</td>

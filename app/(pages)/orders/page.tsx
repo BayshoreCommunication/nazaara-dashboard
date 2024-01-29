@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import OrderMeasurement from "@/components/OrderMeasurement";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import Link from "next/link";
 import { useGetOrdersQuery } from "@/services/orderApi";
@@ -67,6 +66,10 @@ const Orders = () => {
             <AiOutlineShoppingCart size={18} color="gray" />
             <span className="font-medium text-lg">Orders</span>
           </div>
+          <small className="text-gray-600">
+            *search through transactionId, fullName, phone, email,
+            deliveryStatus, paymentStatus, paymentMethod*
+          </small>
           {/*********** search user input start ************/}
           <div className="flex items-center gap-1">
             <label

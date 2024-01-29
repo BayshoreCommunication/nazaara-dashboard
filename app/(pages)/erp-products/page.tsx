@@ -9,16 +9,17 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import axios from "axios";
+import Fuse from "fuse.js";
 
 const ErpProducts = () => {
   const { data: productsErpId } = useGetProductErpIdQuery();
+  const [erpData, setErpData] = useState<TErpData>();
 
   //pagination
   const pageSize = 10;
   const [currentPage, setCurrentPage] = useState<number>(1);
   const url = `https://erp.anzaralifestyle.com/api/product/Details/?format=json&page=${currentPage}&page_size=${pageSize}`;
 
-  const [erpData, setErpData] = useState<TErpData>();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -36,8 +37,6 @@ const ErpProducts = () => {
 
     fetchData();
   }, [url]);
-
-  // console.log("erp data", erpData);
 
   //pagination
   const totalPages = Math.ceil(erpData?.count! / pageSize);
