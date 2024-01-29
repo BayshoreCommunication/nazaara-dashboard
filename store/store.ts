@@ -7,6 +7,7 @@ import { productsApi } from "@/services/productApi";
 import { warehouseApi } from "@/services/warehouseApi";
 import { subCategoriesApi } from "@/services/subcategory";
 import { customizationApi } from "@/services/customizationApi";
+import { navAdvertisementApi } from "@/services/navAdvertisementApi";
 import { couponsApi } from "@/services/couponApi";
 import { subscribeApi } from "@/services/subscriberApi";
 import { hiringApi } from "@/services/hiringApi";
@@ -35,6 +36,7 @@ const rootReducer = combineReducers({
   [festivalsApi.reducerPath]: festivalsApi.reducer,
   [bestSellingApi.reducerPath]: bestSellingApi.reducer,
   [orderApi.reducerPath]: orderApi.reducer,
+  [navAdvertisementApi.reducerPath]: navAdvertisementApi.reducer,
   products: productSlice,
 });
 
@@ -59,7 +61,8 @@ export const setupStore = (preloadedState?: PreloadedState<RootState>) => {
         .concat(salesApi.middleware)
         .concat(festivalsApi.middleware)
         .concat(bestSellingApi.middleware)
-        .concat(orderApi.middleware),
+        .concat(orderApi.middleware)
+        .concat(navAdvertisementApi.middleware),
 
     preloadedState,
   });

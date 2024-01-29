@@ -18,6 +18,7 @@ import { TbSpeakerphone } from "react-icons/tb";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { RiAdvertisementFill } from "react-icons/ri";
 
 const Sidebar = () => {
   const datas = [
@@ -70,22 +71,16 @@ const Sidebar = () => {
       icon: <MdDiscount size={18} />,
     },
     {
-      _id: "108",
-      title: "User Contacts",
-      link: "/contacts",
-      icon: <BsChatLeftText size={18} />,
-    },
-    // {
-    //   _id: "109",
-    //   title: "Warehouse",
-    //   link: "/warehouses",
-    //   icon: <FaWarehouse size={18} />,
-    // },
-    {
       _id: "110",
       title: "Promotions",
       link: "/promotions",
       icon: <TbSpeakerphone size={18} />,
+    },
+    {
+      _id: "108",
+      title: "User Contacts",
+      link: "/contacts",
+      icon: <BsChatLeftText size={18} />,
     },
     {
       _id: "111",
@@ -116,6 +111,12 @@ const Sidebar = () => {
       title: "Subscriber",
       link: "/subscribers",
       icon: <MdUnsubscribe size={18} />,
+    },
+    {
+      _id: "120",
+      title: "Nav Advertisement",
+      link: "/nav-advertisement",
+      icon: <RiAdvertisementFill />,
     },
     {
       _id: "116",
@@ -169,31 +170,3 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
-
-{
-  /* <div className="flex-1 h-[93.5vh] fixed top-0 overflow-auto">
-      <div className="pl-6 pt-6 flex flex-col gap-2">
-        {datas.map((data, index) => (
-          <div key={index}>
-            <Link
-              href={data?.link}
-              className={`flex gap-4 items-center pl-3 py-2 rounded-lg ${
-                isActiveLink(data?.link)
-                  ? "bg-secondary text-basic"
-                  : "bg-basic"
-              }`}
-            >
-              <p
-                className={`${
-                  isActiveLink(data?.link) ? "text-white" : "text-black"
-                }`}
-              >
-                {data?.icon}
-              </p>
-              <p className="font-medium">{data?.title}</p>
-            </Link>
-          </div>
-        ))}
-      </div>
-    </div> */
-}

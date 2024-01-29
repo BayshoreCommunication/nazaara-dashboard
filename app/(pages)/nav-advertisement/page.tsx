@@ -1,15 +1,15 @@
 "use client";
-import SubCategoryForm from "@/components/subCategory/SubCategoryForm";
-import SubCategoryList from "@/components/subCategory/SubCategoryList";
+import NavAdvertisementForm from "@/components/navAdvertisement/NavAdvertisementForm";
+import NavAdvertisementList from "@/components/navAdvertisement/NavAdvertisementList";
 import { cloudinaryImageUpload } from "@/helpers";
-import { cloudinaryImageDelete } from "@/helpers/cloudinaryImageDelete";
+import { cloudinaryImageDeleteWithUrl } from "@/helpers/cloudinaryImageDeleteWithUrl";
 import { useGetCategoriesQuery } from "@/services/categoryApi";
 import {
-  useDeleteSubCategoryMutation,
-  useGetSubCategoriesQuery,
-  useUpdateSubCategoryMutation,
-} from "@/services/subcategory";
-import { TSubCategoryData, TSubCategoryFrom } from "@/types/categoryTypes";
+  useDeleteNavAdvertisementMutation,
+  useGetNavAdvertisementsQuery,
+  useUpdateNavAdvertisementMutation,
+} from "@/services/navAdvertisementApi";
+import { TNavAdvertisement } from "@/types/navAdvertisementTypes";
 import Image from "next/image";
 import { FC, useState, FormEvent, ChangeEvent } from "react";
 import toast from "react-hot-toast";
@@ -17,27 +17,22 @@ import { RxCross2 } from "react-icons/rx";
 import Swal from "sweetalert2";
 
 const SubCategory: FC = () => {
-  const { data: categories, isLoading: categoriesLoading } =
-    useGetCategoriesQuery();
-  const {
-    data: subcategories,
-    isLoading,
-    refetch,
-  } = useGetSubCategoriesQuery();
+  const { data: categories } = useGetCategoriesQuery();
+  const { data: navAdvertisementData, isLoading } =
+    useGetNavAdvertisementsQuery();
 
   //crate category start
-  const [formData, setFormData] = useState<TSubCategoryFrom>({
-    title: "",
-    status: "",
+  const [formData, setFormData] = useState<TNavAdvertisement>({
+    imageUrl: "",
+    link: "",
     category: "",
-    featuredImage: "",
-    featuredImagePublicId: "",
+    status: "",
   });
 
   const [imageUploadLoading, setImageUploadLoading] = useState(false);
 
   //handle delete
-  const [deleteSubCategory] = useDeleteSubCategoryMutation();
+  const [deleteNavAdvertisement] = useDeleteNavAdvertisementMutation();
   const handleDeleteCategory = async (id: string) => {
     Swal.fire({
       title: "Are you sure?",
@@ -49,20 +44,20 @@ const SubCategory: FC = () => {
       confirmButtonText: "Yes, delete it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const categoryDel = await deleteSubCategory(id);
+        const categoryDel = await deleteNavAdvertisement(id);
 
-        const categoryDelData = (categoryDel as { data?: any })?.data;
-        const featuredImagePublicId =
-          categoryDelData?.data?.featuredImagePublicId;
+        // console.log("delelte dataaaa", categoryDel);
 
-        await cloudinaryImageDelete(featuredImagePublicId);
+        // const categoryDelData = (categoryDel as { data?: any })?.data;
+        // const featuredImagePublicId =
+        //   categoryDelData?.data?.featuredImagePublicId;
 
-        // await cloudinaryImageDelete(
-        //   categoryDel?.data?.data?.featuredImagePublicId
-        // );
+        await cloudinaryImageDeleteWithUrl(
+          (categoryDel as any)?.data?.data?.imageUrl
+        );
         Swal.fire("Deleted!", "Your category has been deleted.", "success");
         if (categoryDel) {
-          refetch(); // Refetch the user list after deleting a user
+          //   refetch(); // Refetch the user list after deleting a user
         }
       }
     });
@@ -72,56 +67,64 @@ const SubCategory: FC = () => {
   const [filteredData, setFilteredData] = useState([
     {
       _id: "",
-      title: "",
+      imageUrl: "",
+      link: "",
       category: "",
-      featuredImage: "",
-      featuredImagePublicId: "",
-      status: "published",
+      status: "",
     },
   ]);
 
+  console.log("filtered data", filteredData);
+
   const [selectedValue, setSelectedValue] = useState<string>("");
   const handleEditCategory = (id: string) => {
-    const filtered: any = subcategories?.data?.filter(
+    const filtered: any = navAdvertisementData?.data?.find(
       (item: any) => item._id === id
     );
 
-    // console.log("filterererere", filtered);
+    console.log("filterererere", filtered);
 
-    setFilteredData(filtered);
-    setSelectedValue(filtered[0].status);
+    setFilteredData([
+      {
+        _id: filtered._id,
+        imageUrl: filtered.imageUrl,
+        link: filtered.link,
+        category: filtered.category._id,
+        status: filtered.status,
+      },
+    ]);
+    setSelectedValue(filtered.status);
     setIsOpen(true);
   };
 
   const [isOpen, setIsOpen] = useState(true);
 
   //update category start
-  const [updateSubCategory] = useUpdateSubCategoryMutation();
+  const [updateNavAdvertisement] = useUpdateNavAdvertisementMutation();
 
-  const handleUpdateCategorySubmit = async (event: FormEvent) => {
+  const handleUpdateNavAdvertisementSubmit = async (event: FormEvent) => {
     event.preventDefault();
 
     const formData: any = {
-      title: filteredData[0]?.title,
+      link: filteredData[0]?.link,
+      imageUrl: filteredData[0]?.imageUrl,
       category: filteredData[0]?.category,
       status: selectedValue,
-      featuredImage: filteredData[0]?.featuredImage,
     };
 
-    const { title, status, category, featuredImage } = formData;
+    const { link, status, category, imageUrl } = formData;
 
     try {
-      const updatedData = { title, status, category, featuredImage };
-      const updatedSubCategory = await updateSubCategory({
+      const updatedData = { imageUrl, status, category, link };
+      const updatedNavAdvertisementData = await updateNavAdvertisement({
         id: filteredData[0]?._id,
         payload: updatedData,
       }).unwrap();
 
       // console.log("updated category", updatedSubCategory);
 
-      if (updatedSubCategory) {
-        toast.success("Category updated!", { duration: 3000 });
-        refetch(); // Refetch the categories list after updating
+      if (updatedNavAdvertisementData) {
+        toast.success("Nav-Advertisement Updated!", { duration: 3000 });
         setIsOpen(false);
       }
     } catch (error) {
@@ -144,12 +147,12 @@ const SubCategory: FC = () => {
     const file = e.target.files?.[0];
     if (file) {
       try {
-        const previousImage = filteredData[0]?.featuredImagePublicId;
+        const previousImage = filteredData[0]?.imageUrl;
         if (previousImage) {
-          await cloudinaryImageDelete(filteredData[0].featuredImagePublicId);
+          await cloudinaryImageDeleteWithUrl(previousImage);
         }
-        const { secureUrl, publicId } = await cloudinaryImageUpload(file);
-        if (secureUrl && publicId) {
+        const { secureUrl } = await cloudinaryImageUpload(file);
+        if (secureUrl) {
           setImageUploadLoading(false);
           toast.success("new image added successfully");
         }
@@ -157,8 +160,7 @@ const SubCategory: FC = () => {
         setFilteredData([
           {
             ...filteredData[0],
-            featuredImage: secureUrl,
-            featuredImagePublicId: publicId,
+            imageUrl: secureUrl,
           },
         ]);
       } catch (error) {
@@ -172,18 +174,22 @@ const SubCategory: FC = () => {
     <div className="flex gap-10 container">
       {/* show all category  */}
       <div className="flex-[6] overflow-x-auto">
-        <h1 className="text-lg font-semibold mb-2">All Sub Categories</h1>
-        <SubCategoryList
-          subCategories={subcategories?.data as TSubCategoryData[]} // convert data to TCategoryData type array
-          handleEditCategory={handleEditCategory}
-          handleDeleteCategory={handleDeleteCategory}
+        <h1 className="text-lg font-semibold mb-2">All Nav-Advertisements</h1>
+        <NavAdvertisementList
+          navAdvertisementData={
+            navAdvertisementData?.data as TNavAdvertisement[]
+          }
+          handleEditAdvertisement={handleEditCategory}
+          handleDeleteAdvertisement={handleDeleteCategory}
         />
       </div>
 
       {/* add new category  */}
       <div className="flex-[3]">
-        <h1 className="text-lg font-semibold mb-2">Add New SubCategory</h1>
-        <SubCategoryForm formData={formData} setFormData={setFormData} />
+        <h1 className="text-lg font-semibold mb-2">
+          Add New Nav-Advertisement
+        </h1>
+        <NavAdvertisementForm formData={formData} setFormData={setFormData} />
       </div>
 
       {isOpen && (
@@ -202,45 +208,46 @@ const SubCategory: FC = () => {
                 </label>
                 <div className="flex-[3]">
                   <h1 className="text-lg font-semibold mb-2 ml-3">
-                    Update SubCategory
+                    Update Nav-Advertisement
                   </h1>
                   <form
-                    onSubmit={handleUpdateCategorySubmit}
+                    onSubmit={handleUpdateNavAdvertisementSubmit}
                     className="bg-white p-3 flex flex-col gap-y-3 rounded-xl"
                   >
                     <div>
-                      <label className="font-medium" htmlFor="name">
-                        SubCategory Name:
+                      <label className="font-medium" htmlFor="link">
+                        Link:
                       </label>
                       <input
                         className="block w-full p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
                         type="text"
-                        name="title"
+                        name="link"
                         required
+                        value={filteredData[0].link}
                         onChange={handleChangeFormData}
-                        defaultValue={filteredData[0].title}
                       />
                     </div>
                     <div className="mb-2">
-                      <label className="font-medium" htmlFor="name">
+                      <label className="font-medium" htmlFor="category">
                         Select Category:
                       </label>
-                      <select
-                        className="w-full border border-gray-400 rounded-sm p-2 focus:outline-none text-gray-500"
-                        required
-                        name="category"
-                        defaultValue={filteredData[0].category}
-                        onChange={handleChangeFormData}
-                      >
-                        <option value="">Choose Category</option>
-                        {categories?.data?.map(
-                          (category: any, index: number) => (
-                            <option key={index} value={category._id}>
-                              {category.title}
-                            </option>
-                          )
-                        )}
-                      </select>
+                      {categories?.data && filteredData[0].category && (
+                        <select
+                          className="w-full border border-gray-400 rounded-sm p-2 focus:outline-none text-gray-500"
+                          required
+                          name="category"
+                          value={filteredData[0].category}
+                          onChange={handleChangeFormData}
+                        >
+                          {categories?.data?.map(
+                            (category: any, index: number) => (
+                              <option key={index} value={category._id}>
+                                {category.title}
+                              </option>
+                            )
+                          )}
+                        </select>
+                      )}
                     </div>
                     <div className="mb-2">
                       <label className="font-medium" htmlFor="status">
@@ -259,11 +266,11 @@ const SubCategory: FC = () => {
                     </div>
                     <div className="mb-2">
                       <label className="font-medium" htmlFor="status">
-                        Feature Image:
+                        Image:
                       </label>
                       <Image
-                        src={filteredData[0].featuredImage}
-                        alt="featuredImage"
+                        src={filteredData[0].imageUrl}
+                        alt="advertisement image"
                         width={100}
                         height={80}
                         className="mb-2 mt-1"
@@ -271,7 +278,7 @@ const SubCategory: FC = () => {
                       <input
                         type="file"
                         id="imageUpload"
-                        name="imageUpload"
+                        name="imageUrl"
                         onChange={handleImageChange}
                       ></input>
                     </div>

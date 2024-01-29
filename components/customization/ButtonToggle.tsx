@@ -12,7 +12,7 @@ import BestSelling from "./BestSelling";
 
 const buttonList = [
   { _id: "100", title: "TopLeftCarosel", component: TopLeftCarosel },
-  { _id: "101", title: "TopRightCarosel", component: TopRightCarosel },
+  // { _id: "101", title: "TopRightCarosel", component: TopRightCarosel },
   { _id: "102", title: "BannerSection", component: Banner },
   { _id: "103", title: "DeliveryPartner", component: DeliveryPartner },
   { _id: "104", title: "Faq", component: Faq },
