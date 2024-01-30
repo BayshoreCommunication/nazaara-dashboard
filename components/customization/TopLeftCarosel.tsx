@@ -11,13 +11,33 @@ import axios from "axios";
 import ImageUploading from "react-images-uploading";
 
 const TopLeftCarosel = () => {
+  const [formData, setFormData] = useState([
+    {
+      imageUrl: "",
+      link: "",
+    },
+  ]);
   const { data, isLoading } = useGetCustomizationByIdQuery(
     "64d9fb77f3a7ce9915b44b6f"
   );
 
   const [updateCustomization] = useUpdateCustomizationMutation();
 
-  const customizeData = data?.data?.heroLeftSlider;
+  const customizeData = data?.data?.homeCarosel;
+
+  console.log("home carosel data", customizeData);
+  console.log("formData", formData);
+
+  useEffect(() => {
+    if (customizeData) {
+      setFormData(
+        customizeData.map((data: any) => ({
+          imageUrl: data.imageUrl,
+          link: data.link,
+        }))
+      );
+    }
+  }, [customizeData]);
 
   const [images, setImages] = useState<
     {
@@ -151,7 +171,7 @@ const TopLeftCarosel = () => {
     <div className="mt-4">
       <div>
         {!isLoading &&
-          images.map((data, index) => (
+          formData.map((data, index) => (
             <div
               key={index}
               className="p-4 bg-white rounded-xl flex flex-col gap-2 mb-4"
@@ -170,111 +190,45 @@ const TopLeftCarosel = () => {
                   </button>
                 </div>
                 <div>
-                  <label
-                    htmlFor={`topHeading_${index}`}
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Top Heading
+                  <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                    Link
                   </label>
                   <input
                     type="text"
-                    id={`topHeading_${index}`}
-                    value={data.topHeading}
+                    value={data.link}
+                    onChange={(e) => {
+                      // Make a copy of the formData array
+                      const caroselData = [...formData];
+                      // Update the object at the given index with the new value
+                      caroselData[index].link = e.target.value;
+                      // Set the state with the updated array
+                      setFormData(caroselData);
+                    }}
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="Write a question"
                     required
-                    // Use the handleChange function to update the state when the input value changes
-                    onChange={(e) =>
-                      handleChange(index, "topHeading", e.target.value)
-                    }
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                      }
-                    }}
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor={`mainHeading_${index}`}
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Main Heading
-                  </label>
-                  <input
-                    type="text"
-                    id={`mainHeading_${index}`}
-                    value={data.mainHeading}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="Write a question"
-                    required
-                    // Use the handleChange function to update the state when the input value changes
-                    onChange={(e) =>
-                      handleChange(index, "mainHeading", e.target.value)
-                    }
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                      }
-                    }}
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor={`bottomHeading_${index}`}
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  >
-                    Bottom Heading
-                  </label>
-                  <input
-                    type="text"
-                    id={`bottomHeading_${index}`}
-                    value={data.bottomHeading}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="Write a question"
-                    required
-                    // Use the handleChange function to update the state when the input value changes
-                    onChange={(e) =>
-                      handleChange(index, "bottomHeading", e.target.value)
-                    }
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                      }
-                    }}
                   />
                 </div>
                 {/* image  */}
-                <div className="bg-basic rounded-lg px-6 py-3 flex flex-col gap-y-4">
-                  <ImageUploading
-                    value={[images[index]]}
-                    onChange={(e) => onChangeHandle(e, index)}
-                    dataURLKey="image"
-                  >
-                    {({ imageList, onImageUpdate }) => (
-                      <div className="upload__image-wrapper">
-                        {imageList.map((image: any, index: number) => (
-                          <div
-                            key={index}
-                            className="image-item flex flex-col items-end w-max"
-                          >
-                            <Image
-                              src={image["image"]}
-                              alt="product_image"
-                              width={300}
-                              height={200}
-                            />
-                            <button
-                              className="mt-1"
-                              onClick={() => onImageUpdate(index)}
-                            >
-                              <SlCloudUpload size={20} />
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </ImageUploading>
+                <div className="">
+                  <label className="block mb-2 text-sm font-medium text-gray-900">
+                    Image
+                  </label>
+                  {data.imageUrl && (
+                    <Image
+                      alt="carosel image"
+                      src={data.imageUrl}
+                      width={120}
+                      height={80}
+                      className="mb-1"
+                    />
+                  )}
+                  <input
+                    type="file"
+                    // onChange={(e) =>
+                    //   handleCeoUploadImage(e, formData.ceoData.image)
+                    // }
+                  />
                 </div>
               </div>
             </div>

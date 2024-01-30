@@ -55,8 +55,8 @@ const AboutUsComponent = () => {
   );
   const customizeData = data?.data?.aboutUs;
 
-  // console.log("customize about us data", customizeData);
-  // console.log("form data", formData);
+  console.log("customize about us data", customizeData);
+  console.log("form data", formData);
 
   useEffect(() => {
     if (customizeData) {
@@ -142,7 +142,21 @@ const AboutUsComponent = () => {
           const updatedAboutUsCustomization: any = await updateCustomization({
             id: "64d9fb77f3a7ce9915b44b6f",
             payload: {
-              aboutUs: formData,
+              aboutUs: {
+                topHeading: formData?.topHeading,
+                secondText: formData?.secondText,
+                thirdText: formData?.thirdText,
+                ceoData: {
+                  image: formData.ceoData.image,
+                  userName: formData.ceoData.userName,
+                  designation: formData.ceoData.designation,
+                },
+                otherEmployeesData: formData.otherEmployeesData.map((data) => ({
+                  image: data.image,
+                  userName: data.userName,
+                  designation: data.designation,
+                })),
+              },
             },
           });
 
@@ -150,6 +164,8 @@ const AboutUsComponent = () => {
             toast.success("About Us Section Updated Successfully!", {
               duration: 3000,
             });
+          } else {
+            toast.error("something went wrong. try again. ");
           }
         } catch (error) {
           toast.error("Error occurred! Please fill all the fields correctly.", {
@@ -193,7 +209,7 @@ const AboutUsComponent = () => {
             <div>
               <label
                 htmlFor={`topHeading`}
-                className="block mb-2 text-sm font-medium text-gray-900"
+                className="block mt-2 mb-1 text-sm font-medium text-gray-900"
               >
                 Top Heading
               </label>
@@ -215,7 +231,7 @@ const AboutUsComponent = () => {
             <div>
               <label
                 htmlFor={`middleText`}
-                className="block mb-2 text-sm font-medium text-gray-900"
+                className="block mt-2 mb-1 text-sm font-medium text-gray-900"
               >
                 Middle Text
               </label>
@@ -238,7 +254,7 @@ const AboutUsComponent = () => {
             <div>
               <label
                 htmlFor={`lastText`}
-                className="block mb-2 text-sm font-medium text-gray-900"
+                className="block mt-2 mb-1 text-sm font-medium text-gray-900"
               >
                 Last Text
               </label>
@@ -273,7 +289,7 @@ const AboutUsComponent = () => {
                     htmlFor={`userName`}
                     className="block mb-2 text-sm font-medium text-gray-900"
                   >
-                    User Name:
+                    Employee Name:
                   </label>
                   <input
                     type="text"
@@ -289,7 +305,7 @@ const AboutUsComponent = () => {
                       })
                     }
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                    placeholder="Write a question"
+                    placeholder="Write Employee Name"
                     required
                   />
                 </div>
@@ -314,7 +330,7 @@ const AboutUsComponent = () => {
                       })
                     }
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                    placeholder="Write a question"
+                    placeholder="Write Employee Designation"
                     required
                   />
                 </div>
@@ -326,12 +342,15 @@ const AboutUsComponent = () => {
                   >
                     Image
                   </label>
-                  <Image
-                    alt="ceo image"
-                    src={formData.ceoData.image}
-                    width={120}
-                    height={80}
-                  />
+                  {formData.ceoData.image && (
+                    <Image
+                      alt="employee image"
+                      src={formData.ceoData.image}
+                      width={120}
+                      height={80}
+                      className="mb-1"
+                    />
+                  )}
                   <input
                     type="file"
                     onChange={(e) =>
@@ -367,12 +386,12 @@ const AboutUsComponent = () => {
                   </div>
                   <div>
                     <label className="block mb-2 text-sm font-medium text-gray-900">
-                      User Name:
+                      Employee Name:
                     </label>
                     <input
                       type="text"
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                      placeholder="Write a question"
+                      placeholder="Write Employee Name"
                       required
                       value={data.userName}
                       onChange={(e) => {
@@ -407,7 +426,7 @@ const AboutUsComponent = () => {
                         });
                       }}
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                      placeholder="Write a question"
+                      placeholder="Write Employee Designation"
                       required
                     />
                   </div>
@@ -415,12 +434,15 @@ const AboutUsComponent = () => {
                     <label className="block mb-2 text-sm font-medium text-gray-900">
                       Image:
                     </label>
-                    <Image
-                      alt="employee image"
-                      src={data.image}
-                      width={120}
-                      height={80}
-                    />
+                    {data.image && (
+                      <Image
+                        alt="employee image"
+                        src={data.image}
+                        width={120}
+                        height={80}
+                        className="mb-1"
+                      />
+                    )}
                     <input
                       type="file"
                       onChange={(e) => handleUploadImage(e, index, data.image)}
@@ -432,20 +454,23 @@ const AboutUsComponent = () => {
           </>
         )}
         {/* <PrimaryButton type="submit" label="Update" /> */}
-        <div className="flex justify-end gap-2">
-          <button
-            type="button"
-            onClick={handleAddNewField}
-            className="bg-secondary rounded-lg text-white px-4 py-1"
-          >
-            Add New Field
-          </button>
+        <div className="flex justify-end gap-2 items-center">
+          <small>
+            *After removing any field please hit the update button to update
+          </small>
           <button
             onClick={handleUpdateOnClick}
             type="submit"
             className="bg-secondary rounded-lg text-white px-4 py-1"
           >
             Update
+          </button>
+          <button
+            type="button"
+            onClick={handleAddNewField}
+            className="bg-secondary rounded-lg text-white px-4 py-1"
+          >
+            Add New Field
           </button>
         </div>
       </div>

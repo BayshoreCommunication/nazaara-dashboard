@@ -12,6 +12,7 @@ export interface IData {
   heroRightSlider: IHeroRightSlider[];
   deliveryPartnerImages: string[];
   faq: IFaq[];
+  homeCarosel: any;
   createdAt?: string;
   updatedAt?: string;
   __v?: number;
