@@ -9,7 +9,10 @@ import {
 } from "@/services/bestSellingApi";
 import Loader from "../Loader";
 import toast from "react-hot-toast";
-import { useGetProductBySlugQuery } from "@/services/productApi";
+import {
+  useGetProductBySlugQuery,
+  useGetProductsQuery,
+} from "@/services/productApi";
 
 const Select = dynamic(() => import("react-select"), {
   ssr: false,
@@ -24,52 +27,51 @@ const customStyles = {
   }),
 };
 
-interface SellingData {
-  slug: string[]; // Define the type of the slug property as string[]
-}
-
 const BestSelling = () => {
-  const [sellingData, setSellingData] = useState<SellingData>({
-    slug: [],
+  const [sellingData, setSellingData] = useState({
+    products: [],
   });
-  const { data: slugsData, isLoading: slugsLoading } =
-    useGetProductBySlugQuery(); //get all the slugs data
+
+  const { data: productsData } = useGetProductsQuery({});
+
+  const options = productsData?.product?.map((elem) => ({
+    value: elem._id,
+    label: elem.sku,
+  }));
 
   const { data: bestSellingData, isLoading: bestSellingLoading } =
     useGetBestSellingQuery(); //get all the best selling data
 
+  console.log("best selling data", bestSellingData);
+
   useEffect(() => {
-    if (
-      bestSellingData &&
-      bestSellingData.bestSellingData &&
-      bestSellingData.bestSellingData[0] &&
-      bestSellingData.bestSellingData[0].slug
-    ) {
-      const slugData = bestSellingData.bestSellingData[0].slug;
-      setSellingData((prevData) => ({
-        ...prevData,
-        slug: slugData,
-      }));
+    if (bestSellingData) {
+      setSellingData({
+        products: (bestSellingData as any).data[0].products.map(
+          (product: any) => ({
+            value: product._id,
+            label: product.sku,
+          })
+        ),
+      });
     }
   }, [bestSellingData]);
 
-  const [updateBestSelling] = useUpdateBestSellingMutation(); //best selling update
+  const defaultValueOptions = sellingData.products.map((elem: any) => ({
+    value: elem.value,
+    label: elem.label,
+  }));
 
-  const options =
-    slugsData?.slugs.map((slug) => ({
-      value: slug.slug, // Use the slug as the value
-      label: slug.slug, // Use the slug as the label
-    })) || [];
+  const [updateBestSelling] = useUpdateBestSellingMutation(); //best selling update
 
   const handleSelectionChange = (option: any | null) => {
     if (option) {
-      //   setSellingData((prevData) => ({
-      //     ...prevData,
-      //     slug: option.map((elem: any) => elem.value),
-      //   }
       setSellingData({
         ...sellingData,
-        ["slug"]: option.map((elem: any) => elem.value),
+        products: option.map((elem: any) => ({
+          value: elem.value,
+          label: elem.label,
+        })),
       });
     }
   };
@@ -77,11 +79,13 @@ const BestSelling = () => {
   const handleSubmitSelling = async (event: FormEvent) => {
     event.preventDefault();
     try {
-      if (bestSellingData?.bestSellingData[0]._id) {
+      if ((bestSellingData as any)?.data[0]._id) {
         const data = await updateBestSelling({
-          id: bestSellingData?.bestSellingData[0]._id,
-          payload: sellingData,
-        });
+          id: (bestSellingData as any)?.data[0]?._id,
+          payload: {
+            products: sellingData.products.map((product: any) => product.value),
+          },
+        }).unwrap();
         if (data) {
           toast.success("best selling product updated!", { duration: 3000 });
         }
@@ -105,13 +109,7 @@ const BestSelling = () => {
               Product Slug:
             </label>
             <Select
-              value={
-                bestSellingData &&
-                sellingData.slug.map((slug) => ({
-                  value: slug, // Use the slug as the value
-                  label: slug, // Use the slug as the label
-                }))
-              }
+              value={defaultValueOptions}
               onChange={handleSelectionChange}
               className="w-2/3"
               placeholder="Choose Slug"

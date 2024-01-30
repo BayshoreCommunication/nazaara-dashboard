@@ -15,16 +15,24 @@ const Banner = () => {
     "64d9fb77f3a7ce9915b44b6f"
   );
   const [updateCustomization] = useUpdateCustomizationMutation();
-  const bannerData = data?.data?.bannerSection;
-  const [topHeading, setTopHeading] = useState("");
-  const [mainHeading, setMainHeading] = useState("");
+  const bannerData = data?.data?.bannerSection as any;
+  const [formData, setFormData] = useState({
+    topText: "",
+    mainHeading: "",
+    btnText: "",
+    btnLink: "",
+  });
 
   useEffect(() => {
     if (bannerData) {
-      setTopHeading(bannerData.topHeading || "");
-      setMainHeading(bannerData.mainHeading || "");
-      if (bannerData.image) {
-        setImages([{ data_url: bannerData.image }]); // Set image as an array
+      setFormData({
+        topText: bannerData.topText,
+        mainHeading: bannerData.mainHeading,
+        btnText: bannerData.btnText,
+        btnLink: bannerData.btnLink,
+      });
+      if (bannerData.imageUrl) {
+        setImages([{ data_url: bannerData.imageUrl }]); // Set image as an array
       }
     }
   }, [bannerData]);
@@ -40,7 +48,10 @@ const Banner = () => {
       if (images.length > 0 && images[0].file) {
         const formData = new FormData();
         formData.append("file", images[0].file); // Upload only the first image
-        formData.append("upload_preset", process.env.OTHER_PRESET as string);
+        formData.append(
+          "upload_preset",
+          process.env.CLOUDINARY_PRESET_UPLOAD as string
+        );
         const response = await axios.post(
           process.env.CLOUDINARY_URL as string,
           formData
@@ -56,9 +67,11 @@ const Banner = () => {
         id: "64d9fb77f3a7ce9915b44b6f",
         payload: {
           bannerSection: {
-            image: await imagesUpload(),
-            topHeading,
-            mainHeading,
+            imageUrl: await imagesUpload(),
+            topText: formData.topText,
+            mainHeading: formData.mainHeading,
+            btnText: formData.btnText,
+            btnLink: formData.btnLink,
           },
         },
       });
@@ -76,19 +89,24 @@ const Banner = () => {
       <div>
         <div className="flex justify-between">
           <label
-            htmlFor="first_name"
+            htmlFor="sub-heading"
             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
           >
-            Top Heading
+            Sub Heading
           </label>
         </div>
         <input
           type="text"
-          id="first_name"
-          value={topHeading}
-          onChange={(e) => setTopHeading(e.target.value)}
+          id="sub-heading"
+          value={formData.topText}
+          onChange={(e) =>
+            setFormData({
+              ...formData,
+              topText: e.target.value,
+            })
+          }
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-          placeholder="Top Heading"
+          placeholder="Enter Sub Heading"
           required
         />
       </div>
@@ -104,10 +122,63 @@ const Banner = () => {
         <input
           type="text"
           id="main-heading"
-          value={mainHeading}
-          onChange={(e) => setMainHeading(e.target.value)}
+          value={formData.mainHeading}
+          onChange={(e) =>
+            setFormData({
+              ...formData,
+              mainHeading: e.target.value,
+            })
+          }
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-          placeholder="Main Heading"
+          placeholder="Enter Main Heading"
+          required
+        />
+      </div>
+      <div>
+        <div className="flex justify-between">
+          <label
+            htmlFor="btn-text"
+            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+          >
+            Button Text
+          </label>
+        </div>
+        <input
+          type="text"
+          id="btn-text"
+          value={formData.btnText}
+          onChange={(e) =>
+            setFormData({
+              ...formData,
+              btnText: e.target.value,
+            })
+          }
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+          placeholder="Enter Button Text"
+          required
+        />
+      </div>
+      <div>
+        <div className="flex justify-between">
+          <label
+            htmlFor="button-text"
+            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+          >
+            Button Link
+          </label>
+        </div>
+        <input
+          type="text"
+          id="button-text"
+          value={formData.btnLink}
+          onChange={(e) =>
+            setFormData({
+              ...formData,
+              btnLink: e.target.value,
+            })
+          }
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+          placeholder="Button Link"
           required
         />
       </div>
@@ -137,8 +208,8 @@ const Banner = () => {
                       <Image
                         src={image["data_url"]}
                         alt="product_image"
-                        width={300}
-                        height={200}
+                        width={500}
+                        height={300}
                       />
                       <button
                         className="mt-1"
