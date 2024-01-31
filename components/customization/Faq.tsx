@@ -122,11 +122,6 @@ const Faq = () => {
                   required
                   // Use the handleChange function to update the state when the input value changes
                   onChange={(e) => handleChange(index, "title", e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                    }
-                  }}
                 />
               </div>
               <div>
@@ -151,19 +146,23 @@ const Faq = () => {
             </div>
           ))}
         {/* <PrimaryButton type="submit" label="Update" /> */}
-        <div className="flex justify-end gap-2">
+        <div className="flex justify-end gap-2 items-center">
+          <small className="text-red-500">
+            *After removing any field please hit the update button to update the
+            faq
+          </small>
+          <button
+            type="submit"
+            className="bg-secondary rounded-lg text-white px-4 py-1"
+          >
+            Update
+          </button>
           <button
             type="button"
             onClick={handleAddNewField}
             className="bg-secondary rounded-lg text-white px-4 py-1"
           >
             Add New Field
-          </button>
-          <button
-            type="submit"
-            className="bg-secondary rounded-lg text-white px-4 py-1"
-          >
-            Update
           </button>
         </div>
       </form>

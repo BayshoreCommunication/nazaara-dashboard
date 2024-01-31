@@ -210,6 +210,16 @@ const SubCategory: FC = () => {
                   <h1 className="text-lg font-semibold mb-2 ml-3">
                     Update Nav-Advertisement
                   </h1>
+                  <div className="text-red-500 text-xs font-medium">
+                    <p className="mb-1">
+                      * choosing any image automatically upload the image and
+                      destroy previous image
+                    </p>
+                    <p className="">
+                      {`* So after changing any image if you don't update the data
+            then the previous image will not found.`}
+                    </p>
+                  </div>
                   <form
                     onSubmit={handleUpdateNavAdvertisementSubmit}
                     className="bg-white p-3 flex flex-col gap-y-3 rounded-xl"

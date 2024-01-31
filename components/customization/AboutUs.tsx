@@ -206,6 +206,16 @@ const AboutUsComponent = () => {
       {customizeData && (
         <>
           <div>
+            <div className="mb-4 text-red-500 text-xs font-medium">
+              <p className="mb-1">
+                * When choose any image it will automatically upload in the
+                server and destroy previous image
+              </p>
+              <p className="">
+                {`* So after changing any image if you don't update the data
+            then the previous image will not found.`}
+              </p>
+            </div>
             <div>
               <label
                 htmlFor={`topHeading`}
@@ -455,8 +465,9 @@ const AboutUsComponent = () => {
         )}
         {/* <PrimaryButton type="submit" label="Update" /> */}
         <div className="flex justify-end gap-2 items-center">
-          <small>
-            *After removing any field please hit the update button to update
+          <small className="text-red-500">
+            *After removing any field please hit the update button to update the
+            about-us
           </small>
           <button
             onClick={handleUpdateOnClick}

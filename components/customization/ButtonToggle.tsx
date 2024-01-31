@@ -11,14 +11,14 @@ import Hiring from "./Hiring";
 import BestSelling from "./BestSelling";
 
 const buttonList = [
-  { _id: "100", title: "TopLeftCarosel", component: TopLeftCarosel },
+  { _id: "100", title: "Home Carosel", component: TopLeftCarosel },
   // { _id: "101", title: "TopRightCarosel", component: TopRightCarosel },
-  { _id: "102", title: "BannerSection", component: Banner },
-  { _id: "103", title: "DeliveryPartner", component: DeliveryPartner },
+  { _id: "102", title: "Banner Section", component: Banner },
+  { _id: "103", title: "Delivery Partner", component: DeliveryPartner },
   { _id: "104", title: "Faq", component: Faq },
-  { _id: "105", title: "AboutUs", component: AboutUs },
+  { _id: "105", title: "About Us", component: AboutUs },
   { _id: "106", title: "Hiring", component: Hiring },
-  { _id: "107", title: "BestSelling", component: BestSelling },
+  { _id: "107", title: "Best Selling", component: BestSelling },
 ];
 
 const ButtonToggle = () => {

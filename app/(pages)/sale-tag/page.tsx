@@ -269,6 +269,17 @@ const SaleTag = () => {
                     Update Sale
                   </h1>
 
+                  <div className="mb-4 text-red-500 text-xs font-medium">
+                    <p className="mb-1">
+                      * Choosing any image upload automatically in the server
+                      and destroy previous image
+                    </p>
+                    <p className="">
+                      {`* So after changing any image if you don't update the data
+            then the previous image will not found.`}
+                    </p>
+                  </div>
+
                   <form
                     onSubmit={handleUpdateSale}
                     className="bg-white p-3 flex flex-col gap-y-3 rounded-xl"
@@ -346,8 +357,8 @@ const SaleTag = () => {
                       <Image
                         src={filteredData.featuredImage}
                         alt="Feature Image"
-                        width={100}
-                        height={100}
+                        width={80}
+                        height={80}
                         className="my-2"
                       />
                       <input
