@@ -1,6 +1,10 @@
 "use client";
 import React, { useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
+import {
+  useGetProductsQuery,
+  useGetSubCategoryProductCountQuery,
+} from "@/services/productApi";
 
 dynamic(() => import("react-apexcharts"), {
   ssr: false,
@@ -9,27 +13,21 @@ dynamic(() => import("react-apexcharts"), {
 const PieChart: React.FC = () => {
   const chartRef = useRef<HTMLDivElement>(null);
 
-  const url = `${process.env.API_URL}/api/v1/product/categories`;
+  const { data: subCategoryProductsCount } =
+    useGetSubCategoryProductCountQuery();
+
+  // console.log("productsData", subCategoryProductsCount);
 
   useEffect(() => {
     const fetchApexCharts = async () => {
       const ApexCharts = await import("apexcharts");
       const options = {
-        series: [4, 8, 1, 1, 1, 1, 1, 1],
+        series: subCategoryProductsCount.result.map((data: any) => data.count),
         chart: {
           width: 480,
           type: "pie",
         },
-        labels: [
-          `BRIDAL GOWN ${4}`,
-          `BRIDAL LEHENGA ${8}`,
-          `BRIDAL SHARARA ${1}`,
-          `DESIGNER WEAR ${1}`,
-          `DUPATTA ${1}`,
-          `JACKET ${1}`,
-          `PARTY GOWN ${1}`,
-          `SAREE ${1}`,
-        ],
+        labels: subCategoryProductsCount.result.map((data: any) => data.label),
         responsive: [
           {
             breakpoint: 480,
@@ -53,10 +51,18 @@ const PieChart: React.FC = () => {
       };
     };
 
-    fetchApexCharts();
-  }, []);
+    if (subCategoryProductsCount?.result?.length > 0) {
+      fetchApexCharts();
+    }
+  }, [subCategoryProductsCount]);
 
-  return <div id="chart" ref={chartRef}></div>;
+  return (
+    <div id="chart" ref={chartRef}>
+      <h1 className="mb-4 font-bold text-gray-500">
+        Product Stocks Analysis Using Category:
+      </h1>
+    </div>
+  );
 };
 
 export default PieChart;

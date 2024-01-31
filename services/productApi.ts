@@ -6,7 +6,7 @@ import {
   TProductSlugData,
   TProducts,
 } from "@/types/types";
-import { StockInfo} from "@/types/types";
+import { StockInfo } from "@/types/types";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const productsApi = createApi({
@@ -80,11 +80,16 @@ export const productsApi = createApi({
       query: () => `/api/v1/product/productStockOut`,
       providesTags: ["Product"],
     }),
+    getSubCategoryProductCount: builder.query<any, void>({
+      query: () => `/api/v1/product/subcategory-product-count`,
+      providesTags: ["Product"],
+    }),
   }),
 });
 
 export const {
   useGetProductsQuery,
+  useGetSubCategoryProductCountQuery,
   useGetProductsCategoriesQuery,
   useGetProductErpIdQuery,
   useGetProductByIdQuery,
