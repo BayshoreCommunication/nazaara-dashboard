@@ -188,17 +188,7 @@ const Products: any = () => {
   };
 
   const tableComponent = () => {
-    if (productsLoading) {
-      return (
-        <tr>
-          <td colSpan={9}>
-            <div className="flex justify-center items-center">
-              <Loader height="h-[60vh]" />
-            </div>
-          </td>
-        </tr>
-      );
-    } else if (productsData?.product?.length === 0) {
+    if (productsData?.product?.length === 0) {
       return (
         <tr>
           <td colSpan={9}>
@@ -380,32 +370,36 @@ const Products: any = () => {
   };
 
   return (
-    <div className="container">
-      <div className="flex items-center justify-between mb-1">
-        <div className="flex gap-2 items-center mb-2">
-          <AiOutlineShoppingCart size={18} color="gray" />
-          <span className="font-medium text-lg">Products</span>
-        </div>
-        <small className="text-gray-600 font-medium">
-          *search through erpId, sku, web-category, web-subCategory, status*
-        </small>
-        {/* search user  */}
-        <div>
-          <label
-            htmlFor="search"
-            className="text-sm text-gray-600 font-semibold"
-          >
-            Search:{" "}
-          </label>
-          <input
-            type="text"
-            id="search"
-            onChange={(e) => setSearchText(e.target.value)}
-            className="border border-gray-300 outline-none hover:outline-none px-2 py-1 rounded-md text-gray-600 text-sm"
-          />
-        </div>
-      </div>
-      {/* <div className="flex justify-end py-4">
+    <>
+      {productsLoading ? (
+        <Loader height="h-[90vh]" />
+      ) : (
+        <div className="container">
+          <div className="flex items-center justify-between mb-1">
+            <div className="flex gap-2 items-center mb-2">
+              <AiOutlineShoppingCart size={18} color="gray" />
+              <span className="font-medium text-lg">Products</span>
+            </div>
+            <small className="text-gray-600 font-medium">
+              *search through erpId, sku, web-category, web-subCategory, status*
+            </small>
+            {/* search user  */}
+            <div>
+              <label
+                htmlFor="search"
+                className="text-sm text-gray-600 font-semibold"
+              >
+                Search:{" "}
+              </label>
+              <input
+                type="text"
+                id="search"
+                onChange={(e) => setSearchText(e.target.value)}
+                className="border border-gray-300 outline-none hover:outline-none px-2 py-1 rounded-md text-gray-600 text-sm"
+              />
+            </div>
+          </div>
+          {/* <div className="flex justify-end py-4">
         <button
           className="text-white bg-red-800 py-2 px-3 rounded-md shadow-md"
           onClick={syncErpDataHandler}
@@ -413,60 +407,62 @@ const Products: any = () => {
           Sync with erp data
         </button>
       </div> */}
-      {/* product component  */}
-      <div className="overflow-x-auto">
-        <table className="table bg-basic">
-          {/* head */}
-          <thead className="">
-            <tr>
-              <th>Image</th>
-              <th>Erp ID</th>
-              <th>Sku</th>
-              <th>Erp-Category</th>
-              <th>Erp-SubCategory</th>
-              <th>Web-Category</th>
-              <th>Web-SubCategory</th>
-              <th>Regular Price</th>
-              <th>Sale Price</th>
-              <th>Stock</th>
-              <th>Status</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>{tableComponent()}</tbody>
-        </table>
-      </div>
-      {!searchText && searchData.length >= 0 && (
-        <ul className="flex -space-x-px text-sm justify-center mt-4">
-          <li>
-            <button
-              onClick={handlePreviousPage}
-              disabled={currentPage === 1}
-              className={`flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-200 border border-gray-100 rounded-l-lg hover:text-gray-100 ${
-                currentPage === 1 ? "bg-secondary-hover" : "bg-secondary"
-              }`}
-            >
-              Previous
-            </button>
-          </li>
+          {/* product component  */}
+          <div className="overflow-x-auto">
+            <table className="table bg-basic">
+              {/* head */}
+              <thead className="">
+                <tr>
+                  <th>Image</th>
+                  <th>Erp ID</th>
+                  <th>Sku</th>
+                  <th>Erp-Category</th>
+                  <th>Erp-SubCategory</th>
+                  <th>Web-Category</th>
+                  <th>Web-SubCategory</th>
+                  <th>Regular Price</th>
+                  <th>Sale Price</th>
+                  <th>Stock</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>{tableComponent()}</tbody>
+            </table>
+          </div>
+          {!searchText && searchData.length >= 0 && (
+            <ul className="flex -space-x-px text-sm justify-center mt-4">
+              <li>
+                <button
+                  onClick={handlePreviousPage}
+                  disabled={currentPage === 1}
+                  className={`flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-200 border border-gray-100 rounded-l-lg hover:text-gray-100 ${
+                    currentPage === 1 ? "bg-secondary-hover" : "bg-secondary"
+                  }`}
+                >
+                  Previous
+                </button>
+              </li>
 
-          <li className="flex">{renderPageNumbers()}</li>
-          <li>
-            <button
-              onClick={handleNextPage}
-              disabled={currentPage === totalPages}
-              className={`flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-200 border border-gray-100 rounded-e-lg hover:text-gray-100 ${
-                currentPage === totalPages
-                  ? "bg-secondary-hover"
-                  : "bg-secondary"
-              }`}
-            >
-              Next
-            </button>
-          </li>
-        </ul>
+              <li className="flex">{renderPageNumbers()}</li>
+              <li>
+                <button
+                  onClick={handleNextPage}
+                  disabled={currentPage === totalPages}
+                  className={`flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-200 border border-gray-100 rounded-e-lg hover:text-gray-100 ${
+                    currentPage === totalPages
+                      ? "bg-secondary-hover"
+                      : "bg-secondary"
+                  }`}
+                >
+                  Next
+                </button>
+              </li>
+            </ul>
+          )}
+        </div>
       )}
-    </div>
+    </>
   );
 };
 

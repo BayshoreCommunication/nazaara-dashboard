@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { useGetStockDtlsQuery } from "@/services/productApi";
 import { useGetTopOrdersProductQuery } from "@/services/orderApi";
+import Loader from "../Loader";
 
 dynamic(() => import("react-apexcharts"), {
   ssr: false,
@@ -10,8 +11,9 @@ dynamic(() => import("react-apexcharts"), {
 
 const DonutChart: React.FC = () => {
   const chartRef = useRef<HTMLDivElement>(null);
-  const { data: result } = useGetStockDtlsQuery();
-  const { data: orderResult } = useGetTopOrdersProductQuery();
+  const { data: result, isLoading: isStockLoading } = useGetStockDtlsQuery();
+  const { data: orderResult, isLoading: isOrderLoading } =
+    useGetTopOrdersProductQuery();
 
   let stockIn = 0;
   let stockOut = 0;
@@ -101,7 +103,15 @@ const DonutChart: React.FC = () => {
     onDelivered,
   ]);
 
-  return <div id="chart" ref={chartRef}></div>;
+  return (
+    <>
+      {isOrderLoading || isStockLoading ? (
+        <Loader height="h-[40vh]" />
+      ) : (
+        <div id="chart" ref={chartRef}></div>
+      )}
+    </>
+  );
 };
 
 export default DonutChart;

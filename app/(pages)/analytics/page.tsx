@@ -11,7 +11,7 @@ const page = () => {
         <TbBrandGoogleAnalytics size={18} color="gray" />
         <span className="font-medium text-lg">Analytics</span>
       </div>
-      <div className="grid grid-cols-2 gap-6 items-start">
+      <div className="grid grid-cols-2 gap-6">
         <div className="bg-white">
           <h2 className="font-medium text-md mt-5 ml-5">Product Analysis</h2>
           <div className="flex items-center justify-center h-full">
