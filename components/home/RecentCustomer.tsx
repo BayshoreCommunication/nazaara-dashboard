@@ -1,11 +1,11 @@
 import React from "react";
-import FetchServerSideData from "../ServerSideDataFetching";
 import Image from "next/image";
 import { UserData } from "@/types/userTypes";
+import { fetchServerSideData } from "../ServerSideDataFetching";
 
 const RecentCustomer = async () => {
   const url = `${process.env.API_URL}/api/v1/user?limit=5&userType=user`;
-  const userData: { data: UserData[] } = await FetchServerSideData(url);
+  const userData: { data: UserData[] } = await fetchServerSideData(url);
 
   return (
     <div className="overflow-x-auto">

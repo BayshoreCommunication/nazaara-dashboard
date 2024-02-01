@@ -1,13 +1,13 @@
 import Image from "next/image";
 import React from "react";
-import FetchServerSideData from "./ServerSideDataFetching";
 import { Product } from "@/types/productTypes";
 import Link from "next/link";
 import SecondaryButton from "./SecondaryButton";
+import { fetchServerSideData } from "./ServerSideDataFetching";
 
 const Product = async () => {
   const url = `${process.env.API_URL}/api/v1/product?limit=10`;
-  const productData: { product: Product[] } = await FetchServerSideData(url);
+  const productData: { product: Product[] } = await fetchServerSideData(url);
   // console.log("product", productData);
 
   return (

@@ -1,13 +1,12 @@
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { BiCategory } from "react-icons/bi";
 import { BsChatSquareTextFill, BsFillBoxFill } from "react-icons/bs";
-import { TbTruckDelivery } from "react-icons/tb";
 import AreaChart from "@/components/AreaChart";
 import PieChart from "@/components/PieChart";
 import RecentOrder from "@/components/home/RecentOrder";
 import RecentCustomer from "@/components/home/RecentCustomer";
 import Product from "@/components/Product";
-import FetchServerSideData from "@/components/ServerSideDataFetching";
+import { fetchServerSideData } from "@/components/ServerSideDataFetching";
 
 interface CardDataItem {
   icon: JSX.Element;
@@ -20,8 +19,8 @@ interface CardDataItem {
 const HomePage = async () => {
   const orderApiUrl = `${process.env.API_URL}/api/v1/order/recent-five`;
   const countDataUrl = `${process.env.API_URL}/api/v1/product/home-page-count`;
-  const orderData = await FetchServerSideData(orderApiUrl);
-  const countData = await FetchServerSideData(countDataUrl);
+  const orderData = await fetchServerSideData(orderApiUrl);
+  const countData = await fetchServerSideData(countDataUrl);
 
   const cardData: CardDataItem[] = [
     {
