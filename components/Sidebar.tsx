@@ -124,12 +124,6 @@ const Sidebar = () => {
 
   const path = usePathname();
 
-  const [click, setClick] = useState(path);
-
-  useEffect(() => {
-    setClick(path);
-  }, [path]);
-
   const isActiveLink = (link: string) => {
     if (link === "/") {
       return path === "/";
