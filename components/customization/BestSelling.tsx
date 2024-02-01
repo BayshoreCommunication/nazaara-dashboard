@@ -106,7 +106,7 @@ const BestSelling = () => {
         <form>
           <div className="mb-2">
             <label className="font-medium" htmlFor="name">
-              Product Slug:
+              Product Sku:
             </label>
             <Select
               value={defaultValueOptions}
@@ -131,7 +131,7 @@ const BestSelling = () => {
             />
           </div>
           <div onClick={handleSubmitSelling} className="w-max">
-            <PrimaryButton name="Update Slug" />
+            <PrimaryButton name="Update Sku" />
           </div>
         </form>
       )}

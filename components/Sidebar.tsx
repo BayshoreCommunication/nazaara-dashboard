@@ -1,13 +1,9 @@
 "use client";
 import { RxDashboard } from "react-icons/rx";
-import { FaUserAlt, FaWarehouse } from "react-icons/fa";
+import { FaUserAlt } from "react-icons/fa";
 import { SiGoogleanalytics } from "react-icons/si";
 import { AiOutlineShoppingCart } from "react-icons/ai";
-import {
-  BsFillBoxFill,
-  BsChatLeftText,
-  BsFillFileEarmarkSpreadsheetFill,
-} from "react-icons/bs";
+import { BsFillBoxFill, BsChatLeftText } from "react-icons/bs";
 import {
   MdCategory,
   MdDiscount,
@@ -141,13 +137,13 @@ const Sidebar = () => {
     return path.startsWith(link);
   };
   return (
-    <div className="flex-1 h-[100vh] sticky top-0 overflow-auto bg-primary">
-      <div className="p-3 flex flex-col gap-2">
+    <div className="h-[100vh] sticky top-0 bg-primary w-max">
+      <div className="p-4 flex flex-col gap-2 w-full">
         {datas.map((data, index) => (
           <div key={index}>
             <Link
               href={data?.link}
-              className={`flex gap-4 items-center pl-3 py-2 rounded-lg ${
+              className={`flex gap-4 items-center px-4 py-2 rounded-lg ${
                 isActiveLink(data?.link)
                   ? "bg-secondary text-basic"
                   : "bg-basic"
