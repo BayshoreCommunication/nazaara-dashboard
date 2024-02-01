@@ -36,7 +36,7 @@ const ButtonToggle = () => {
     <>
       <div className="flex gap-3 items-center flex-wrap">
         {buttonList?.map((data, index) => (
-          <div key={index}>
+          <div key={data._id}>
             <div>
               <button
                 className="flex items-center gap-2 bg-secondary text-white py-1.5 px-6 rounded-lg"

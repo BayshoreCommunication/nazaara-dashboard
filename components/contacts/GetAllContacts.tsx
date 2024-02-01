@@ -43,7 +43,7 @@ export const GetAllContacts = () => {
         </tr>
       ) : contactData?.data.length && contactData?.data.length > 0 ? (
         contactData?.data.map((data, index) => (
-          <tr key={index}>
+          <tr key={data._id}>
             <td>{index + 1}</td>
             <td>{data?.name}</td>
             <td>{data?.email}</td>

@@ -403,8 +403,8 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
                           <option value="" disabled>
                             Choose Category
                           </option>
-                          {categories?.data?.map((category: any, index) => (
-                            <option key={index} value={category._id}>
+                          {categories?.data?.map((category: any) => (
+                            <option key={category._id} value={category._id}>
                               {category.title}
                             </option>
                           ))}
@@ -431,7 +431,10 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
                                 subCategory.category._id === formData.category
                               ) {
                                 return (
-                                  <option key={index} value={subCategory._id}>
+                                  <option
+                                    key={subCategory._id}
+                                    value={subCategory._id}
+                                  >
                                     {subCategory.title}
                                   </option>
                                 );

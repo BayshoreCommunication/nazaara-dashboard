@@ -367,8 +367,8 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
                           <option value="" disabled>
                             Choose Category
                           </option>
-                          {categories?.data?.map((category: any, index) => (
-                            <option key={index} value={category._id}>
+                          {categories?.data?.map((category: any) => (
+                            <option key={category._id} value={category._id}>
                               {category.title}
                             </option>
                           ))}
@@ -388,19 +388,20 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
                             Choose Subcategory
                           </option>
                           {/* filter subCategories based on category, only show the subCategories which are under the selected categories */}
-                          {subCategories?.data?.map(
-                            (subCategory: any, index) => {
-                              if (
-                                subCategory.category._id === formData.category
-                              ) {
-                                return (
-                                  <option key={index} value={subCategory._id}>
-                                    {subCategory.title}
-                                  </option>
-                                );
-                              }
+                          {subCategories?.data?.map((subCategory: any) => {
+                            if (
+                              subCategory.category._id === formData.category
+                            ) {
+                              return (
+                                <option
+                                  key={subCategory._id}
+                                  value={subCategory._id}
+                                >
+                                  {subCategory.title}
+                                </option>
+                              );
                             }
-                          )}
+                          })}
                         </select>
                       </div>
                       <div>

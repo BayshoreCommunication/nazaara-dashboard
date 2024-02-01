@@ -186,7 +186,7 @@ const SaleTag = () => {
               </tr>
             </thead>
             {salesData?.data?.map((elem, index) => (
-              <tr key={index}>
+              <tr key={elem._id}>
                 <td>{index + 1}</td>
                 <td>
                   <Image

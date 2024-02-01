@@ -288,8 +288,8 @@ const Products: any = () => {
             </>
           ) : (
             <>
-              {productsData?.product?.map((elem, index) => (
-                <tr key={index}>
+              {productsData?.product?.map((elem) => (
+                <tr key={elem._id}>
                   <td>
                     {elem.variant[0].imageUrl[0] ? (
                       <Image

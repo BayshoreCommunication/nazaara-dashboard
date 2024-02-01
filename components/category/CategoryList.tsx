@@ -43,7 +43,7 @@ const CategoryList: FC<CategoryListProps> = ({
         {categories?.length > 0 ? (
           // if categories is available then show data here
           categories?.map((data, index) => (
-            <tr key={index}>
+            <tr key={data._id}>
               <td>{index + 1}</td>
               <td>{data.title}</td>
               <td>{data.slug}</td>

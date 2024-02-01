@@ -34,7 +34,7 @@ const MostViewedProduct = () => {
           </thead>
           <tbody>
             {productsData?.product.map((elem, index) => (
-              <tr key={index}>
+              <tr key={elem._id}>
                 <td>
                   <Image
                     src="/images/container.png"

@@ -45,7 +45,7 @@ const SubCategoryList: FC<CategoryListProps> = ({
         {subCategories?.length > 0 ? (
           // if categories is available then show data here
           subCategories?.map((data, index) => (
-            <tr key={index}>
+            <tr key={data._id}>
               <td>{index + 1}</td>
               <td>
                 <Image

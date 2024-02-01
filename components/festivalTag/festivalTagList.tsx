@@ -39,7 +39,7 @@ const FestivalTagList = () => {
       );
     } else {
       return festivalData?.data?.map((elem, index) => (
-        <tr key={index}>
+        <tr key={elem._id}>
           <td>{index + 1}</td>
           <td>{elem.title}</td>
           <td>{elem.slug}</td>

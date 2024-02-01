@@ -251,7 +251,7 @@ const SubCategory: FC = () => {
                         >
                           {categories?.data?.map(
                             (category: any, index: number) => (
-                              <option key={index} value={category._id}>
+                              <option key={category._id} value={category._id}>
                                 {category.title}
                               </option>
                             )

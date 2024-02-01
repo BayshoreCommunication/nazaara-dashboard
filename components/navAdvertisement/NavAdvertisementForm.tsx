@@ -106,7 +106,7 @@ const NavAdvertisementForm: FC<CategoryFormProps> = ({
             Choose Category
           </option>
           {categories?.data?.map((category: any, index: number) => (
-            <option key={index} value={category._id}>
+            <option key={category._id} value={category._id}>
               {category.title}
             </option>
           ))}

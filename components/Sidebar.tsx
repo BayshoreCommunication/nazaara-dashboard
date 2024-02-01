@@ -137,13 +137,13 @@ const Sidebar = () => {
     return path.startsWith(link);
   };
   return (
-    <div className="h-[100vh] sticky top-0 bg-primary w-max">
+    <div className="h-[100vh] sticky top-0 bg-primary w-full overflow-auto">
       <div className="p-4 flex flex-col gap-2 w-full">
-        {datas.map((data, index) => (
-          <div key={index}>
+        {datas.map((data) => (
+          <div className="w-full" key={data._id}>
             <Link
               href={data?.link}
-              className={`flex gap-4 items-center px-4 py-2 rounded-lg ${
+              className={`w-full flex gap-4 items-center px-4 py-2 rounded-lg ${
                 isActiveLink(data?.link)
                   ? "bg-secondary text-basic"
                   : "bg-basic"
@@ -156,7 +156,7 @@ const Sidebar = () => {
               >
                 {data?.icon}
               </p>
-              <p className="font-medium">{data?.title}</p>
+              <p className="font-medium w-full">{data?.title}</p>
             </Link>
           </div>
         ))}

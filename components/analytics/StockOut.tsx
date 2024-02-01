@@ -47,7 +47,7 @@ const StockOut = () => {
               </tr>
             ) : productsData?.product?.length > 0 ? (
               productsData?.product.map((elem, index) => (
-                <tr key={index}>
+                <tr key={elem._id}>
                   <td>
                     <Image
                       src={elem.variant[0].imageUrl[0]}

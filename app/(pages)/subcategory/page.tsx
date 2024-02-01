@@ -243,13 +243,11 @@ const SubCategory: FC = () => {
                         onChange={handleChangeFormData}
                       >
                         <option value="">Choose Category</option>
-                        {categories?.data?.map(
-                          (category: any, index: number) => (
-                            <option key={index} value={category._id}>
-                              {category.title}
-                            </option>
-                          )
-                        )}
+                        {categories?.data?.map((category: any) => (
+                          <option key={category._id} value={category._id}>
+                            {category.title}
+                          </option>
+                        ))}
                       </select>
                     </div>
                     <div className="mb-2">

@@ -937,7 +937,7 @@ const OrderUpdate = ({ params }: any) => {
               {(orderData as any).data.product.map((el: any, i: number) => (
                 <div
                   className="flex items-center mb-6 justify-between border p-4 rounded-md"
-                  key={i}
+                  key={el._id}
                 >
                   <div className="flex gap-3 items-center">
                     <Image

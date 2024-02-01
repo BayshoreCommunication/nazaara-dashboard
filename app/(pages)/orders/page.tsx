@@ -109,8 +109,8 @@ const Orders = () => {
             <tbody>
               {searchData && searchText ? (
                 <>
-                  {searchData.map((el: any, i: number) => (
-                    <tr key={i}>
+                  {searchData.map((el: any) => (
+                    <tr key={el.item._id}>
                       <td>{formatDate(el.item.createdAt as Date)}</td>
                       <td>{el.item.transactionId}</td>
                       <td>{el.item.user.fullName}</td>
@@ -174,8 +174,8 @@ const Orders = () => {
                 </>
               ) : (
                 <>
-                  {data?.data.map((el, i: number) => (
-                    <tr key={i}>
+                  {data?.data.map((el) => (
+                    <tr key={el._id}>
                       <td>{formatDate(el.createdAt as Date)}</td>
                       <td>{el.transactionId}</td>
                       <td>{el.user.fullName}</td>

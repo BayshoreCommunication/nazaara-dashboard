@@ -15,8 +15,10 @@ const PageLayout = ({ children }: { children: ReactNode }) => {
         <Toaster position="top-center" reverseOrder={false} />
         <Navbar />
         <div className="flex bg-white">
-          <Sidebar />
-          <main className="w-full bg-primary">{children}</main>
+          <div className="flex-1 flex-shrink-0">
+            <Sidebar />
+          </div>
+          <main className="flex-[6] bg-primary">{children}</main>
         </div>
       </Providers>
     </div>

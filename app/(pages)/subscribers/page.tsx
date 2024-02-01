@@ -62,7 +62,7 @@ const Subscriber = () => {
           </thead>
           <tbody>
             {data?.data?.map((data: any, index: number) => (
-              <tr key={index}>
+              <tr key={data?._id}>
                 <td>{index + 1}</td>
                 <td>{data?.email}</td>
                 <td>{formatDate(data?.createdAt)}</td>

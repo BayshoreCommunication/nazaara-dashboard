@@ -95,9 +95,9 @@ const Customers = () => {
           <tbody>
             {searchData && searchText ? (
               <>
-                {searchData.map((cus: any, index) => {
+                {searchData.map((cus: any) => {
                   return (
-                    <tr key={index}>
+                    <tr key={cus.item._id}>
                       <td>
                         {cus.item.imageUrl ? (
                           <Image
@@ -138,9 +138,9 @@ const Customers = () => {
               </>
             ) : (
               <>
-                {customersData?.data.map((cus, index) => {
+                {customersData?.data.map((cus) => {
                   return (
-                    <tr key={index}>
+                    <tr key={cus._id}>
                       <td>
                         {cus.imageUrl ? (
                           <Image

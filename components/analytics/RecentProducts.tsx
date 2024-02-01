@@ -40,7 +40,7 @@ const RecentProducts = () => {
           </thead>
           <tbody>
             {productsData?.product.map((elem, index) => (
-              <tr key={index}>
+              <tr key={elem._id}>
                 <td>
                   <Image
                     src={elem.variant[0].imageUrl[0]}
