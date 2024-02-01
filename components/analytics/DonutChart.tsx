@@ -10,7 +10,7 @@ dynamic(() => import("react-apexcharts"), {
 
 const DonutChart: React.FC = () => {
   const chartRef = useRef<HTMLDivElement>(null);
-  const { data: result, isLoading } = useGetStockDtlsQuery();
+  const { data: result } = useGetStockDtlsQuery();
   const { data: orderResult } = useGetTopOrdersProductQuery();
 
   let stockIn = 0;
@@ -32,7 +32,7 @@ const DonutChart: React.FC = () => {
     });
   }
   if (orderResult) {
-    orderResult.data.map((elem, index) => {
+    orderResult.data.map((elem: any) => {
       if (
         elem.deliveryStatus === "order received" ||
         elem.deliveryStatus === "shipped" ||

@@ -105,36 +105,35 @@ export interface IBottom {
 }
 
 export interface IOrderProductData {
-  shippingAddress: IOrderShippingAddress
-  _id: string
-  paymentId: string
-  quantity: number
-  paymentMethod: string
-  remark: string
-  totalCost: number
-  coupon: string
-  product: TopOrderProduct[]
-  user?: IOrderUser
-  sizeChart: IOrderSizeChart
-  paymentStatus: string
-  deliveryStatus: string
-  createdAt: string
-  updatedAt: string
-  __v: number
+  shippingAddress: IOrderShippingAddress;
+  _id: string;
+  paymentId: string;
+  quantity: number;
+  paymentMethod: string;
+  remark: string;
+  totalCost: number;
+  coupon: string;
+  product: TopOrderProduct[];
+  user?: any;
+  sizeChart: IOrderSizeChart;
+  paymentStatus: string;
+  deliveryStatus: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
 }
 export interface OrderProductCount {
-  status: string
-  total: number
-  data: IOrderProductData[]
+  status: string;
+  total: number;
+  data: IOrderProductData[];
 }
 export interface TopOrderProduct {
-title:string
-slug:string
-imgUrl:string
-quantity:number
-color:string
-size:number
-_id:string
-productDetails:string
+  title: string;
+  slug: string;
+  imgUrl: string;
+  quantity: number;
+  color: string;
+  size: number;
+  _id: string;
+  productDetails: string;
 }
- 

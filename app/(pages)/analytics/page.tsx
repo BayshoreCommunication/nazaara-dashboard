@@ -1,5 +1,4 @@
 import DonutChart from "@/components/analytics/DonutChart";
-import MostViewedProduct from "@/components/analytics/MostViewedProduct";
 import RecentProducts from "@/components/analytics/RecentProducts";
 import StockOut from "@/components/analytics/StockOut";
 import TopSellingProduct from "@/components/analytics/TopSellingProduct";
@@ -12,9 +11,9 @@ const page = () => {
         <TbBrandGoogleAnalytics size={18} color="gray" />
         <span className="font-medium text-lg">Analytics</span>
       </div>
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-2 gap-6 items-start">
         <div className="bg-white">
-          <h2 className="font-medium text-md mt-5 ml-5">Assets</h2>
+          <h2 className="font-medium text-md mt-5 ml-5">Product Analysis</h2>
           <div className="flex items-center justify-center h-full">
             <DonutChart />
           </div>

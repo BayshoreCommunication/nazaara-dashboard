@@ -14,62 +14,80 @@ interface CardDataItem {
   text: string;
   bgColor: string;
   value: number;
+  newValue: number;
 }
 
 const HomePage = async () => {
+  const orderApiUrl = `${process.env.API_URL}/api/v1/order/recent-five`;
+  const countDataUrl = `${process.env.API_URL}/api/v1/product/home-page-count`;
+  const orderData = await FetchServerSideData(orderApiUrl);
+  const countData = await FetchServerSideData(countDataUrl);
+
   const cardData: CardDataItem[] = [
     {
       icon: <BiCategory size={24} />,
-      text: "Total Category",
+      text: "Categories",
       bgColor: "bg-[#FC8D68]",
-      value: 0,
+      value: countData.data[0].category.totalData,
+      newValue: countData.data[0].category.newData,
     },
     {
-      icon: <AiOutlineShoppingCart size={24} />,
-      text: "New Order",
-      bgColor: "bg-secondary",
-      value: 0,
-      // value: pendingorder ? pendingorder.length : 0,
-    },
-    {
-      icon: <TbTruckDelivery size={24} />,
-      text: "Ready to Deliver",
+      icon: <BiCategory size={24} />,
+      text: "SubCategories",
       bgColor: "bg-warning",
-      value: 0,
+      value: countData.data[0].subCategory.totalData,
+      newValue: countData.data[0].subCategory.newData,
     },
     {
       icon: <BsFillBoxFill size={24} />,
-      text: "Available Product",
+      text: "Products",
       bgColor: "bg-[#77CFBB]",
-      value: 0,
+      value: countData.data[0].products.totalData,
+      newValue: countData.data[0].products.newData,
     },
+    {
+      icon: <AiOutlineShoppingCart size={24} />,
+      text: "Orders",
+      bgColor: "bg-secondary",
+      value: countData.data[0].orders.totalData,
+      newValue: countData.data[0].orders.newData,
+    },
+    // {
+    //   icon: <TbTruckDelivery size={24} />,
+    //   text: "Ready to Deliver",
+    //   bgColor: "bg-warning",
+    //   value: countData.data[0].category.totalData,
+    //   newValue: countData.data[0].category.newData,
+    // },
     {
       icon: <BsChatSquareTextFill size={24} />,
       text: "Contacts",
       bgColor: "bg-[#766EDA]",
-      value: 0,
+      value: countData.data[0].contacts.totalData,
+      newValue: countData.data[0].contacts.newData,
     },
   ];
-
-  const orderApiUrl = `${process.env.API_URL}/api/v1/order/recent-five`;
-
-  const orderData = await FetchServerSideData(orderApiUrl);
-  // console.log("order data", orderData);
 
   return (
     <div className="container">
       {/* cart  */}
       <div className="grid grid-cols-5 gap-x-10">
         {cardData.map((data) => (
-          <div
-            key={data.text}
-            className={`${data.bgColor} rounded-lg flex items-center justify-between p-6 text-white`}
-          >
-            <div>
-              <div>{data.icon}</div>
-              <p className="mt-3 font-medium">{data.text}</p>
+          <div className="relative" key={data.text}>
+            {data.newValue > 0 && (
+              <span className="absolute -top-2 -right-2 w-6 p-2 h-6 bg-red-600 text-white flex justify-center items-center rounded-full text-sm">
+                {data.newValue}
+              </span>
+            )}
+            <div
+              className={`${data.bgColor} rounded-lg flex items-center justify-between p-6 text-white`}
+            >
+              <div>
+                <div>{data.icon}</div>
+                <p className="mt-3 font-medium">{data.text}</p>
+              </div>
+              <p className="text-3xl font-semibold">{data.value}</p>
             </div>
-            <p className="text-3xl font-semibold">{data.value}</p>
           </div>
         ))}
       </div>

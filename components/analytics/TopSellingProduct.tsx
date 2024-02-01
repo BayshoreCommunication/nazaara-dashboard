@@ -10,6 +10,8 @@ const TopSellingProduct = () => {
   const { data: ordersData, isLoading: orderLoading } =
     useGetTopOrdersProductQuery();
 
+  console.log("ordersData", ordersData);
+
   return orderLoading ? (
     <Loader height="h-[85vh]" />
   ) : (
@@ -27,30 +29,30 @@ const TopSellingProduct = () => {
           <thead className="">
             <tr>
               <th>Image</th>
-              <th>Product Name</th>
+              <th>Sku</th>
               <th>Total Order</th>
               <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            {ordersData?.data.map((elem, i) => (
-              <tr key={i}>
+            {ordersData?.data.map((elem: any) => (
+              <tr key={elem.productDetails._id}>
                 <td>
                   <Image
-                    src={elem.product[0].imgUrl}
-                    alt=""
+                    src={elem.productDetails.variant[0].imageUrl[0]}
+                    alt="product image"
                     width={60}
                     height={60}
                     className="rounded-md"
                   />
                 </td>
-                <td>{`${elem.product[0].title.slice(0, 25)}...`}</td>
-                <td>{elem.product.length}</td>
+                <td>{elem.productDetails.sku}</td>
+                <td>{elem.totalOrders}</td>
                 <td>
                   <div>
                     <span className="text-[#3b7ffd]"> </span>
                     <Link
-                      href={`/products/update-product/${elem._id}`}
+                      href={`/products/update-product/${elem.productDetails._id}`}
                       className="text-[#5B94FC]"
                     >
                       Edit
