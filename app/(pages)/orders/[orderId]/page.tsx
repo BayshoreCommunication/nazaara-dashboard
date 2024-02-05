@@ -1081,11 +1081,11 @@ const OrderUpdate = ({ params }: any) => {
                   <p>Due: {orderData?.data?.due}/-</p>
                 </div>
               </div>
-              <div className="modal-action">
+              {/* <div className="modal-action">
                 <label className="flex gap-2" htmlFor="invoice-model">
                   <PrimaryButton name={`Download Invoice`} />
                 </label>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

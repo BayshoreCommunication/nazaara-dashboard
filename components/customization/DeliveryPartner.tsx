@@ -148,7 +148,7 @@ const DeliveryPartner = () => {
               onClick={handleUpdateOnClick}
               type="submit"
             >
-              Update Product Image
+              Update Image
             </button>
           </div>
         </div>

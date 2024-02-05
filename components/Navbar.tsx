@@ -12,6 +12,7 @@ const Navbar = () => {
   const [userCredential, setUserCredential] = useState({
     email: "",
     fullName: "",
+    imageUrl: "",
   });
 
   const jsonStr = getCookie("adminCredential");
@@ -19,9 +20,12 @@ const Navbar = () => {
   useEffect(() => {
     if (jsonStr != null) {
       const obj = JSON.parse(jsonStr);
-      // console.log("obj", obj);
-
-      setUserCredential({ email: obj.email, fullName: obj.fullName });
+      console.log("obj", obj);
+      setUserCredential({
+        email: obj.email,
+        fullName: obj.fullName,
+        imageUrl: obj.imageUrl,
+      });
     }
   }, [jsonStr]);
 
@@ -48,17 +52,20 @@ const Navbar = () => {
             />
           </Link>
         </div>
-        <div className="flex flex-[6] gap-x-6 items-center justify-end">
+        <div className="flex flex-[6] gap-x-2 items-center justify-end">
           {/* <AiOutlineBell color="gray" size={26} /> */}
-          {/* <div>
-            <Image
-              src="https://res.cloudinary.com/nazaara/image/upload/v1692621035/users/login_c43wh2.png"
-              alt="nazaara main logo"
-              width={600}
-              height={600}
-              className="w-[36px] h-[36px] rounded-full"
-            />
-          </div> */}
+          {userCredential.imageUrl && (
+            <div>
+              <Image
+                src={userCredential.imageUrl}
+                alt="nazaara main logo"
+                width={600}
+                height={600}
+                className="w-[36px] h-[36px] rounded-full"
+              />
+            </div>
+          )}
+
           <div className="group relative">
             <div className="text-gray-500 flex items-center">
               <div>

@@ -3,8 +3,10 @@
 import axios from "axios";
 import { setCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
-import { FC } from "react";
+import { FC, useState } from "react";
 import toast from "react-hot-toast";
+import Loader from "./Loader";
+import { BeatLoader } from "react-spinners";
 
 interface LoginSubmitProps {
   email: string;
@@ -12,18 +14,21 @@ interface LoginSubmitProps {
 }
 
 const LoginForm: FC = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-
   const loginSubmit = async (loginData: LoginSubmitProps) => {
+    setIsLoading(true);
     await axios
       .post(`${process.env.API_URL}/api/v1/auth/login`, loginData)
       .then((response) => {
+        // console.log("login response", response);
         setCookie("token", response.data.token, {
           maxAge: 1 * 20 * 60 * 60 * 1000,
         });
         setCookie("adminCredential", JSON.stringify(response.data.user), {
           maxAge: 1 * 20 * 60 * 60 * 1000,
         });
+        setIsLoading(false);
         toast.success("Login Successful");
         router.push("/");
       })
@@ -54,7 +59,7 @@ const LoginForm: FC = () => {
             type="email"
             required
             name="email"
-            className="bg-gray-50 border border-gray-300 sm:text-sm rounded-lg focus:outline-none focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            className="bg-gray-50 border border-gray-300 sm:text-sm rounded-lg focus:outline-none focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
             placeholder="name@company.com"
           />
         </div>
@@ -67,14 +72,14 @@ const LoginForm: FC = () => {
             required
             name="password"
             placeholder="••••••••"
-            className="bg-gray-50 border border-gray-300 sm:text-sm rounded-lg focus:outline-none focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            className="bg-gray-50 border border-gray-300 sm:text-sm rounded-lg focus:outline-none focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
           />
         </div>
         <button
           type="submit"
-          className=" w-full text-white bg-secondary transition-colors ease-in-out duration-500 hover:bg-[#5c0505] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+          className=" w-full text-white bg-secondary transition-colors ease-in-out duration-500 hover:bg-[#5c0505] focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center flex items-center gap-1 justify-center"
         >
-          Sign In
+          {isLoading ? <BeatLoader color="#fff" size={10} /> : "Sign In"}
         </button>
       </form>
     </div>
