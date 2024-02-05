@@ -48,7 +48,7 @@ const AreaChart: React.FC = () => {
           // Move current month's data to the end of the array
           // orderCountByMonth.push(orderCountByMonth.shift());
 
-          console.log("orderCountByMonth", orderCountByMonth);
+          // console.log("orderCountByMonth", orderCountByMonth);
 
           const series = {
             monthDataSeries1: {

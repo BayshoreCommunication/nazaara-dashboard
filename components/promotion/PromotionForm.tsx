@@ -95,7 +95,7 @@ const PromotionForm = () => {
         status: promotionData.status,
       };
       const promotion = await createPromotion(createData);
-      console.log("create promoton data", promotion);
+      // console.log("create promoton data", promotion);
 
       if ((promotion as any)?.data?.success) {
         toast.success("Promotion created successfully", { duration: 3000 });

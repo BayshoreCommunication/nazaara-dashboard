@@ -27,8 +27,8 @@ const TopLeftCarosel = () => {
 
   const customizeData = data?.data?.homeCarosel;
 
-  console.log("home carosel data", customizeData);
-  console.log("formData", formData);
+  // console.log("home carosel data", customizeData);
+  // console.log("formData", formData);
 
   useEffect(() => {
     if (customizeData) {

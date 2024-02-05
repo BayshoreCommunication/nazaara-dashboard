@@ -50,10 +50,10 @@ const OrderMeasurement: React.FC<OrderMeasurementProps> = ({
     },
   });
 
-  console.log("size chart id", sizeChartId);
-  console.log("uniqId", uniqId);
-  console.log("formData", formData);
-  console.log("orderData", orderData);
+  // console.log("size chart id", sizeChartId);
+  // console.log("uniqId", uniqId);
+  // console.log("formData", formData);
+  // console.log("orderData", orderData);
 
   const authenticateUserInfo = getAuthenticateUserInfo();
 

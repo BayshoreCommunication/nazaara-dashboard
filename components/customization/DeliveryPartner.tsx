@@ -21,7 +21,7 @@ const DeliveryPartner = () => {
 
   const [images, setImages] = useState<{ data_url: string }[]>([]);
 
-  console.log("images", images);
+  // console.log("images", images);
 
   const maxNumber = 20;
 

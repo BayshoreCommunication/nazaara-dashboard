@@ -2,13 +2,13 @@
 import { ReactNode } from "react";
 import { setupStore } from "../store/store";
 import { Provider } from "react-redux";
-import { checkIsLoggedIn } from "@/helpers";
 import dynamic from "next/dynamic";
+import { CheckIsLoggedIn } from "@/helpers/checkIsLoggedIn";
 
 const store = setupStore();
 
 const Providers = ({ children }: { children: ReactNode }) => {
-  checkIsLoggedIn();
+  CheckIsLoggedIn();
 
   return <Provider store={store}>{children}</Provider>;
 };

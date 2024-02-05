@@ -74,7 +74,7 @@ const SubCategory: FC = () => {
     },
   ]);
 
-  console.log("filtered data", filteredData);
+  // console.log("filtered data", filteredData);
 
   const [selectedValue, setSelectedValue] = useState<string>("");
   const handleEditCategory = (id: string) => {
@@ -82,7 +82,7 @@ const SubCategory: FC = () => {
       (item: any) => item._id === id
     );
 
-    console.log("filterererere", filtered);
+    // console.log("filterererere", filtered);
 
     setFilteredData([
       {
@@ -278,13 +278,15 @@ const SubCategory: FC = () => {
                       <label className="font-medium" htmlFor="status">
                         Image:
                       </label>
-                      <Image
-                        src={filteredData[0].imageUrl}
-                        alt="advertisement image"
-                        width={100}
-                        height={80}
-                        className="mb-2 mt-1"
-                      />
+                      {filteredData[0].imageUrl && (
+                        <Image
+                          src={filteredData[0].imageUrl}
+                          alt="advertisement image"
+                          width={100}
+                          height={80}
+                          className="mb-2 mt-1"
+                        />
+                      )}
                       <input
                         type="file"
                         id="imageUpload"

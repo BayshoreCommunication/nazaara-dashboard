@@ -39,7 +39,7 @@ const LoginForm: FC = () => {
       email: e ? e.target.email.value : "",
       password: e ? e.target.password.value : "",
     };
-    console.log("event", formData);
+    // console.log("event", formData);
     loginSubmit(formData);
   };
 

@@ -33,7 +33,7 @@ export const cloudinaryImageDelete = async (publicId: string) => {
       timestamp: timestamp,
     });
 
-    console.log("Image deleted from Cloudinary:", response);
+    // console.log("Image deleted from Cloudinary:", response);
   } catch (error) {
     console.error("Error deleting image from Cloudinary:", error);
     throw error;

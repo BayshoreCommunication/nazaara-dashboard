@@ -55,8 +55,8 @@ const AboutUsComponent = () => {
   );
   const customizeData = data?.data?.aboutUs;
 
-  console.log("customize about us data", customizeData);
-  console.log("form data", formData);
+  // console.log("customize about us data", customizeData);
+  // console.log("form data", formData);
 
   useEffect(() => {
     if (customizeData) {

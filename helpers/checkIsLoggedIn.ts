@@ -2,7 +2,7 @@
 import { useRouter } from "next/navigation";
 import { getCookie } from "cookies-next";
 
-const checkIsLoggedIn = () => {
+export const CheckIsLoggedIn = () => {
   const router = useRouter();
 
   fetch(`${process.env.API_URL}/api/v1/user/isLoggedIn`, {
@@ -21,8 +21,6 @@ const checkIsLoggedIn = () => {
       }
     })
     .catch((err) => {
-      console.log("is logged in error", err);
+      console.error("is logged in error", err);
     });
 };
-
-export { checkIsLoggedIn };

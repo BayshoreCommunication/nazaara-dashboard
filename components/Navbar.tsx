@@ -2,7 +2,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { AiOutlineBell } from "react-icons/ai";
 import { FaAngleDown, FaAngleUp } from "react-icons/fa";
 import { deleteCookie } from "cookies-next";
 import { getCookie } from "cookies-next";
@@ -20,6 +19,8 @@ const Navbar = () => {
   useEffect(() => {
     if (jsonStr != null) {
       const obj = JSON.parse(jsonStr);
+      // console.log("obj", obj);
+
       setUserCredential({ email: obj.email, fullName: obj.fullName });
     }
   }, [jsonStr]);
@@ -48,8 +49,8 @@ const Navbar = () => {
           </Link>
         </div>
         <div className="flex flex-[6] gap-x-6 items-center justify-end">
-          <AiOutlineBell color="gray" size={26} />
-          <div>
+          {/* <AiOutlineBell color="gray" size={26} /> */}
+          {/* <div>
             <Image
               src="https://res.cloudinary.com/nazaara/image/upload/v1692621035/users/login_c43wh2.png"
               alt="nazaara main logo"
@@ -57,14 +58,14 @@ const Navbar = () => {
               height={600}
               className="w-[36px] h-[36px] rounded-full"
             />
-          </div>
+          </div> */}
           <div className="group relative">
             <div className="text-gray-500 flex items-center">
               <div>
-                <p className="text-[#11142D] text-sm">
+                <p className="text-[#11142D] text-sm font-medium">
                   {userCredential.fullName}
                 </p>
-                <p className="text-xs">{userCredential.email}</p>
+                <p className="text-xs font-medium">{userCredential.email}</p>
               </div>
               <FaAngleDown
                 size={20}
@@ -77,14 +78,14 @@ const Navbar = () => {
                 className="hidden group-hover:block"
               />
             </div>
-            <div className="w-32 h-3 absolute"></div>
-            <div className="w-32 bg-basic hidden group-hover:block absolute right-2 top-12 z-10 text-center">
+            <div className="w-full h-3 absolute"></div>
+            <div className="w-full bg-basic hidden group-hover:block absolute right-2 top-12 z-10 text-center">
               {/* <p className="w-full hover:bg-secondary border py-1">setting</p> */}
               <button
                 onClick={handleLogOut}
-                className="w-full hover:bg-secondary hover:text-white border py-1 rounded-sm"
+                className="w-full hover:bg-secondary text-gray-600 hover:text-white border py-2 rounded-sm font-medium text-xs"
               >
-                Log Out
+                LOG OUT
               </button>
             </div>
           </div>

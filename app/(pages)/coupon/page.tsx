@@ -17,7 +17,7 @@ import Swal from "sweetalert2";
 const Discount: FC = () => {
   const { data: couponData, isLoading, refetch } = useGetCouponsQuery();
 
-  console.log("coupon data", couponData);
+  // console.log("coupon data", couponData);
 
   const [createCoupon] = useCreateCouponMutation();
 

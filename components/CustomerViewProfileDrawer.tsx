@@ -18,6 +18,7 @@ import {
 import { formatYearMonthDay } from "@/helpers/formatYearMonthDay";
 import { IoEyeSharp } from "react-icons/io5";
 import Link from "next/link";
+import Loader from "./Loader";
 
 interface IDrawer {
   isOpen: boolean;
@@ -32,12 +33,18 @@ const CustomerViewProfileDrawer: React.FC<IDrawer> = ({
   toggleDrawer,
   selectedCustomerId,
 }) => {
-  const { data: singleData } = useGetUserByIdQuery(selectedCustomerId);
+  const { data: singleData, isLoading } =
+    useGetUserByIdQuery(selectedCustomerId);
+
+  if (isLoading) {
+    <Loader height="h-[40vh]" />;
+  }
+
   const { data: orderData } = useGetOrderByUserIdQuery(
     singleData?.data._id as string
   );
 
-  console.log("order Data", orderData);
+  // console.log("order Data", orderData);
 
   //generate order book data
   const addressBookData = () => {
@@ -50,12 +57,12 @@ const CustomerViewProfileDrawer: React.FC<IDrawer> = ({
           <span className="px-2 rounded-sm bg-gray-200 text-green-600 w-max">
             {data.addressType}
           </span>
-          <p>{data.fullName}</p>
-          <p>{data.phone}</p>
-          <p>{data.street}</p>
-          <p>
+          <span>{data.fullName}</span>
+          <span>{data.phone}</span>
+          <span>{data.street}</span>
+          <span>
             {data.city},{data.country}
-          </p>
+          </span>
         </div>
       ));
     } else {
@@ -166,7 +173,9 @@ const CustomerViewProfileDrawer: React.FC<IDrawer> = ({
                         )}
                       </>
                     ) : (
-                      <p className="py-6">No Order Found!</p>
+                      <tr className="py-6">
+                        <td>No Order Found!</td>
+                      </tr>
                     )}
                   </tbody>
                 </table>

@@ -1,14 +1,19 @@
 "use client";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { useGetStockProductDtlsQuery } from "@/services/productApi";
 import Image from "next/image";
 import Loader from "../Loader";
 
 const StockOut = () => {
+  const [isSlice, setIsSlice] = useState(true);
   const { data: productsData, isLoading: productLoading } =
     useGetStockProductDtlsQuery();
+
+  // console.log("products stock out", productsData);
+  const slicedProduct = productsData?.product.slice(0, 10);
+  // console.log("slicedProduct", slicedProduct);
 
   return productLoading ? (
     <Loader height="h-[85vh]" />
@@ -37,58 +42,76 @@ const StockOut = () => {
             </tr>
           </thead>
           <tbody>
-            {!productsData ? ( // if erpData is not available
-              <tr>
-                <td colSpan={8}>
-                  <div className="flex justify-center items-center">
-                    <Loader height="h-[60vh]" />
-                  </div>
-                </td>
-              </tr>
-            ) : productsData?.product?.length > 0 ? (
-              productsData?.product.map((elem, index) => (
-                <tr key={elem._id}>
-                  <td>
-                    <Image
-                      src={elem.variant[0].imageUrl[0]}
-                      alt=""
-                      width={60}
-                      height={60}
-                    />
-                  </td>
-                  <td>{elem.productName.slice(0, 25)}</td>
-                  <td>{elem.erpCategory}</td>
-                  <td>{elem.erpSubCategory}</td>
-                  <td>{elem.salePrice}</td>
-                  <td>{elem.regularPrice}</td>
-                  <td>{elem.stock}</td>
-                  <td>
-                    <div>
-                      <span className="text-[#3b7ffd]"> </span>
-                      <Link
-                        href={`/products/update-product/${elem._id}`}
-                        className="text-[#5B94FC]"
-                      >
-                        Edit
-                      </Link>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={8}>
-                  <div className="flex justify-center items-center h-[20vh]">
-                    <span className="text-lg font-medium text-gray-500">
-                      No products found
-                    </span>
-                  </div>
-                </td>
-              </tr>
-            )}
+            {!isSlice && productsData && productsData?.product?.length > 0
+              ? productsData?.product.map((elem) => (
+                  <tr key={elem._id}>
+                    <td>
+                      <Image
+                        src={elem.variant[0].imageUrl[0]}
+                        alt=""
+                        width={60}
+                        height={60}
+                      />
+                    </td>
+                    <td>{elem.productName.slice(0, 25)}</td>
+                    <td>{elem.erpCategory}</td>
+                    <td>{elem.erpSubCategory}</td>
+                    <td>{elem.salePrice}</td>
+                    <td>{elem.regularPrice}</td>
+                    <td>{elem.stock}</td>
+                    <td>
+                      <div>
+                        <span className="text-[#3b7ffd]"> </span>
+                        <Link
+                          href={`/products/update-product/${elem._id}`}
+                          className="text-[#5B94FC]"
+                        >
+                          Edit
+                        </Link>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              : slicedProduct?.map((elem) => (
+                  <tr key={elem._id}>
+                    <td>
+                      <Image
+                        src={elem.variant[0].imageUrl[0]}
+                        alt=""
+                        width={60}
+                        height={60}
+                      />
+                    </td>
+                    <td>{elem.productName.slice(0, 25)}</td>
+                    <td>{elem.erpCategory}</td>
+                    <td>{elem.erpSubCategory}</td>
+                    <td>{elem.salePrice}</td>
+                    <td>{elem.regularPrice}</td>
+                    <td>{elem.stock}</td>
+                    <td>
+                      <div>
+                        <span className="text-[#3b7ffd]"> </span>
+                        <Link
+                          href={`/products/update-product/${elem._id}`}
+                          className="text-[#5B94FC]"
+                        >
+                          Edit
+                        </Link>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
           </tbody>
         </table>
       </div>
+      {slicedProduct && slicedProduct?.length > 10 && (
+        <button
+          onClick={() => setIsSlice(!isSlice)}
+          className="text-xs font-medium text-secondary ml-4 mt-2"
+        >
+          {isSlice ? "SHOW ALL" : "SHOW LESS"}
+        </button>
+      )}
     </div>
   );
 };

@@ -59,7 +59,7 @@ const Editor = (props: any) => {
     });
   };
 
-  console.log("text for quill", text);
+  // console.log("text for quill", text);
 
   useEffect(() => {
     if (props.formData?.description) {

@@ -43,7 +43,7 @@ const NavAdvertisementForm: FC<CategoryFormProps> = ({
     try {
       const data = await createNavAdvertisement(formData);
 
-      console.log("data", data);
+      // console.log("data", data);
 
       if (data) {
         toast.success("New SubCategory Created", { duration: 3000 });

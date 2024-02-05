@@ -51,7 +51,11 @@ const PromotionList: FC<promotionProps> = ({
         (data) => data._id === categoryId
       );
       return (
-        <span className="bg-gray-200 px-1 !w-max">{category?.title}</span> || ""
+        (
+          <span key={categoryId} className="bg-gray-200 px-1 !w-max">
+            {category?.title}
+          </span>
+        ) || ""
       );
     });
   };
@@ -65,7 +69,13 @@ const PromotionList: FC<promotionProps> = ({
       const category = subCategoryData?.data.find(
         (data) => data._id === subCategoryId
       );
-      return <span className="bg-gray-200 px-1">{category?.title}</span> || "";
+      return (
+        (
+          <span key={subCategoryId} className="bg-gray-200 px-1">
+            {category?.title}
+          </span>
+        ) || ""
+      );
     });
   };
 
@@ -92,7 +102,7 @@ const PromotionList: FC<promotionProps> = ({
         <tbody>
           {promotions.data.map((data, index) => {
             return (
-              <tr key={data._id}>
+              <tr key={index}>
                 <td>{index + 1}</td>
                 <td>{data.title}</td>
                 <td>{data.promotionOn}</td>
@@ -102,11 +112,6 @@ const PromotionList: FC<promotionProps> = ({
                 <td>{getSubCategoryTitles(data.subCategoryId)}</td>
                 <td>{formatYearMonthDay(data.startDate)}</td>
                 <td>{formatYearMonthDay(data.expireDate)}</td>
-                {/* <td>
-                {data.discountOff}
-                {data.discountType === "percentage" ? "%" : "tk"}
-              </td>
-              <td>{formattedDate}</td> */}
                 <td
                   className={`font-medium ${
                     data.freeShipping ? "text-green-500" : "text-red-500"

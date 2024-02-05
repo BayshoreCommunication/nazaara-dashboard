@@ -10,7 +10,7 @@ const TopSellingProduct = () => {
   const { data: ordersData, isLoading: orderLoading } =
     useGetTopOrdersProductQuery();
 
-  console.log("ordersData", ordersData);
+  // console.log("ordersData", ordersData);
 
   return orderLoading ? (
     <Loader height="h-[85vh]" />

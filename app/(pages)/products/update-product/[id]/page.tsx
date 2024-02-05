@@ -105,7 +105,7 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
   const { data: categories } = useGetCategoriesQuery();
   const { data: subCategories } = useGetSubCategoriesQuery();
 
-  console.log("subcategories", subCategories);
+  // console.log("subcategories", subCategories);
 
   // const { data: sales } = useGetSalesQuery();
   // const singleProductId = params.id as number;
@@ -137,7 +137,7 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
     refetch,
   } = useGetProductByIdQuery(params.id);
 
-  console.log("erp data", productsData);
+  // console.log("erp data", productsData);
 
   useEffect(() => {
     if (productsData) {
@@ -175,7 +175,7 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
     }
   }, [productsData]);
 
-  console.log("form data", formData);
+  // console.log("form data", formData);
 
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -292,7 +292,7 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
     };
 
     // console.log("form data", formData);
-    console.log("submit form", submitData);
+    // console.log("submit form", submitData);
 
     // color should be toCapitalize before sending to backend
 

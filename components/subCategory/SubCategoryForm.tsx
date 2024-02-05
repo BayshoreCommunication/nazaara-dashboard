@@ -41,7 +41,7 @@ const SubCategoryForm: FC<CategoryFormProps> = ({ setFormData, formData }) => {
     try {
       const data = await createSubCategory(formData);
 
-      console.log("data", data);
+      // console.log("data", data);
 
       if (data) {
         toast.success("New SubCategory Created", { duration: 3000 });

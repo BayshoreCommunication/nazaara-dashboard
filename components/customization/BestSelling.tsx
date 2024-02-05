@@ -42,7 +42,7 @@ const BestSelling = () => {
   const { data: bestSellingData, isLoading: bestSellingLoading } =
     useGetBestSellingQuery(); //get all the best selling data
 
-  console.log("best selling data", bestSellingData);
+  // console.log("best selling data", bestSellingData);
 
   useEffect(() => {
     if (bestSellingData) {

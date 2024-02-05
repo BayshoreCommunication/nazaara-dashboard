@@ -55,7 +55,7 @@ const SaleTag = () => {
     label: elem.sku,
   }));
 
-  console.log("sale filteredData", filteredData);
+  // console.log("sale filteredData", filteredData);
 
   const { data: salesData, isLoading, isError } = useGetSalesQuery();
   const [deleteSale] = useDeleteSaleMutation();
@@ -84,7 +84,7 @@ const SaleTag = () => {
 
   const handleEditSale = (id: string) => {
     const filtered: any = salesData?.data?.find((item: any) => item._id === id);
-    console.log("filterererere", filtered);
+    // console.log("filterererere", filtered);
     setFilteredData({
       _id: filtered._id,
       title: filtered.title,
@@ -152,7 +152,7 @@ const SaleTag = () => {
         products: filteredData.products.map((product: any) => product.value),
         status: filteredData.status,
       };
-      console.log("updated data", updatedData);
+      // console.log("updated data", updatedData);
 
       const updatedCategory = await updateSale({
         id: filteredData?._id,
@@ -185,63 +185,67 @@ const SaleTag = () => {
                 <th>Action</th>
               </tr>
             </thead>
-            {salesData?.data?.map((elem, index) => (
-              <tr key={elem._id}>
-                <td>{index + 1}</td>
-                <td>
-                  <Image
-                    src={elem.featuredImage}
-                    alt="Sale Feature Image"
-                    width={80}
-                    height={60}
-                    className="rounded-md"
-                  />
-                </td>
-                <td>{elem.title}</td>
-                <td>
-                  <span className="flex flex-wrap gap-2">
-                    {elem.products.map((data) => (
-                      <Link
-                        href={`/products/update-product/${data._id}`}
-                        className="bg-gray-200 px-1"
-                        key={data._id}
+            <tbody>
+              {salesData?.data?.map((elem, index) => (
+                <tr key={elem._id}>
+                  <td>{index + 1}</td>
+                  <td>
+                    <Image
+                      src={elem.featuredImage}
+                      alt="Sale Feature Image"
+                      width={80}
+                      height={60}
+                      className="rounded-md"
+                    />
+                  </td>
+                  <td>{elem.title}</td>
+                  <td>
+                    <span className="flex flex-wrap gap-2">
+                      {elem.products.map((data) => (
+                        <Link
+                          href={`/products/update-product/${data._id}`}
+                          className="bg-gray-200 px-1"
+                          key={data._id}
+                        >
+                          {data.sku}
+                        </Link>
+                      ))}
+                    </span>
+                  </td>
+                  {/* <td>{showLastNLeters(elem.products, 7)}</td> */}
+                  <td
+                    className={`font-semibold ${
+                      elem.status === "draft"
+                        ? "text-red-500"
+                        : "text-green-500"
+                    }`}
+                  >
+                    {elem.status}
+                  </td>
+                  <td>
+                    <span className="flex">
+                      <label
+                        htmlFor="modal-handle-sale"
+                        onClick={() => handleEditSale(elem._id as string)}
+                        className="cursor-pointer"
                       >
-                        {data.sku}
-                      </Link>
-                    ))}
-                  </span>
-                </td>
-                {/* <td>{showLastNLeters(elem.products, 7)}</td> */}
-                <td
-                  className={`font-semibold ${
-                    elem.status === "draft" ? "text-red-500" : "text-green-500"
-                  }`}
-                >
-                  {elem.status}
-                </td>
-                <td>
-                  <span className="flex">
-                    <label
-                      htmlFor="modal-handle-sale"
-                      onClick={() => handleEditSale(elem._id as string)}
-                      className="cursor-pointer"
-                    >
-                      <TbEdit color="green" size={20} />
-                    </label>
-                    <button
-                      onClick={() =>
-                        handleDeleteCategory(
-                          elem._id as string,
-                          elem.featuredImage as string
-                        )
-                      }
-                    >
-                      <MdDelete color="red" size={20} />
-                    </button>
-                  </span>
-                </td>
-              </tr>
-            ))}
+                        <TbEdit color="green" size={20} />
+                      </label>
+                      <button
+                        onClick={() =>
+                          handleDeleteCategory(
+                            elem._id as string,
+                            elem.featuredImage as string
+                          )
+                        }
+                      >
+                        <MdDelete color="red" size={20} />
+                      </button>
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
           </table>
         </div>
         <div className="flex-[3]">

@@ -160,7 +160,7 @@ const Products: any = () => {
           },
         }
       );
-      console.log("Fetched data:", response.data);
+      // console.log("Fetched data:", response.data);
     } catch (error) {
       console.error("Request error:", error);
     }
