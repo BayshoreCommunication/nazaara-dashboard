@@ -173,6 +173,7 @@ const SubCategory: FC = () => {
       {/* show all category  */}
       <div className="flex-[6] overflow-x-auto">
         <h1 className="text-lg font-semibold mb-2">All Sub Categories</h1>
+        <p className="text-sm mb-2">Recommended image size: ( 335 x 384 )</p>
         <SubCategoryList
           subCategories={subcategories?.data as TSubCategoryData[]} // convert data to TCategoryData type array
           handleEditCategory={handleEditCategory}

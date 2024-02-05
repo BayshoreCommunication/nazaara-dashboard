@@ -211,10 +211,11 @@ const AboutUsComponent = () => {
                 * When choose any image it will automatically upload in the
                 server and destroy previous image
               </p>
-              <p className="">
+              <p className="mb-1">
                 {`* So after changing any image if you don't update the data
             then the previous image will not found.`}
               </p>
+              <p>* Recommended image size: ( 260 x 296 )</p>
             </div>
             <div>
               <label

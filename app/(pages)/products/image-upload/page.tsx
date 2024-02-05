@@ -123,6 +123,9 @@ const ImageUpload: FC = () => {
     <div className="container">
       <h1 className="text-2xl font-bold mb-3">Add Image</h1>
       <div className="flex flex-col gap-y-5">
+        <span className="text-sm">
+          Recommended image size: 1280 x 1706 ( Ratio= 3 : 4 )
+        </span>
         {product?.data.variant.map((elem: any, variantIndex: number) => (
           <div
             key={variantIndex}

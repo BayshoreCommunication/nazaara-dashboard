@@ -175,6 +175,7 @@ const SubCategory: FC = () => {
       {/* show all category  */}
       <div className="flex-[6] overflow-x-auto">
         <h1 className="text-lg font-semibold mb-2">All Nav-Advertisements</h1>
+        <p className="text-sm mb-2">Recommended image size: ( 539 x 214 )</p>
         <NavAdvertisementList
           navAdvertisementData={
             navAdvertisementData?.data as TNavAdvertisement[]

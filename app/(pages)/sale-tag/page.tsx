@@ -174,6 +174,7 @@ const SaleTag = () => {
       <div className="flex gap-10 container">
         <div className="flex-[6] overflow-x-auto">
           <h1 className="text-lg font-semibold mb-2">Sale Tags</h1>
+          <p className="text-sm mb-2">Recommended image size: ( 404 x 474 )</p>
           <table className="overflow-auto table bg-basic">
             <thead>
               <tr>

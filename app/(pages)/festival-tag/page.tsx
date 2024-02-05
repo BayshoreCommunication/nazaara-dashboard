@@ -21,6 +21,7 @@ import { FestivalTagForm } from "@/components/festivalTag";
 import {
   useDeleteFestivalMutation,
   useGetFestivalsQuery,
+  useUpdateFestivalMutation,
 } from "@/services/festivalsApi";
 const Select = dynamic(() => import("react-select"), {
   ssr: false,
@@ -149,7 +150,7 @@ const FestivalTag = () => {
     }
   };
 
-  const [updateSale] = useUpdateSaleMutation();
+  const [updateSale] = useUpdateFestivalMutation();
 
   const handleUpdateSale = async (event: FormEvent) => {
     event.preventDefault();
@@ -182,6 +183,7 @@ const FestivalTag = () => {
       <div className="flex gap-10 container">
         <div className="flex-[6] overflow-x-auto">
           <h1 className="text-lg font-semibold mb-2">Festival Tags</h1>
+          <p className="text-sm mb-2">Recommended image size: ( 404 x 474 )</p>
           <table className="overflow-auto table bg-basic">
             <thead>
               <tr>
@@ -278,7 +280,7 @@ const FestivalTag = () => {
                 </label>
                 <div className="flex-[3]">
                   <h1 className="text-lg font-semibold mb-2 ml-3">
-                    Update Sale
+                    Update Festival
                   </h1>
                   <div className="mb-4 text-red-500 text-xs font-medium">
                     <p className="mb-1">
@@ -296,7 +298,7 @@ const FestivalTag = () => {
                   >
                     <div>
                       <label className="font-medium" htmlFor="name">
-                        Sale Title:
+                        Festival Title:
                       </label>
                       <input
                         className="block w-full p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"

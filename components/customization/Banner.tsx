@@ -222,6 +222,9 @@ const Banner = () => {
                 </div>
               )}
             </ImageUploading>
+            <p className="text-sm mb-2">
+              Recommended image size: ( 1900 x 582 )
+            </p>
           </div>
           <div className="flex justify-end">
             <button
