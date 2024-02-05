@@ -86,7 +86,8 @@ const SubCategory: FC = () => {
       (item: any) => item._id === id
     );
 
-    // console.log("filterererere", filtered);
+    console.log("filter data", filteredData);
+    console.log("filterererere", filtered);
 
     setFilteredData(filtered);
     setSelectedValue(filtered[0].status);
@@ -221,15 +222,15 @@ const SubCategory: FC = () => {
                   >
                     <div>
                       <label className="font-medium" htmlFor="name">
-                        SubCategory Name:
+                        SubCategory Title:
                       </label>
                       <input
                         className="block w-full p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
                         type="text"
                         name="title"
                         required
-                        onChange={handleChangeFormData}
                         defaultValue={filteredData[0].title}
+                        onChange={handleChangeFormData}
                       />
                     </div>
                     <div className="mb-2">
@@ -240,7 +241,7 @@ const SubCategory: FC = () => {
                         className="w-full border border-gray-400 rounded-sm p-2 focus:outline-none text-gray-500"
                         required
                         name="category"
-                        defaultValue={filteredData[0].category}
+                        value={(filteredData[0] as any).category._id}
                         onChange={handleChangeFormData}
                       >
                         <option value="">Choose Category</option>
