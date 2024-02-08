@@ -87,7 +87,7 @@ const Orders = () => {
           </div>
           {/*********** search user input end ************/}
         </div>
-        <div className="overflow-x-auto">
+        <div className="overflow-auto">
           <table className="table bg-basic">
             {/* head */}
             <thead className="">

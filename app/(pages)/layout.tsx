@@ -18,7 +18,7 @@ const PageLayout = ({ children }: { children: ReactNode }) => {
           <div className="w-[16%] 2xl:w-[13%]">
             <Sidebar />
           </div>
-          <main className="bg-primary w-full">{children}</main>
+          <main className="bg-primary w-full overflow-hidden">{children}</main>
         </div>
       </Providers>
     </div>
