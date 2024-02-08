@@ -1,4 +1,3 @@
-import { formatDate } from "@/helpers/formatDate";
 import { formatYearMonthDay } from "@/helpers/formatYearMonthDay";
 import { useGetCategoriesQuery } from "@/services/categoryApi";
 import { useDeleteAPromotionMutation } from "@/services/promotionApi";
@@ -52,7 +51,10 @@ const PromotionList: FC<promotionProps> = ({
       );
       return (
         (
-          <span key={categoryId} className="bg-gray-200 px-1 !w-max">
+          <span
+            key={categoryId}
+            className="bg-slate-200 w-max px-1 rounded text-xs font-medium py-[2px]"
+          >
             {category?.title}
           </span>
         ) || ""
@@ -71,9 +73,12 @@ const PromotionList: FC<promotionProps> = ({
       );
       return (
         (
-          <span key={subCategoryId} className="bg-gray-200 px-1">
+          <div
+            key={subCategoryId}
+            className="bg-slate-200 w-max px-1 rounded text-xs font-medium py-[2px]"
+          >
             {category?.title}
-          </span>
+          </div>
         ) || ""
       );
     });
@@ -106,10 +111,16 @@ const PromotionList: FC<promotionProps> = ({
                 <td>{index + 1}</td>
                 <td>{data.title}</td>
                 <td>{data.promotionOn}</td>
-                <td className="flex gap-1 flex-wrap">
-                  {getCategoryTitles(data.categoryId)}
+                <td>
+                  <div className="flex gap-1 flex-wrap">
+                    {getCategoryTitles(data.categoryId)}
+                  </div>
                 </td>
-                <td>{getSubCategoryTitles(data.subCategoryId)}</td>
+                <td>
+                  <div className="flex gap-1 flex-wrap">
+                    {getSubCategoryTitles(data.subCategoryId)}
+                  </div>
+                </td>
                 <td>{formatYearMonthDay(data.startDate)}</td>
                 <td>{formatYearMonthDay(data.expireDate)}</td>
                 <td

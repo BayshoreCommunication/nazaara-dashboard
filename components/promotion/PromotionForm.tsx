@@ -24,7 +24,7 @@ const PromotionForm = () => {
     status: "",
   });
 
-  // console.log("promotion state data", promotionData);
+  console.log("promotion state data", promotionData);
 
   const { data: categoryData } = useGetCategoriesQuery();
   const { data: subCategoryData } = useGetSubCategoriesQuery();
@@ -89,13 +89,16 @@ const PromotionForm = () => {
         subCategoryId: promotionData.subCategoryId,
         startDate: promotionData.startDate,
         expireDate: promotionData.expireDate,
-        freeshipping: promotionData.freeShipping,
+        freeShipping: promotionData.freeShipping,
         discountType: promotionData.discountType,
         discountOff: Number(promotionData.discountOff),
         status: promotionData.status,
       };
+
+      console.log("create data", createData);
+
       const promotion = await createPromotion(createData);
-      // console.log("create promoton data", promotion);
+      console.log("create promoton data", promotion);
 
       if ((promotion as any)?.data?.success) {
         toast.success("Promotion created successfully", { duration: 3000 });
