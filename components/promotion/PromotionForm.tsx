@@ -222,7 +222,7 @@ const PromotionForm = () => {
       </div>
       <div className="mb-2">
         <label className="font-medium" htmlFor="name">
-          Start Date:
+          Start Date<span className="text-red-600">*</span>
         </label>
         <input
           className="block w-full p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
@@ -238,7 +238,7 @@ const PromotionForm = () => {
       </div>
       <div className="mb-2">
         <label className="font-medium" htmlFor="name">
-          Expire Date:
+          Expire Date<span className="text-red-600">*</span>
         </label>
         <input
           className="block w-full p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
@@ -256,7 +256,7 @@ const PromotionForm = () => {
       </div>
       <div className="mb-2">
         <label className="font-medium" htmlFor="status">
-          Discount Type:
+          Discount Type<span className="text-red-600">*</span>
         </label>
         <select
           className="w-full border border-gray-400 rounded-sm p-2 focus:outline-none text-gray-500"
@@ -280,7 +280,7 @@ const PromotionForm = () => {
       </div>
       <div className="mb-2">
         <label className="font-medium" htmlFor="status">
-          Discount Off:
+          Discount Off<span className="text-red-600">*</span>
         </label>
         <input
           className="block w-full p-2 border border-gray-400 focus:outline-none text-gray-500 mt-1"
@@ -298,7 +298,7 @@ const PromotionForm = () => {
       </div>
       <div className="mb-2">
         <label className="font-medium" htmlFor="status">
-          Status:
+          Status<span className="text-red-600">*</span>
         </label>
         <select
           className="w-full border border-gray-400 rounded-sm p-2 focus:outline-none text-gray-500"

@@ -128,7 +128,7 @@ const PromotionList: FC<promotionProps> = ({
                     data.freeShipping ? "text-green-500" : "text-red-500"
                   }`}
                 >
-                  {data.freeShipping ? "true" : "false"}
+                  {data.freeShipping ? "Available" : "Unavailable"}
                 </td>
                 <td>{data.discountType}</td>
                 <td>
