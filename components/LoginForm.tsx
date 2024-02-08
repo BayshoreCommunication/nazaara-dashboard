@@ -5,7 +5,6 @@ import { setCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import { FC, useState } from "react";
 import toast from "react-hot-toast";
-import Loader from "./Loader";
 import { BeatLoader } from "react-spinners";
 
 interface LoginSubmitProps {
@@ -33,7 +32,12 @@ const LoginForm: FC = () => {
         router.push("/");
       })
       .catch((error) => {
-        toast.error(error.response.data.message);
+        // console.log("error", error);
+        if (error?.response?.status === 429) {
+          toast.error(error.response.data);
+        } else {
+          toast.error(error.response.data.message);
+        }
       });
   };
 

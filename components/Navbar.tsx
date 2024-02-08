@@ -39,8 +39,8 @@ const Navbar = () => {
 
   return (
     <div className="">
-      <div className="flex items-center bg-basic py-3 pr-9 border-b">
-        <div className="flex-1 flex justify-center">
+      <div className="flex items-center justify-between bg-basic py-3 border-b px-6">
+        <div className="flex justify-center">
           <Link href="/">
             <Image
               src="/images/nazaara-logo.png"
@@ -52,7 +52,7 @@ const Navbar = () => {
             />
           </Link>
         </div>
-        <div className="flex flex-[6] gap-x-2 items-center justify-end">
+        <div className="flex gap-x-2 items-center justify-end">
           {/* <AiOutlineBell color="gray" size={26} /> */}
           {userCredential.imageUrl && (
             <div>

@@ -4,7 +4,8 @@
 
 @layer utilities {
   .container {
-    @apply my-6 pl-2 pr-10 min-w-full;
+    /* @apply my-6 pl-2 pr-10; */
+    @apply my-6 mx-auto max-w-full px-4;
   }
 }
 

@@ -287,7 +287,9 @@ const Products: any = () => {
                         alt="nazaara main logo"
                         width={248}
                         height={248}
-                        className="w-[64px] h-[80px] rounded-md"
+                        placeholder="blur"
+                        blurDataURL={"/images/placeholder.png"}
+                        className="min-w-[66px] max-w-[66px] min-h-[80px] rounded-md"
                       />
                     ) : (
                       <Image
@@ -295,7 +297,9 @@ const Products: any = () => {
                         alt="nazaara main logo"
                         width={248}
                         height={248}
-                        className="w-[64px] h-[80px] rounded-md"
+                        placeholder="blur"
+                        blurDataURL={"/images/placeholder.png"}
+                        className="w-[66px] h-[80px] rounded-md"
                       />
                     )}
                   </td>

@@ -14,11 +14,11 @@ const PageLayout = ({ children }: { children: ReactNode }) => {
       <Providers>
         <Toaster position="top-center" reverseOrder={false} />
         <Navbar />
-        <div className="flex bg-white">
-          <div className="flex-1 flex-shrink-0">
+        <div className="w-full flex bg-white">
+          <div className="w-[16%] 2xl:w-[13%]">
             <Sidebar />
           </div>
-          <main className="flex-[6] bg-primary">{children}</main>
+          <main className="bg-primary w-full">{children}</main>
         </div>
       </Providers>
     </div>
