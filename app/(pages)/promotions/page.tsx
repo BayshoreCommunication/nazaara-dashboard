@@ -182,7 +182,7 @@ const Discount: FC = () => {
   return isLoading ? (
     <Loader height="h-[85vh]" />
   ) : (
-    <div className="flex items-start gap-6 container">
+    <div className="flex items-start gap-6 dynamic-container">
       {/* show all category  */}
       <div className="flex-[7] overflow-x-auto">
         <h1 className="text-lg font-semibold mb-2">All Promotions</h1>

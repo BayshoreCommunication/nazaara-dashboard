@@ -181,7 +181,7 @@ const OrderUpdate = ({ params }: any) => {
     : orderData?.data?.updateHistory?.slice(0, 5);
 
   return (
-    <div className="container">
+    <div className="dynamic-container">
       {orderData && (
         <>
           <div className="flex items-center justify-between mb-3">

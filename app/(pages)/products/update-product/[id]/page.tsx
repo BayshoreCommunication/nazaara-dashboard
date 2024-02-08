@@ -337,7 +337,7 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
   );
 
   return (
-    <div className="container">
+    <div className="dynamic-container">
       <h1 className="text-2xl font-bold mb-3">Update Product</h1>
       <div className="flex flex-col gap-y-5">
         {productsLoading ? (

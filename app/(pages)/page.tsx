@@ -68,7 +68,7 @@ const HomePage = async () => {
   ];
 
   return (
-    <div className="container">
+    <div className="dynamic-container">
       {/* cart  */}
       <div className="grid grid-cols-5 gap-x-10">
         {cardData.map((data) => (

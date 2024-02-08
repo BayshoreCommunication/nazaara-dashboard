@@ -3,7 +3,7 @@ import React from "react";
 
 const CustomizationPage = () => {
   return (
-    <div className="container">
+    <div className="dynamic-container">
       <div>
         <ButtonToggle />
       </div>

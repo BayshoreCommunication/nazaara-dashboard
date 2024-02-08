@@ -14,7 +14,7 @@ const Warehouses = () => {
   }
 
   return (
-    <div className="flex gap-10 container">
+    <div className="flex gap-10 dynamic-container">
       {/* show all category  */}
       {warehouses != undefined && (
         <WarehouseList data={warehouses.data} status={""} refetch={refetch} />

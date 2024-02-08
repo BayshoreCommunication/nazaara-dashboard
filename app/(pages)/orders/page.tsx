@@ -60,7 +60,7 @@ const Orders = () => {
 
   return (
     <>
-      <div className="container">
+      <div className="dynamic-container">
         <div className="flex items-center justify-between mb-3">
           <div className="flex gap-2 items-center">
             <AiOutlineShoppingCart size={18} color="gray" />

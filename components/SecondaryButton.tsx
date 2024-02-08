@@ -1,5 +1,5 @@
 interface SecondaryButtonProps {
-  name: string
+  name: string;
 }
 
 const SecondaryButton: React.FC<SecondaryButtonProps> = ({ name }) => {
@@ -7,7 +7,7 @@ const SecondaryButton: React.FC<SecondaryButtonProps> = ({ name }) => {
     <button className="bg-warning py-1 px-4 rounded-md text-white">
       {name}
     </button>
-  )
-}
+  );
+};
 
-export default SecondaryButton
+export default SecondaryButton;

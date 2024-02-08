@@ -6,7 +6,7 @@ import { TbBrandGoogleAnalytics } from "react-icons/tb";
 
 const page = () => {
   return (
-    <div className="container flex flex-col gap-4">
+    <div className="dynamic-container flex flex-col gap-4">
       <div className="flex gap-2 items-center">
         <TbBrandGoogleAnalytics size={18} color="gray" />
         <span className="font-medium text-lg">Analytics</span>

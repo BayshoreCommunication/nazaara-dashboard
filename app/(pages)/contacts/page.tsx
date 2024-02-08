@@ -5,7 +5,7 @@ import { GrContact } from "react-icons/gr";
 
 const Contacts = () => {
   return (
-    <div className="container">
+    <div className="dynamic-container">
       <div className="flex items-center justify-between mb-3">
         <div className="flex gap-1 items-center">
           <GrContact size={18} color="gray" />

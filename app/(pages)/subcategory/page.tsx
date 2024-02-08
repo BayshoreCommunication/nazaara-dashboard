@@ -170,7 +170,7 @@ const SubCategory: FC = () => {
   };
 
   return (
-    <div className="flex gap-10 container">
+    <div className="flex gap-10 dynamic-container">
       {/* show all category  */}
       <div className="flex-[6] overflow-x-auto">
         <h1 className="text-lg font-semibold mb-2">All Sub Categories</h1>
