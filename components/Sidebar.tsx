@@ -42,6 +42,12 @@ const Sidebar = () => {
       link: "/orders",
       icon: <AiOutlineShoppingCart size={18} />,
     },
+    {
+      _id: "163",
+      title: "Order Returns",
+      link: "/order-return",
+      icon: <AiOutlineShoppingCart size={18} />,
+    },
     // {
     //   _id: "105",
     //   title: "Transactions",
