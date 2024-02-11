@@ -194,6 +194,7 @@ const TopLeftCarosel = () => {
             {`* So after changing any image if you don't update the carosel data
             then the previous image will not found.`}
           </p>
+          <p className="mt-1">{`* Recommended image size: ( 1903 x 729 )`}</p>
         </div>
         {!isLoading &&
           formData.map((data, index) => (
