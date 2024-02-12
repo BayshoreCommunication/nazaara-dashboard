@@ -18,6 +18,10 @@ import { useGetSubCategoriesQuery } from "@/services/subcategory";
 import axios from "axios";
 import { ISaleTag } from "@/types/saleTypes";
 import { IFestival } from "@/types/festivalTypes";
+import ColorPicker from "@/components/ColorPicker";
+import useToggle from "@/hooks/useToogle";
+import { HexColorInput, HexColorPicker } from "react-colorful";
+import ColorVariant from "@/components/ColorPicker";
 const Select = dynamic(() => import("react-select"), {
   ssr: false,
 });
@@ -158,6 +162,7 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
           : 0,
         variant: productsData.data.variant.map((variant) => ({
           color: toCapitalize(variant.color),
+          colorCode: variant.colorCode,
           imageUrl: variant.imageUrl.map((image) => image),
         })),
         size: productsData.data.size.map((size) => size),
@@ -249,6 +254,7 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
         ...prevFormData.variant,
         {
           color: "", // Set the color to an empty string for the new variant
+          colorCode: "",
           imageUrl: [],
         },
       ],
@@ -335,6 +341,42 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
       return festival ? { value: festival.value, label: festival.label } : null;
     }
   );
+
+  const {
+    node,
+    toggle: showColorPicker,
+    setToggle: setShowColorPicker,
+  } = useToggle();
+
+  const [color, setColor] = useState("#820000");
+  // const [colorCode, setColorCode] = useState<string>(formData.variant?.colorCode || "#000000");
+
+  const handleColorCode = (variantIndex: number) => {
+    setColor;
+    const updatedVariants = [...formData.variant];
+    const updatedVariant = {
+      ...updatedVariants[variantIndex], // Get the variant object at the specified index
+      colorCode: color, // Update the specific field of the variant object
+    };
+    updatedVariants[variantIndex] = updatedVariant;
+    setFormData((prevFormData: TProduct) => ({
+      ...prevFormData,
+      variant: updatedVariants,
+    }));
+  };
+
+  console.log("color code", color);
+  console.log("formdata", formData);
+
+  const handleRemoveVariant = (variantIndex: number) => {
+    const updatedVariants = [...formData.variant].filter(
+      (_, i) => i !== variantIndex
+    );
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      variant: updatedVariants,
+    }));
+  };
 
   return (
     <div className="dynamic-container">
@@ -651,7 +693,7 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
                         <label className="font-medium" htmlFor="promotion">
                           Color Variants<span className="text-red-600">*</span>
                         </label>
-                        {formData.variant.map((variant, variantIndex) => (
+                        {/* {formData.variant.map((variant, variantIndex) => (
                           <div
                             className="flex gap-2 items-center mt-1"
                             key={variantIndex}
@@ -673,6 +715,44 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
                                   }
                                 />
                               </div>
+                              <div className="flex items-center mt-1">
+                                <div className="border border-gray-400 bg-gray-100 rounded-sm p-[10px] text-sm text-gray-500 font-medium">
+                                  Code
+                                </div>
+                                <div ref={node} className="inline relative">
+                                  <div className="inline-flex items-center gap-3 p-2 rounded-r-md border border-gray-400">
+                                    <button
+                                      type="button"
+                                      className="w-6 h-6 rounded-full"
+                                      style={{ backgroundColor: color }}
+                                      onClick={() =>
+                                        setShowColorPicker(!showColorPicker)
+                                      }
+                                    ></button>
+
+                                    <HexColorInput
+                                      color={color}
+                                      onChange={() =>
+                                        handleColorCode(variantIndex)
+                                      }
+                                      //     value={variant?.color}
+                                      // onChange={(event) =>
+                                      //   handleVariant(event, variantIndex)
+                                      // }
+                                      prefixed
+                                      className="bg-transparent outline-none w-[80px]"
+                                    />
+                                  </div>
+                                  {showColorPicker && (
+                                    <div className="absolute mt-3">
+                                      <HexColorPicker
+                                        color={color}
+                                        onChange={setColor}
+                                      />
+                                    </div>
+                                  )}
+                                </div>
+                              </div>
                             </div>
                             {variantIndex !== 0 ? (
                               <div className="w-5 mb-2">
@@ -687,6 +767,15 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
                               <></>
                             )}
                           </div>
+                        ))} */}
+                        {formData.variant.map((variant, variantIndex) => (
+                          <ColorVariant
+                            key={variantIndex}
+                            variantIndex={variantIndex}
+                            formData={formData}
+                            setFormData={setFormData}
+                            handleRemoveVariant={handleRemoveVariant}
+                          />
                         ))}
                       </div>
 

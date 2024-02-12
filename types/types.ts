@@ -196,6 +196,7 @@ export type TProduct = {
 export type TVariant = {
   _id?: string;
   color: string;
+  colorCode: string;
   imageUrl: string[];
 };
 
@@ -332,7 +333,6 @@ export type TOptionSelect = {
   label: string;
 };
 
- 
 export type StockInfo = {
   status: string;
   total: number;
