@@ -15,6 +15,7 @@ import { useGetSubCategoriesQuery } from "@/services/subcategory";
 import axios from "axios";
 import { ISaleTag } from "@/types/saleTypes";
 import { IFestival } from "@/types/festivalTypes";
+import ColorVariant from "@/components/ColorPicker";
 const Select = dynamic(() => import("react-select"), {
   ssr: false,
 });
@@ -222,6 +223,7 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
         ...prevFormData.variant,
         {
           color: "", // Set the color to an empty string for the new variant
+          colorCode: "",
           imageUrl: [],
         },
       ],
@@ -300,6 +302,16 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
     value: el,
     label: el,
   }));
+
+  const handleRemoveVariant = (variantIndex: number) => {
+    const updatedVariants = [...formData.variant].filter(
+      (_, i) => i !== variantIndex
+    );
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      variant: updatedVariants,
+    }));
+  };
 
   return (
     <div className="dynamic-container">
@@ -600,6 +612,15 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
                           Color Variants
                         </label>
                         {formData.variant.map((variant, variantIndex) => (
+                          <ColorVariant
+                            key={variantIndex}
+                            variantIndex={variantIndex}
+                            formData={formData}
+                            setFormData={setFormData}
+                            handleRemoveVariant={handleRemoveVariant}
+                          />
+                        ))}
+                        {/* {formData.variant.map((variant, variantIndex) => (
                           <div
                             className="flex gap-2 items-center mt-1"
                             key={variantIndex}
@@ -635,7 +656,7 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
                               <></>
                             )}
                           </div>
-                        ))}
+                        ))} */}
                       </div>
 
                       <button
