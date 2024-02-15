@@ -75,7 +75,7 @@ const Return = ({ returnData }: any) => {
             <th>User Name</th>
             <th>User Email</th>
             <th>User Phone</th>
-            <th>Order Transaction ID</th>
+            <th>Order ID</th>
             <th>Issue</th>
             <th>Approval</th>
             <th>Return Request Time</th>

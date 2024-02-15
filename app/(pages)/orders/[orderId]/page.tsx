@@ -204,7 +204,7 @@ const OrderUpdate = ({ params }: any) => {
               <div className="w-full mt-3 border p-2">
                 <div className="flex flex-wrap gap-4 justify-between border mb-3 p-2">
                   <div className="">
-                    <p className="font-semibold mb-1">Transaction Id</p>
+                    <p className="font-semibold mb-1">Order Id</p>
                     <p className="text-sm text-gray-600 font-medium">
                       {orderData.data.transactionId}
                     </p>
@@ -1007,7 +1007,7 @@ const OrderUpdate = ({ params }: any) => {
             </div>
             <div className="flex flex-col gap-y-4">
               <div className="flex items-center justify-between mt-2 border-b border-gray-300 pb-1 text-gray-600 font-medium">
-                <p>Transaction ID: {orderData?.data?.transactionId}</p>
+                <p>Order ID: {orderData?.data?.transactionId}</p>
                 <p>
                   Order Date:{" "}
                   {formatYearMonthDay(orderData?.data?.createdAt as Date)}

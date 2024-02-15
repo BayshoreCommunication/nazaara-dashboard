@@ -67,8 +67,8 @@ const Orders = () => {
             <span className="font-medium text-lg">Orders</span>
           </div>
           <small className="text-gray-600">
-            *search through transactionId, fullName, phone, email,
-            deliveryStatus, paymentStatus, paymentMethod*
+            *search through orderId, fullName, phone, email, deliveryStatus,
+            paymentStatus, paymentMethod*
           </small>
           {/*********** search user input start ************/}
           <div className="flex items-center gap-1">
@@ -93,7 +93,7 @@ const Orders = () => {
             <thead className="">
               <tr>
                 <th>Order Date</th>
-                <th>Transaction ID</th>
+                <th>Order ID</th>
                 <th>Customer Name</th>
                 <th>Customer Email</th>
                 <th>Customer Phone</th>
