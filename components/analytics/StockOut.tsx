@@ -94,7 +94,7 @@ const StockOut = () => {
                         height={60}
                       />
                     </td>
-                    <td>{elem.productName.slice(0, 25)}</td>
+                    <td>{elem?.productName?.slice(0, 25)}</td>
                     <td>{elem.erpCategory}</td>
                     <td>{elem.erpSubCategory}</td>
                     <td>{elem.salePrice}</td>
