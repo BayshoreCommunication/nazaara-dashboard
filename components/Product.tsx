@@ -29,11 +29,17 @@ const Product = async () => {
         </thead>
         <tbody>
           {/* row */}
-          {productData.product.map((product) => (
+          {productData.product.map((product: any) => (
             <tr key={product._id}>
               <td>
                 <Image
-                  src={product.variant[0].imageUrl[0]}
+                  // src={product.variant[0].imageUrl[0]}
+                  src={
+                    product.variant
+                      .flatMap((v: any) => v.imageUrl)
+                      .find((image: any) => image.isFeatured)?.image ||
+                    product.variant[0].imageUrl[0].image
+                  }
                   alt="product image"
                   width={248}
                   height={248}

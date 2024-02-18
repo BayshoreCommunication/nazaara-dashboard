@@ -39,7 +39,13 @@ const TopSellingProduct = () => {
               <tr key={elem.productDetails._id}>
                 <td>
                   <Image
-                    src={elem.productDetails.variant[0].imageUrl[0]}
+                    // src={elem.productDetails.variant[0].imageUrl[0]}
+                    src={
+                      elem.productDetails.variant
+                        .flatMap((v: any) => v.imageUrl)
+                        .find((image: any) => image.isFeatured)?.image ||
+                      elem.productDetails.variant[0].imageUrl[0].image
+                    }
                     alt="product image"
                     width={60}
                     height={60}

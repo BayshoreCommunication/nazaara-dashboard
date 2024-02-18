@@ -39,18 +39,29 @@ const ImageUpload: FC = () => {
   useEffect(() => {
     if (product?.data && product.data.variant) {
       const updateVariantState = product.data.variant.map((elem: any) => ({
-        imageUrl: elem.imageUrl.map((url: string) => ({ data_url: url })),
+        imageUrl: elem.imageUrl.map((url: any) => ({
+          isFeatured: url.isFeatured,
+          image: url.image,
+        })),
       }));
       setVariant(updateVariantState);
     }
   }, [product]);
 
+  console.log("variant state", variant);
+
   // update image mutation
   const [updateProduct] = useUpdateProductMutation();
 
   const onChangeHandle = (imageList: any, variantIndex: number) => {
+    console.log("image list", imageList);
+
     // data for submit
-    const updateImageUrl = imageList.map((elem: any) => elem);
+    const updateImageUrl = imageList.map((elem: any) => ({
+      isFeatured: elem.isFeatured,
+      image: elem.image,
+      file: elem.file,
+    }));
 
     setVariant((prevVariants) => {
       // Create a new array to avoid mutating the previous state directly
@@ -67,61 +78,98 @@ const ImageUpload: FC = () => {
 
   const handleUpdateOnClick = async (event: any) => {
     event.preventDefault();
-    const postOnCloudinary = variant?.map((elem) =>
-      elem.imageUrl.map((el: TImageUrl) => el)
+
+    const hasFeature = variant.some((item) =>
+      item.imageUrl.some((image: any) => image.isFeatured)
     );
 
-    const updatedVariants: any = await Promise.all(
-      postOnCloudinary.map(async (elem: any, variantIndex: number) => {
-        const getResponseUrl = await Promise.all(
-          elem.map(async (imageFile: any) => {
-            if (imageFile.file) {
-              const formData = new FormData();
-              formData.append("file", imageFile.file);
-              formData.append(
-                "upload_preset",
-                process.env.CLOUDINARY_PRESET_UPLOAD as string
-              );
-              const response = await axios.post(
-                process.env.CLOUDINARY_URL as string,
-                formData
-              );
-              return response.data.secure_url;
-            } else {
-              return imageFile.data_url;
-            }
-          })
-        );
-        return {
-          color: product?.data.variant[variantIndex].color, // Associate the color with the variant
-          colorCode: product?.data.variant[variantIndex].colorCode,
-          imageUrl: getResponseUrl.map((el: any) => el),
-        };
-      })
-    );
+    if (hasFeature) {
+      const postOnCloudinary = variant?.map((elem) =>
+        elem.imageUrl.map((el: TImageUrl) => el)
+      );
 
-    console.log("update variants", updatedVariants);
+      console.log("postOnCloudinary", postOnCloudinary);
 
-    try {
-      const mutationData: any = await updateProduct({
-        id: productId,
-        payload: { variant: updatedVariants },
-      });
-      console.log("mutation data", mutationData);
+      const updatedVariants: any = await Promise.all(
+        postOnCloudinary.map(async (elem: any, variantIndex: number) => {
+          console.log("elem", elem);
+          const getResponseUrl = await Promise.all(
+            elem.map(async (imageFile: any) => {
+              console.log("imageFile", imageFile);
+              if (imageFile.file) {
+                const formData = new FormData();
+                formData.append("file", imageFile.file);
+                formData.append(
+                  "upload_preset",
+                  process.env.CLOUDINARY_PRESET_UPLOAD as string
+                );
+                const response = await axios.post(
+                  process.env.CLOUDINARY_URL as string,
+                  formData
+                );
+                return {
+                  isFeatured: imageFile.isFeatured || false,
+                  image: response.data.secure_url,
+                };
+              } else {
+                return imageFile;
+              }
+            })
+          );
 
-      refetch();
-      if (mutationData?.data?.success) {
-        toast.success("Image updated successfully.", { duration: 3000 });
-        router.push("/products");
-      } else {
-        toast.error("Something went wrong! Try again later..", {
-          duration: 3000,
+          console.log("getResponseUrl", getResponseUrl);
+
+          return {
+            color: product?.data.variant[variantIndex].color, // Associate the color with the variant
+            colorCode: product?.data.variant[variantIndex].colorCode,
+            imageUrl: getResponseUrl.map((el: any) => el),
+          };
+        })
+      );
+
+      console.log("update variants", updatedVariants);
+
+      try {
+        const mutationData: any = await updateProduct({
+          id: productId,
+          payload: { variant: updatedVariants },
         });
+        console.log("mutation data", mutationData);
+
+        refetch();
+        if (mutationData?.data?.success) {
+          toast.success("Image updated successfully.", { duration: 3000 });
+          router.push("/products");
+        } else {
+          toast.error("Something went wrong! Try again later..", {
+            duration: 3000,
+          });
+        }
+      } catch (err) {
+        console.error(err);
+        toast.error("Upload failed!", { duration: 3000 });
       }
-    } catch (err) {
-      console.error(err);
-      toast.error("Upload failed!", { duration: 3000 });
+    } else {
+      toast.error("please select a feature image to continue..");
     }
+  };
+
+  const handleUpdateIsFeature = (variantIndex: number, imageIndex: number) => {
+    // Create a copy of the variant state to avoid mutating the state directly
+    const updatedVariants = variant.map((v, idx) => {
+      // Create a copy of the variant to avoid mutating the state directly
+      const updatedVariant = { ...v };
+
+      // Update the isFeatured property of the selected image in the specified variant
+      updatedVariant.imageUrl.forEach((image: any, i) => {
+        image.isFeatured = idx === variantIndex && i === imageIndex;
+      });
+
+      return updatedVariant;
+    });
+
+    // Update the state with the modified variants
+    setVariant(updatedVariants);
   };
 
   return productIsLoading ? (
@@ -130,9 +178,14 @@ const ImageUpload: FC = () => {
     <div className="dynamic-container">
       <h1 className="text-2xl font-bold mb-3">Add Image</h1>
       <div className="flex flex-col gap-y-5">
-        <span className="text-sm">
-          Recommended image size: 1280 x 1706 ( Ratio= 3 : 4 )
-        </span>
+        <div>
+          <div className="text-sm mb-2">
+            *Recommended image size: 1280 x 1706 ( Ratio= 3 : 4 )
+          </div>
+          <span className="text-sm text-red-600 font-semibold">
+            *Please select a featured image to be displayed on the website.
+          </span>
+        </div>
         {product?.data.variant.map((elem: any, variantIndex: number) => (
           <div
             key={variantIndex}
@@ -144,7 +197,7 @@ const ImageUpload: FC = () => {
               value={variant[variantIndex]?.imageUrl || []}
               onChange={(e) => onChangeHandle(e, variantIndex)}
               maxNumber={maxNumber}
-              dataURLKey="data_url"
+              dataURLKey="image"
             >
               {({
                 imageList,
@@ -176,8 +229,20 @@ const ImageUpload: FC = () => {
                   </div>
                   {imageList.map((image: any, index: any) => (
                     <div key={index} className="image-item">
+                      {/* <p>{image.isFeatured ? "true" : "false"}</p> */}
+                      <input
+                        type="radio"
+                        name="isFeatured-radio"
+                        value="true"
+                        required
+                        className="radio radio-xs"
+                        checked={image.isFeatured}
+                        onChange={() =>
+                          handleUpdateIsFeature(variantIndex, index)
+                        }
+                      />
                       <Image
-                        src={image["data_url"]}
+                        src={image.image}
                         alt="product_image"
                         width={100}
                         height={100}
@@ -201,7 +266,6 @@ const ImageUpload: FC = () => {
           <button
             className="bg-secondary py-1 px-4 rounded-md text-white"
             onClick={handleUpdateOnClick}
-            type="submit"
           >
             Update Product Image
           </button>

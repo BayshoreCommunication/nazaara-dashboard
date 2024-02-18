@@ -39,11 +39,17 @@ const RecentProducts = () => {
             </tr>
           </thead>
           <tbody>
-            {productsData?.product.map((elem, index) => (
+            {productsData?.product.map((elem: any, index) => (
               <tr key={elem._id}>
                 <td>
                   <Image
-                    src={elem.variant[0].imageUrl[0]}
+                    // src={elem.variant[0].imageUrl[0]}
+                    src={
+                      elem.variant
+                        .flatMap((v: any) => v.imageUrl)
+                        .find((image: any) => image.isFeatured)?.image ||
+                      elem.variant[0].imageUrl[0].image
+                    }
                     alt=""
                     width={60}
                     height={60}

@@ -43,12 +43,18 @@ const StockOut = () => {
           </thead>
           <tbody>
             {!isSlice && productsData && productsData?.product?.length > 0
-              ? productsData?.product.map((elem) => (
+              ? productsData?.product.map((elem: any) => (
                   <tr key={elem._id}>
                     <td>
                       <Image
-                        src={elem.variant[0].imageUrl[0]}
-                        alt=""
+                        // src={elem.variant[0].imageUrl[0]}
+                        src={
+                          elem.variant
+                            .flatMap((v: any) => v.imageUrl)
+                            .find((image: any) => image.isFeatured)?.image ||
+                          elem.variant[0].imageUrl[0].image
+                        }
+                        alt="product image"
                         width={60}
                         height={60}
                       />
@@ -72,11 +78,17 @@ const StockOut = () => {
                     </td>
                   </tr>
                 ))
-              : slicedProduct?.map((elem) => (
+              : slicedProduct?.map((elem: any) => (
                   <tr key={elem._id}>
                     <td>
                       <Image
-                        src={elem.variant[0].imageUrl[0]}
+                        // src={elem.variant[0].imageUrl[0]}
+                        src={
+                          elem.variant
+                            .flatMap((v: any) => v.imageUrl)
+                            .find((image: any) => image.isFeatured)?.image ||
+                          elem.variant[0].imageUrl[0].image
+                        }
                         alt=""
                         width={60}
                         height={60}

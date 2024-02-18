@@ -278,12 +278,17 @@ const Products: any = () => {
             </>
           ) : (
             <>
-              {productsData?.product?.map((elem) => (
+              {productsData?.product?.map((elem: any) => (
                 <tr key={elem._id}>
                   <td>
-                    {elem.variant[0].imageUrl[0] ? (
+                    {elem.variant[0].imageUrl.length > 0 ? (
                       <Image
-                        src={elem.variant[0].imageUrl[0]}
+                        src={
+                          elem.variant
+                            .flatMap((v: any) => v.imageUrl)
+                            .find((image: any) => image.isFeatured)?.image ||
+                          elem.variant[0].imageUrl[0].image
+                        }
                         alt="nazaara main logo"
                         width={248}
                         height={248}
