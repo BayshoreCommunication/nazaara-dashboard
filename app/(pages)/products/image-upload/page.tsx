@@ -13,25 +13,13 @@ import toast from "react-hot-toast";
 import Loader from "@/components/Loader";
 import { TImageUrl } from "@/types/types";
 import axios from "axios";
-import {
-  SortableContext,
-  arrayMove,
-  horizontalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { DndContext, closestCorners } from "@dnd-kit/core";
-import DraggableContent from "@/components/DraggableContent";
 
 const ImageUpload: FC = () => {
-  const [variant, setVariant] = useState<any>([]);
-  // const [variant, setVariant] = useState([
-  //   {
-  //     id: "",
-  //     imageUrl: [],
-  //   },
-  // ]);
-
-  console.log("variant", variant);
-
+  const [variant, setVariant] = useState([
+    {
+      imageUrl: [],
+    },
+  ]);
   const routerSearch = useSearchParams();
   const router = useRouter();
   const maxNumber = 6;
@@ -50,25 +38,10 @@ const ImageUpload: FC = () => {
   //update innitial variant state
   useEffect(() => {
     if (product?.data && product.data.variant) {
-      // const updateVariantState = product.data.variant.map(
-      //   (elem: any, index) => ({
-      //      elem.map((url: string) => ({
-      //       id: Math.random().toString(36).slice(2, 9),
-      //       data_url: url,
-      //     })),
-      //   })
-      // );
-
-      const updateVariantState = product.data.variant.map((elem: any, index) =>
-        elem.imageUrl.map((url: string) => ({
-          id: Math.random().toString(36).slice(2, 9),
-          data_url: url,
-        }))
-      );
-
-      console.log("updateVariantState", updateVariantState);
-
-      setVariant(updateVariantState as any);
+      const updateVariantState = product.data.variant.map((elem: any) => ({
+        imageUrl: elem.imageUrl.map((url: string) => ({ data_url: url })),
+      }));
+      setVariant(updateVariantState);
     }
   }, [product]);
 
@@ -79,14 +52,14 @@ const ImageUpload: FC = () => {
     // data for submit
     const updateImageUrl = imageList.map((elem: any) => elem);
 
-    setVariant((prevVariants: any) => {
+    setVariant((prevVariants) => {
       // Create a new array to avoid mutating the previous state directly
       const newVariants = [...prevVariants];
 
       // Update the specific variant at the given index with the new image URLs
       newVariants[variantIndex] = {
         ...newVariants[variantIndex],
-        updateImageUrl,
+        imageUrl: updateImageUrl,
       };
       return newVariants;
     });
@@ -94,7 +67,7 @@ const ImageUpload: FC = () => {
 
   const handleUpdateOnClick = async (event: any) => {
     event.preventDefault();
-    const postOnCloudinary = variant?.map((elem: any) =>
+    const postOnCloudinary = variant?.map((elem) =>
       elem.imageUrl.map((el: TImageUrl) => el)
     );
 
@@ -119,50 +92,35 @@ const ImageUpload: FC = () => {
             }
           })
         );
-
-        // console.log("getResponseUrl", getResponseUrl);
-
         return {
           color: product?.data.variant[variantIndex].color, // Associate the color with the variant
-          colorCode: product?.data.variant[variantIndex].colorCode, // Associate the color with the variant
+          colorCode: product?.data.variant[variantIndex].colorCode,
           imageUrl: getResponseUrl.map((el: any) => el),
         };
       })
     );
+
+    console.log("update variants", updatedVariants);
 
     try {
       const mutationData: any = await updateProduct({
         id: productId,
         payload: { variant: updatedVariants },
       });
-      // console.log("mutation data", mutationData);
+      console.log("mutation data", mutationData);
 
       refetch();
-      if (mutationData) {
+      if (mutationData?.data?.success) {
         toast.success("Image updated successfully.", { duration: 3000 });
         router.push("/products");
       } else {
-        toast.error("Something went wrong!", { duration: 3000 });
+        toast.error("Something went wrong! Try again later..", {
+          duration: 3000,
+        });
       }
     } catch (err) {
       console.error(err);
       toast.error("Upload failed!", { duration: 3000 });
-    }
-  };
-
-  const getPosition = (id: any) =>
-    variant[0].imageUrl.findIndex((pos: any) => pos.id === id);
-
-  const handleDragEnd = (event: any) => {
-    const { active, over } = event;
-    if (active.id === over.id) {
-      return;
-    } else {
-      setVariant((updated: any) => {
-        const originalPos = getPosition(active.id);
-        const newPos = getPosition(over.id);
-        return arrayMove(updated, originalPos, newPos);
-      });
     }
   };
 
@@ -216,28 +174,24 @@ const ImageUpload: FC = () => {
                       Remove All
                     </button>
                   </div>
-                  <DndContext
-                    onDragEnd={handleDragEnd}
-                    collisionDetection={closestCorners}
-                  >
-                    <div className="flex gap-4">
-                      <SortableContext
-                        items={variant}
-                        strategy={horizontalListSortingStrategy}
-                      >
-                        {variant.map((image: any, index: any) => (
-                          <DraggableContent
-                            key={index}
-                            image={image}
-                            onImageUpdate={onImageUpdate}
-                            onImageRemove={onImageRemove}
-                            index={index}
-                            id={image.id}
-                          />
-                        ))}
-                      </SortableContext>
+                  {imageList.map((image: any, index: any) => (
+                    <div key={index} className="image-item">
+                      <Image
+                        src={image["data_url"]}
+                        alt="product_image"
+                        width={100}
+                        height={100}
+                      />
+                      <div className="mt-1 flex justify-end gap-2">
+                        <button onClick={() => onImageUpdate(index)}>
+                          <SlCloudUpload size={20} />
+                        </button>
+                        <button onClick={() => onImageRemove(index)}>
+                          <IoIosRemoveCircleOutline size={20} />
+                        </button>
+                      </div>
                     </div>
-                  </DndContext>
+                  ))}
                 </div>
               )}
             </ImageUploading>
