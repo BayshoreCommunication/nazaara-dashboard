@@ -8,10 +8,13 @@ import { FaRulerHorizontal } from "react-icons/fa";
 import { formatDate } from "@/helpers/formatDate";
 import { TiEdit } from "react-icons/ti";
 import Fuse from "fuse.js";
-import { IOrders } from "@/types/ordersTypes";
+// import { IOrders } from "@/types/ordersTypes";
 
 const Orders = () => {
   const { data, isLoading } = useGetOrdersQuery();
+
+  console.log("dataaaa", data);
+
   const [openModal, setOpenModal] = useState(false);
 
   const [searchText, setSearchText] = useState("");
@@ -174,68 +177,70 @@ const Orders = () => {
                 </>
               ) : (
                 <>
-                  {data?.data.map((el) => (
-                    <tr key={el._id}>
-                      <td>{formatDate(el.createdAt as Date)}</td>
-                      <td>{el.transactionId}</td>
-                      <td>{el.user.fullName}</td>
-                      <td>{el.user.email}</td>
-                      <td>{el.user.phone}</td>
-                      <td>{el.totalAmount}/-</td>
-                      <td>{el.totalPay}/-</td>
-                      <td>{el.due}/-</td>
-                      <td className="p-0">
-                        <span
-                          className={`${
-                            el.paymentMethod === "partial-payment"
-                              ? "text-red-700"
-                              : "text-green-700"
-                          } font-semibold px-2 py-1 rounded-md`}
-                        >
-                          {el.paymentMethod}
-                        </span>
-                      </td>
-                      <td className="p-0">
-                        <span
-                          className={`${
-                            el.paymentStatus === "partial successful"
-                              ? "text-red-700"
-                              : "text-green-700"
-                          } font-semibold px-2 py-1 rounded-md`}
-                        >
-                          {el.paymentStatus}
-                        </span>
-                      </td>
-                      <td>
-                        <span
-                          className={`${
-                            el.deliveryStatus === "pending"
-                              ? "text-red-700"
-                              : "text-green-700"
-                          } font-semibold px-2 py-1 rounded-md`}
-                        >
-                          {el.deliveryStatus}
-                        </span>
-                      </td>
+                  {data &&
+                    !isLoading &&
+                    data?.data?.map((el) => (
+                      <tr key={el._id}>
+                        <td>{formatDate(el?.createdAt as Date)}</td>
+                        <td>{el?.transactionId}</td>
+                        <td>{el?.user?.fullName}</td>
+                        <td>{el?.user?.email}</td>
+                        <td>{el?.user?.phone}</td>
+                        <td>{el?.totalAmount}/-</td>
+                        <td>{el?.totalPay}/-</td>
+                        <td>{el?.due}/-</td>
+                        <td className="p-0">
+                          <span
+                            className={`${
+                              el?.paymentMethod === "partial-payment"
+                                ? "text-red-700"
+                                : "text-green-700"
+                            } font-semibold px-2 py-1 rounded-md`}
+                          >
+                            {el?.paymentMethod}
+                          </span>
+                        </td>
+                        <td className="p-0">
+                          <span
+                            className={`${
+                              el?.paymentStatus === "partial successful"
+                                ? "text-red-700"
+                                : "text-green-700"
+                            } font-semibold px-2 py-1 rounded-md`}
+                          >
+                            {el?.paymentStatus}
+                          </span>
+                        </td>
+                        <td>
+                          <span
+                            className={`${
+                              el?.deliveryStatus === "pending"
+                                ? "text-red-700"
+                                : "text-green-700"
+                            } font-semibold px-2 py-1 rounded-md`}
+                          >
+                            {el?.deliveryStatus}
+                          </span>
+                        </td>
 
-                      <td>
-                        <div className="flex gap-1">
-                          <Link href={`/orders/${el._id}`}>
-                            <button className="text-[#5B94FC]">
-                              <TiEdit size={18} />
-                            </button>
-                          </Link>
-                          {/* <label
+                        <td>
+                          <div className="flex gap-1">
+                            <Link href={`/orders/${el?._id}`}>
+                              <button className="text-[#5B94FC]">
+                                <TiEdit size={18} />
+                              </button>
+                            </Link>
+                            {/* <label
                             htmlFor="my-modal-3"
                             onClick={() => handleChange()}
                             className="text-[#5B94FC] cursor-pointer"
                           >
                             <FaRulerHorizontal size={18} />
                           </label> */}
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
                 </>
               )}
             </tbody>

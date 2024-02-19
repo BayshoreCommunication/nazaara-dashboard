@@ -26,7 +26,7 @@ const Return = ({ returnData }: any) => {
     setReturnSingleData(response.data.data);
   };
 
-  //   console.log("data", returnSingleData);
+  console.log("returnData", returnData);
 
   const handleDeleteReturn = async (id: any) => {
     // console.log("id", id);
@@ -93,28 +93,27 @@ const Return = ({ returnData }: any) => {
             </tr>
           )}
           {/* add loader here */}
-          {returnData?.data?.length > 0 ? (
-            // if categories is available then show data here
+          {returnData && returnData?.data?.length > 0 ? (
             returnData?.data?.map((data: any, index: number) => (
               <tr key={data._id}>
                 <td>{index + 1}</td>
-                <td>{data.user_id.fullName}</td>
-                <td>{data.user_id.email}</td>
-                <td>{data.user_id.phone}</td>
-                <td>{data.order.transactionId}</td>
-                <td>{data.issue}</td>
-                <td>{data.approval}</td>
-                <td>{formatDate(data.createdAt)}</td>
+                <td>{data?.user_id?.fullName}</td>
+                <td>{data?.user_id?.email}</td>
+                <td>{data?.user_id?.phone}</td>
+                <td>{data?.order?.transactionId}</td>
+                <td>{data?.issue}</td>
+                <td>{data?.approval}</td>
+                <td>{formatDate(data?.createdAt)}</td>
                 <td>
                   <div className="flex">
                     <label
-                      onClick={() => handleEditReturn(data._id)}
+                      onClick={() => handleEditReturn(data?._id)}
                       className="cursor-pointer"
                       htmlFor="return-handle"
                     >
                       <TbEdit color="green" size={20} />
                     </label>
-                    <button onClick={() => handleDeleteReturn(data._id)}>
+                    <button onClick={() => handleDeleteReturn(data?._id)}>
                       <MdDelete color="red" size={20} />
                     </button>
                   </div>
