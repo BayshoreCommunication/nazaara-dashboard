@@ -26,7 +26,7 @@ const Return = ({ returnData }: any) => {
     setReturnSingleData(response.data.data);
   };
 
-  console.log("returnData", returnData);
+  // console.log("returnData", returnData);
 
   const handleDeleteReturn = async (id: any) => {
     // console.log("id", id);
@@ -93,7 +93,8 @@ const Return = ({ returnData }: any) => {
             </tr>
           )}
           {/* add loader here */}
-          {returnData && returnData?.data?.length > 0 ? (
+          {returnData &&
+            returnData?.data?.length > 0 &&
             returnData?.data?.map((data: any, index: number) => (
               <tr key={data._id}>
                 <td>{index + 1}</td>
@@ -119,17 +120,7 @@ const Return = ({ returnData }: any) => {
                   </div>
                 </td>
               </tr>
-            ))
-          ) : (
-            // if categories is not available or empty array then show loader here
-            <tr>
-              <td colSpan={5}>
-                <div className="flex justify-center items-center">
-                  <Loader height="h-[30vh]" />
-                </div>
-              </td>
-            </tr>
-          )}
+            ))}
         </tbody>
       </table>
       {modalOpen && (
