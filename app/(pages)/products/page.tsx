@@ -5,7 +5,7 @@ import {
   useGetProductsQuery,
   useDeleteProductMutation,
 } from "@/services/productApi";
-import axios from "axios";
+// import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import Swal from "sweetalert2";
@@ -150,21 +150,21 @@ const Products: any = () => {
     return pageNumbers;
   };
 
-  const syncErpDataHandler = async () => {
-    try {
-      const response = await axios.get(
-        "https://erp.anzaralifestyle.com/api/product/Details/?format=json",
-        {
-          headers: {
-            Authorization: `Token ${process.env.AUTH_TOKEN}`,
-          },
-        }
-      );
-      // console.log("Fetched data:", response.data);
-    } catch (error) {
-      console.error("Request error:", error);
-    }
-  };
+  // const syncErpDataHandler = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       "https://erp.anzaralifestyle.com/api/product/Details/?format=json",
+  //       {
+  //         headers: {
+  //           Authorization: `Token ${process.env.AUTH_TOKEN}`,
+  //         },
+  //       }
+  //     );
+  //     // console.log("Fetched data:", response.data);
+  //   } catch (error) {
+  //     console.error("Request error:", error);
+  //   }
+  // };
 
   const [deleteProduct] = useDeleteProductMutation();
 
@@ -323,6 +323,26 @@ const Products: any = () => {
                     {elem.salePrice}
                   </td>
                   <td>{elem.stock}</td>
+                  {elem.preOrder ? (
+                    <td className="font-semibold text-green-600">Available</td>
+                  ) : (
+                    <td className="text-red-600 font-semibold">Unavailable</td>
+                  )}
+                  {(elem.stock === 0 && !elem.preOrder) ||
+                  elem.status === "draft" ? (
+                    <td>
+                      <span className="bg-red-600 font-medium text-white px-3 py-[1px] text-[12px] rounded-full">
+                        NO
+                      </span>{" "}
+                    </td>
+                  ) : (
+                    <td>
+                      <span className="bg-green-600 font-medium text-white px-3 py-[1px] text-[12px] rounded-full">
+                        YES
+                      </span>
+                    </td>
+                  )}
+
                   <td
                     className={`font-medium ${
                       elem.status === "published"
@@ -432,6 +452,8 @@ const Products: any = () => {
                   <th>Regular Price</th>
                   <th>Sale Price</th>
                   <th>Stock</th>
+                  <th>Pre-Order</th>
+                  <th>Web Visibility</th>
                   <th>Status</th>
                   <th>Action</th>
                 </tr>
