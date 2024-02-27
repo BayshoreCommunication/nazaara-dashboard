@@ -62,7 +62,11 @@ const OrderMeasurement: React.FC<OrderMeasurementProps> = ({
       try {
         if (sizeChartId) {
           const url = `${process.env.API_URL}/api/v1/size-chart/${sizeChartId}`;
-          const response = await axios.get(url);
+          const response = await axios.get(url, {
+            headers: {
+              authorization: `Nazaara@Token ${process.env.API_SECURE_KEY}`,
+            },
+          });
           const data = response.data.data;
           setFormData({
             topType: data.topType,
@@ -166,7 +170,11 @@ const OrderMeasurement: React.FC<OrderMeasurementProps> = ({
         }).then(async (result) => {
           if (result.isConfirmed) {
             const url = `${process.env.API_URL}/api/v1/size-chart/${sizeChartId}`;
-            const response = await axios.patch(url, formData);
+            const response = await axios.patch(url, formData, {
+              headers: {
+                authorization: `Nazaara@Token ${process.env.API_SECURE_KEY}`,
+              },
+            });
             if (response.data.success) {
               Swal.fire("Updated!", "Size chart has been updated.", "success");
               await updateOrder({
@@ -200,7 +208,11 @@ const OrderMeasurement: React.FC<OrderMeasurementProps> = ({
         }).then(async (result) => {
           if (result.isConfirmed) {
             const url = `${process.env.API_URL}/api/v1/size-chart`;
-            const response = await axios.post(url, formData);
+            const response = await axios.post(url, formData, {
+              headers: {
+                authorization: `Nazaara@Token ${process.env.API_SECURE_KEY}`,
+              },
+            });
             if (response.data.success) {
               const updatedProducts = orderData.data.product.map(
                 (product: any) => {

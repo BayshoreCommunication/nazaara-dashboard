@@ -3,7 +3,16 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const couponsApi = createApi({
   reducerPath: "couponsApi",
-  baseQuery: fetchBaseQuery({ baseUrl: `${process.env.API_URL}` }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: `${process.env.API_URL}`,
+    prepareHeaders: (headers) => {
+      headers.set(
+        "authorization",
+        `Nazaara@Token ${process.env.API_SECURE_KEY}`
+      );
+      return headers;
+    },
+  }),
   tagTypes: ["Coupon"],
   endpoints: (builder) => ({
     getCoupons: builder.query<TCoupons, void>({

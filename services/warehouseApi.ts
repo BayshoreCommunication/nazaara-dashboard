@@ -17,7 +17,16 @@ export interface IWarehouse {
 
 export const warehouseApi = createApi({
   reducerPath: "warehouseApi",
-  baseQuery: fetchBaseQuery({ baseUrl: `${process.env.API_URL}` }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: `${process.env.API_URL}`,
+    prepareHeaders: (headers) => {
+      headers.set(
+        "authorization",
+        `Nazaara@Token ${process.env.API_SECURE_KEY}`
+      );
+      return headers;
+    },
+  }),
   endpoints: (builder) => ({
     getwarehouses: builder.query<IWarehouses, void>({
       query: () => `/api/v1/warehouse/`,

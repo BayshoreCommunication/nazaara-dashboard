@@ -38,7 +38,16 @@ interface AddContact {
 
 export const contactsApi = createApi({
   reducerPath: "contactsApi",
-  baseQuery: fetchBaseQuery({ baseUrl: `${process.env.API_URL}` }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: `${process.env.API_URL}`,
+    prepareHeaders: (headers) => {
+      headers.set(
+        "authorization",
+        `Nazaara@Token ${process.env.API_SECURE_KEY}`
+      );
+      return headers;
+    },
+  }),
   tagTypes: ["Contact"],
   endpoints: (builder) => ({
     getContacts: builder.query<Contact, void>({

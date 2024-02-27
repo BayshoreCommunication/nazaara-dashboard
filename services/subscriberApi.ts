@@ -15,7 +15,16 @@ export interface IData {
 
 export const subscribeApi = createApi({
   reducerPath: "subscribeApi",
-  baseQuery: fetchBaseQuery({ baseUrl: `${process.env.API_URL}` }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: `${process.env.API_URL}`,
+    prepareHeaders: (headers) => {
+      headers.set(
+        "authorization",
+        `Nazaara@Token ${process.env.API_SECURE_KEY}`
+      );
+      return headers;
+    },
+  }),
   endpoints: (builder) => ({
     getSubscriber: builder.query<ISubscriber, void>({
       query: () => `/api/v1/subscriber`,

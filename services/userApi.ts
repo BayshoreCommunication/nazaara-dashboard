@@ -29,7 +29,16 @@ export interface IUser {
 
 export const usersApi = createApi({
   reducerPath: "usersApi",
-  baseQuery: fetchBaseQuery({ baseUrl: `${process.env.API_URL}` }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: `${process.env.API_URL}`,
+    prepareHeaders: (headers) => {
+      headers.set(
+        "authorization",
+        `Nazaara@Token ${process.env.API_SECURE_KEY}`
+      );
+      return headers;
+    },
+  }),
   endpoints: (builder) => ({
     getUsers: builder.query<IUsers, void>({
       query: () => `/api/v1/user`,

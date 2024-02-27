@@ -18,7 +18,16 @@ export interface IHiringData {
 
 export const hiringApi = createApi({
   reducerPath: "hiringApi",
-  baseQuery: fetchBaseQuery({ baseUrl: `${process.env.API_URL}` }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: `${process.env.API_URL}`,
+    prepareHeaders: (headers) => {
+      headers.set(
+        "authorization",
+        `Nazaara@Token ${process.env.API_SECURE_KEY}`
+      );
+      return headers;
+    },
+  }),
   tagTypes: ["Hiring"],
   endpoints: (builder) => ({
     getAllHiring: builder.query<IHiring, void>({

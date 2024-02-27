@@ -1,11 +1,18 @@
 import { IOrders, IOrdersById } from "@/types/ordersTypes";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { IOrderProductData } from "@/types/ordersTypes";
-import { OrderProductCount } from "@/types/ordersTypes";
 
 export const orderApi = createApi({
   reducerPath: "ordersApi",
-  baseQuery: fetchBaseQuery({ baseUrl: `${process.env.API_URL}` }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: `${process.env.API_URL}`,
+    prepareHeaders: (headers) => {
+      headers.set(
+        "authorization",
+        `Nazaara@Token ${process.env.API_SECURE_KEY}`
+      );
+      return headers;
+    },
+  }),
   tagTypes: ["Orders"],
   endpoints: (builder) => ({
     getOrders: builder.query<IOrders, void>({

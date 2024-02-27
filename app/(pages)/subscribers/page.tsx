@@ -29,7 +29,11 @@ const Subscriber = () => {
   useEffect(() => {
     // Make a GET request when the component mounts
     axios
-      .get(`${process.env.API_URL}/api/v1/subscriber`)
+      .get(`${process.env.API_URL}/api/v1/subscriber`, {
+        headers: {
+          authorization: `Nazaara@Token ${process.env.API_SECURE_KEY}`,
+        },
+      })
       .then((response) => {
         setData(response.data); // Assuming the response is JSON data
         setIsLoading(false);

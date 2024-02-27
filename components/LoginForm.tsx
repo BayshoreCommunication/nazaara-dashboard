@@ -17,6 +17,9 @@ const LoginForm: FC = () => {
   const router = useRouter();
   const loginSubmit = async (loginData: LoginSubmitProps) => {
     setIsLoading(true);
+    axios.defaults.headers.common[
+      "authorization"
+    ] = `Nazaara@Token ${process.env.API_SECURE_KEY}`;
     await axios
       .post(`${process.env.API_URL}/api/v1/auth/login`, loginData)
       .then((response) => {

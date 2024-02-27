@@ -26,7 +26,7 @@ export const cloudinaryImageDelete = async (publicId: string) => {
   const url = `https://api.cloudinary.com/v1_1/${cloudName}/image/destroy`;
 
   try {
-    const response = await axios.post(url, {
+    await axios.post(url, {
       public_id: publicId,
       signature: signature,
       api_key: apiKey,

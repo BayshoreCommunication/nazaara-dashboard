@@ -9,7 +9,6 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import axios from "axios";
-import Fuse from "fuse.js";
 
 const ErpProducts = () => {
   const { data: productsErpId } = useGetProductErpIdQuery();

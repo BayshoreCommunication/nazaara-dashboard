@@ -18,7 +18,12 @@ const Return = ({ returnData }: any) => {
   const handleEditReturn = async (id: any) => {
     setModalOpen(true);
     const response = await axios.get(
-      `${process.env.API_URL}/api/v1/return-exchange/${id}`
+      `${process.env.API_URL}/api/v1/return-exchange/${id}`,
+      {
+        headers: {
+          authorization: `Nazaara@Token ${process.env.API_SECURE_KEY}`,
+        },
+      }
     );
     setFormData({
       approval: response.data.data.approval,
@@ -42,7 +47,12 @@ const Return = ({ returnData }: any) => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         const response = await axios.delete(
-          `${process.env.API_URL}/api/v1/return-exchange/${id}`
+          `${process.env.API_URL}/api/v1/return-exchange/${id}`,
+          {
+            headers: {
+              authorization: `Nazaara@Token ${process.env.API_SECURE_KEY}`,
+            },
+          }
         );
         if (response.data) {
           Swal.fire(
@@ -59,7 +69,12 @@ const Return = ({ returnData }: any) => {
     e.preventDefault();
     const response = await axios.patch(
       `${process.env.API_URL}/api/v1/return-exchange/${id}`,
-      formData
+      formData,
+      {
+        headers: {
+          authorization: `Nazaara@Token ${process.env.API_SECURE_KEY}`,
+        },
+      }
     );
     if (response) {
       toast.success("Return data updated successfully");

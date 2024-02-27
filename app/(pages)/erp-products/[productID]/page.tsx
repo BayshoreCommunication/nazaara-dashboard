@@ -69,7 +69,12 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `${process.env.API_URL}/api/v1/sale/published`
+          `${process.env.API_URL}/api/v1/sale/published`,
+          {
+            headers: {
+              authorization: `Nazaara@Token ${process.env.API_SECURE_KEY}`,
+            },
+          }
         );
         setSaleData(response.data);
       } catch (error) {
@@ -81,7 +86,12 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
     const fetchFestivalData = async () => {
       try {
         const response = await axios.get(
-          `${process.env.API_URL}/api/v1/festival/published`
+          `${process.env.API_URL}/api/v1/festival/published`,
+          {
+            headers: {
+              authorization: `Nazaara@Token ${process.env.API_SECURE_KEY}`,
+            },
+          }
         );
         setFestivalData(response.data);
       } catch (error) {

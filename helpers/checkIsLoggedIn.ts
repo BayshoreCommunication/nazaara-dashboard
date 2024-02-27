@@ -9,6 +9,7 @@ export const CheckIsLoggedIn = () => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      authorization: `Nazaara@Token ${process.env.API_SECURE_KEY}`,
     },
     body: JSON.stringify({
       token: getCookie("token"),
