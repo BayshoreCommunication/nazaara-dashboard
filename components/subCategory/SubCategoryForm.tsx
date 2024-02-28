@@ -1,8 +1,10 @@
 import { cloudinaryImageUpload } from "@/helpers";
 import { useGetCategoriesQuery } from "@/services/categoryApi";
 import { useCreateSubCategoryMutation } from "@/services/subcategory";
+import Image from "next/image";
 import React, { ChangeEvent, FC, FormEvent, useState } from "react";
 import toast from "react-hot-toast";
+import { ScaleLoader } from "react-spinners";
 
 interface CategoryFormProps {
   formData: any;
@@ -13,6 +15,7 @@ const SubCategoryForm: FC<CategoryFormProps> = ({ setFormData, formData }) => {
   const { data: categories } = useGetCategoriesQuery();
   const [createSubCategory] = useCreateSubCategoryMutation();
   const [imageUploadLoading, setImageUploadLoading] = useState(false);
+
   const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
     setImageUploadLoading(true);
     const file = e.target.files?.[0];
@@ -31,6 +34,7 @@ const SubCategoryForm: FC<CategoryFormProps> = ({ setFormData, formData }) => {
       } catch (error) {
         console.error("Error uploading image:", error);
         toast.error("Error uploading image");
+        setImageUploadLoading(false);
       }
     }
   };
@@ -140,6 +144,30 @@ const SubCategoryForm: FC<CategoryFormProps> = ({ setFormData, formData }) => {
         <label className="font-medium block" htmlFor="imageUpload">
           Featured Image:
         </label>
+        {imageUploadLoading ? (
+          <div className="flex items-center gap-2 my-2">
+            <span>uploading </span>
+            <ScaleLoader
+              color="#820000"
+              margin={3}
+              speedMultiplier={1.5}
+              height={15}
+              width={3}
+            />
+          </div>
+        ) : (
+          <>
+            {formData.featuredImage && (
+              <Image
+                src={formData.featuredImage}
+                alt="Feature Image"
+                width={100}
+                height={100}
+                className="my-2"
+              />
+            )}
+          </>
+        )}
         <input
           type="file"
           id="imageUpload"
