@@ -14,6 +14,7 @@ import Image from "next/image";
 import { FC, useState, FormEvent, ChangeEvent } from "react";
 import toast from "react-hot-toast";
 import { RxCross2 } from "react-icons/rx";
+import { ScaleLoader } from "react-spinners";
 import Swal from "sweetalert2";
 
 const SubCategory: FC = () => {
@@ -166,6 +167,7 @@ const SubCategory: FC = () => {
       } catch (error) {
         console.error("Error uploading image:", error);
         toast.error("Error uploading image");
+        setImageUploadLoading(false);
       }
     }
   };
@@ -279,15 +281,31 @@ const SubCategory: FC = () => {
                       <label className="font-medium" htmlFor="status">
                         Image:
                       </label>
-                      {filteredData[0].imageUrl && (
-                        <Image
-                          src={filteredData[0].imageUrl}
-                          alt="advertisement image"
-                          width={100}
-                          height={80}
-                          className="mb-2 mt-1"
-                        />
+                      {imageUploadLoading ? (
+                        <div className="flex items-center gap-2 my-2">
+                          <span>uploading </span>
+                          <ScaleLoader
+                            color="#820000"
+                            margin={3}
+                            speedMultiplier={1.5}
+                            height={15}
+                            width={3}
+                          />
+                        </div>
+                      ) : (
+                        <>
+                          {filteredData[0].imageUrl && (
+                            <Image
+                              src={filteredData[0].imageUrl}
+                              alt="advertisement image"
+                              width={100}
+                              height={80}
+                              className="mb-2 mt-1"
+                            />
+                          )}
+                        </>
                       )}
+
                       <input
                         type="file"
                         id="imageUpload"

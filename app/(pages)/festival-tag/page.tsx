@@ -1,11 +1,5 @@
 "use client";
-import { SaleTagForm } from "@/components/saleTag";
 import { cloudinaryImageDeleteWithUrl } from "@/helpers/cloudinaryImageDeleteWithUrl";
-import {
-  useDeleteSaleMutation,
-  useGetSalesQuery,
-  useUpdateSaleMutation,
-} from "@/services/salesApi";
 import Image from "next/image";
 import Link from "next/link";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
@@ -23,6 +17,7 @@ import {
   useGetFestivalsQuery,
   useUpdateFestivalMutation,
 } from "@/services/festivalsApi";
+import { ScaleLoader } from "react-spinners";
 const Select = dynamic(() => import("react-select"), {
   ssr: false,
 });
@@ -41,6 +36,7 @@ const customStyles = {
 const FestivalTag = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
+  const [imageUploadLoading, setImageUploadLoading] = useState(false);
 
   const [filteredData, setFilteredData] = useState({
     _id: "",
@@ -110,8 +106,8 @@ const FestivalTag = () => {
   };
 
   const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    setImageUploadLoading(true);
     const file = e.target.files?.[0];
-
     if (file) {
       try {
         await cloudinaryImageDeleteWithUrl(imageUrl);
@@ -126,9 +122,11 @@ const FestivalTag = () => {
           ...filteredData,
           featuredImage: secureUrl,
         });
+        setImageUploadLoading(false);
       } catch (error) {
         console.error("Error uploading image:", error);
         toast.error("Error uploading image");
+        setImageUploadLoading(false);
       }
     }
   };
@@ -366,13 +364,31 @@ const FestivalTag = () => {
                       >
                         Featured Image:
                       </label>
-                      <Image
-                        src={filteredData.featuredImage}
-                        alt="Feature Image"
-                        width={100}
-                        height={100}
-                        className="my-2"
-                      />
+                      {imageUploadLoading ? (
+                        <div className="flex items-center gap-2 my-2">
+                          <span>uploading </span>
+                          <ScaleLoader
+                            color="#820000"
+                            margin={3}
+                            speedMultiplier={1.5}
+                            height={15}
+                            width={3}
+                          />
+                        </div>
+                      ) : (
+                        <>
+                          {filteredData.featuredImage && (
+                            <Image
+                              src={filteredData.featuredImage}
+                              alt="Feature Image"
+                              width={100}
+                              height={100}
+                              className="my-2"
+                            />
+                          )}
+                        </>
+                      )}
+
                       <input
                         type="file"
                         id="imageUpload"

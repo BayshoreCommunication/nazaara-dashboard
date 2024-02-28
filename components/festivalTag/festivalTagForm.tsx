@@ -10,6 +10,7 @@ import { cloudinaryImageUpload } from "@/helpers";
 import toast from "react-hot-toast";
 import Image from "next/image";
 import { useCreateFestivalMutation } from "@/services/festivalsApi";
+import { ScaleLoader } from "react-spinners";
 
 const customStyles = {
   control: (provided: any, state: any) => ({
@@ -170,14 +171,29 @@ const FestivalTagForm = () => {
             name="imageUpload"
             onChange={handleImageChange}
           ></input>
-          {formData.featuredImage && (
-            <Image
-              src={formData.featuredImage}
-              alt="Feature Image"
-              width={100}
-              height={100}
-              className="mt-2"
-            />
+          {imageUploadLoading ? (
+            <div className="flex items-center gap-2 my-2">
+              <span>uploading </span>
+              <ScaleLoader
+                color="#820000"
+                margin={3}
+                speedMultiplier={1.5}
+                height={15}
+                width={3}
+              />
+            </div>
+          ) : (
+            <>
+              {formData.featuredImage && (
+                <Image
+                  src={formData.featuredImage}
+                  alt="Feature Image"
+                  width={100}
+                  height={100}
+                  className="mt-2"
+                />
+              )}
+            </>
           )}
         </div>
         <button

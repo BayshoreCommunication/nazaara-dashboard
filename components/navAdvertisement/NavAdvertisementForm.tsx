@@ -2,8 +2,10 @@ import { cloudinaryImageUpload } from "@/helpers";
 import { useGetCategoriesQuery } from "@/services/categoryApi";
 import { useCreateNavAdvertisementMutation } from "@/services/navAdvertisementApi";
 import { useCreateSubCategoryMutation } from "@/services/subcategory";
+import Image from "next/image";
 import React, { ChangeEvent, FC, FormEvent, useState } from "react";
 import toast from "react-hot-toast";
+import { ScaleLoader } from "react-spinners";
 
 interface CategoryFormProps {
   formData: any;
@@ -17,6 +19,7 @@ const NavAdvertisementForm: FC<CategoryFormProps> = ({
   const { data: categories } = useGetCategoriesQuery();
   const [createNavAdvertisement] = useCreateNavAdvertisementMutation();
   const [imageUploadLoading, setImageUploadLoading] = useState(false);
+
   const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
     setImageUploadLoading(true);
     const file = e.target.files?.[0];
@@ -34,6 +37,7 @@ const NavAdvertisementForm: FC<CategoryFormProps> = ({
       } catch (error) {
         console.error("Error uploading image:", error);
         toast.error("Error uploading image");
+        setImageUploadLoading(false);
       }
     }
   };
@@ -140,11 +144,36 @@ const NavAdvertisementForm: FC<CategoryFormProps> = ({
         <label className="font-medium block" htmlFor="imageUpload">
           Image:
         </label>
+        {imageUploadLoading ? (
+          <div className="flex items-center gap-2 my-2">
+            <span>uploading </span>
+            <ScaleLoader
+              color="#820000"
+              margin={3}
+              speedMultiplier={1.5}
+              height={15}
+              width={3}
+            />
+          </div>
+        ) : (
+          <>
+            {formData.imageUrl && (
+              <Image
+                src={formData.imageUrl}
+                alt="Feature Image"
+                width={100}
+                height={100}
+                className="my-2"
+              />
+            )}
+          </>
+        )}
         <input
           type="file"
           id="imageUpload"
           name="imageUpload"
           onChange={handleImageChange}
+          className="mt-1"
         ></input>
       </div>
       <button

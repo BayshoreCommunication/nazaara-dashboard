@@ -17,6 +17,7 @@ import Swal from "sweetalert2";
 import dynamic from "next/dynamic";
 import { useGetProductsQuery } from "@/services/productApi";
 import { cloudinaryImageUpload } from "@/helpers";
+import { ScaleLoader } from "react-spinners";
 const Select = dynamic(() => import("react-select"), {
   ssr: false,
 });
@@ -43,6 +44,8 @@ const SaleTag = () => {
     status: "published",
     featuredImage: "",
   });
+
+  const [imageUploadLoading, setImageUploadLoading] = useState(false);
 
   useEffect(() => {
     setImageUrl(filteredData.featuredImage);
@@ -101,8 +104,8 @@ const SaleTag = () => {
   };
 
   const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    setImageUploadLoading(true);
     const file = e.target.files?.[0];
-
     if (file) {
       try {
         await cloudinaryImageDeleteWithUrl(imageUrl);
@@ -117,9 +120,11 @@ const SaleTag = () => {
           ...filteredData,
           featuredImage: secureUrl,
         });
+        setImageUploadLoading(false);
       } catch (error) {
         console.error("Error uploading image:", error);
         toast.error("Error uploading image");
+        setImageUploadLoading(false);
       }
     }
   };
@@ -172,7 +177,8 @@ const SaleTag = () => {
   return (
     <div>
       <div className="flex gap-10 dynamic-container">
-        <div className="flex-[6] overflow-x-auto">
+        {/* sale list section */}
+        <section className="flex-[6] overflow-x-auto">
           <h1 className="text-lg font-semibold mb-2">Sale Tags</h1>
           <p className="text-sm mb-2">Recommended image size: ( 404 x 474 )</p>
           <table className="overflow-auto table bg-basic">
@@ -248,11 +254,12 @@ const SaleTag = () => {
               ))}
             </tbody>
           </table>
-        </div>
-        <div className="flex-[3]">
+        </section>
+        {/* add sale section  */}
+        <section className="flex-[3]">
           <h1 className="text-lg font-semibold mb-2">Add New Sale Tag</h1>
           <SaleTagForm />
-        </div>
+        </section>
         {isOpen && (
           <>
             {/* modal code start  */}
@@ -359,13 +366,31 @@ const SaleTag = () => {
                       >
                         Featured Image:
                       </label>
-                      <Image
-                        src={filteredData.featuredImage}
-                        alt="Feature Image"
-                        width={80}
-                        height={80}
-                        className="my-2"
-                      />
+                      {imageUploadLoading ? (
+                        <div className="flex items-center gap-2 my-2">
+                          <span>uploading </span>
+                          <ScaleLoader
+                            color="#820000"
+                            margin={3}
+                            speedMultiplier={1.5}
+                            height={15}
+                            width={3}
+                          />
+                        </div>
+                      ) : (
+                        <>
+                          {filteredData.featuredImage && (
+                            <Image
+                              src={filteredData.featuredImage}
+                              alt="Feature Image"
+                              width={80}
+                              height={80}
+                              className="my-2"
+                            />
+                          )}
+                        </>
+                      )}
+
                       <input
                         type="file"
                         id="imageUpload"
