@@ -1,8 +1,7 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import { useGetStockDtlsQuery } from "@/services/productApi";
-import { useGetTopOrdersProductQuery } from "@/services/orderApi";
 import Loader from "../Loader";
 
 dynamic(() => import("react-apexcharts"), {
@@ -12,14 +11,10 @@ dynamic(() => import("react-apexcharts"), {
 const DonutChart: React.FC = () => {
   const chartRef = useRef<HTMLDivElement>(null);
   const { data: result, isLoading: isStockLoading } = useGetStockDtlsQuery();
-  const { data: orderResult, isLoading: isOrderLoading } =
-    useGetTopOrdersProductQuery();
 
   let stockIn = 0;
   let stockOut = 0;
   let draftCount = 0;
-  let onDelivery = 0;
-  let onDelivered = 0;
   if (result) {
     result.product.map((el) => {
       if (el.stock > 0) {
@@ -33,41 +28,18 @@ const DonutChart: React.FC = () => {
       }
     });
   }
-  if (orderResult) {
-    orderResult.data.map((elem: any) => {
-      if (
-        elem.deliveryStatus === "order received" ||
-        elem.deliveryStatus === "shipped" ||
-        elem.deliveryStatus === "on process" ||
-        elem.deliveryStatus === "ready to deliver" ||
-        elem.deliveryStatus === "pending"
-      ) {
-        onDelivery++;
-      }
-
-      if (elem.deliveryStatus === "delivered") {
-        onDelivered++;
-      }
-    });
-  }
 
   useEffect(() => {
     const fetchApexCharts = async () => {
       const ApexCharts = await import("apexcharts");
-      if (result && orderResult) {
+      if (result && !isStockLoading) {
         const options = {
-          series: [stockIn, stockOut, onDelivery, draftCount, onDelivered],
+          series: [stockIn, stockOut, draftCount],
           chart: {
             width: 480,
             type: "donut",
           },
-          labels: [
-            `In Stock `,
-            `Stock Out `,
-            `On Delivery`,
-            `On Draft`,
-            "On Delivered",
-          ],
+          labels: [`In Stock `, `Stock Out `, `On Draft`],
           responsive: [
             {
               breakpoint: 480,
@@ -93,19 +65,11 @@ const DonutChart: React.FC = () => {
     };
 
     fetchApexCharts();
-  }, [
-    result,
-    orderResult,
-    stockIn,
-    stockOut,
-    onDelivery,
-    draftCount,
-    onDelivered,
-  ]);
+  }, [draftCount, isStockLoading, result, stockIn, stockOut]);
 
   return (
     <>
-      {isOrderLoading || isStockLoading ? (
+      {isStockLoading ? (
         <Loader height="h-[40vh]" />
       ) : (
         <div id="chart" ref={chartRef}></div>

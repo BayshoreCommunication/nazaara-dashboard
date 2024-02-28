@@ -1,4 +1,5 @@
 import DonutChart from "@/components/analytics/DonutChart";
+import OrderDonutChart from "@/components/analytics/OrderDonutChart";
 import RecentProducts from "@/components/analytics/RecentProducts";
 import StockOut from "@/components/analytics/StockOut";
 import TopSellingProduct from "@/components/analytics/TopSellingProduct";
@@ -12,15 +13,23 @@ const page = () => {
         <span className="font-medium text-lg">Analytics</span>
       </div>
       <div className="grid grid-cols-2 gap-6">
-        <div className="bg-white">
+        <div className="bg-white pb-6">
           <h2 className="font-medium text-md mt-5 ml-5">Product Analysis</h2>
           <div className="flex items-center justify-center h-full">
             <DonutChart />
           </div>
         </div>
-        <div className="bg-white">
-          <TopSellingProduct />
+        <div className="bg-white pb-6">
+          <h2 className="font-medium text-md mt-5 ml-5">
+            Order Delivery Analysis
+          </h2>
+          <div className="flex items-center justify-center h-full">
+            <OrderDonutChart />
+          </div>
         </div>
+      </div>
+      <div className="bg-white">
+        <TopSellingProduct />
       </div>
 
       <div className="bg-white">

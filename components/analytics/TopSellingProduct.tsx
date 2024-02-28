@@ -10,7 +10,7 @@ const TopSellingProduct = () => {
   const { data: ordersData, isLoading: orderLoading } =
     useGetTopOrdersProductQuery();
 
-  // console.log("ordersData", ordersData);
+  console.log("ordersDatass", ordersData);
 
   return orderLoading ? (
     <Loader height="h-[85vh]" />
@@ -30,6 +30,10 @@ const TopSellingProduct = () => {
             <tr>
               <th>Image</th>
               <th>Sku</th>
+              <th>Product Name</th>
+              <th>Sale Price</th>
+              <th>Regular Price</th>
+              <th>Stock</th>
               <th>Total Order</th>
               <th>Action</th>
             </tr>
@@ -53,7 +57,15 @@ const TopSellingProduct = () => {
                   />
                 </td>
                 <td>{elem.productDetails.sku}</td>
-                <td>{elem.totalOrders}</td>
+                <td>{elem.productDetails.productName.slice(0, 25)}</td>
+                <td>{elem.productDetails.salePrice}/-</td>
+                <td>{elem.productDetails.regularPrice}/-</td>
+                <td>{elem.productDetails.stock}</td>
+                <td>
+                  <span className="font-semibold bg-green-600 px-3 py-[1px] text-white rounded-md">
+                    {elem.totalOrders}
+                  </span>
+                </td>
                 <td>
                   <div>
                     <span className="text-[#3b7ffd]"> </span>

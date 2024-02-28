@@ -60,8 +60,8 @@ const StockOut = () => {
                       />
                     </td>
                     <td>{elem.productName.slice(0, 25)}</td>
-                    <td>{elem.erpCategory}</td>
-                    <td>{elem.erpSubCategory}</td>
+                    <td>{elem.category}</td>
+                    <td>{elem.subCategory}</td>
                     <td>{elem.salePrice}</td>
                     <td>{elem.regularPrice}</td>
                     <td>{elem.stock}</td>
