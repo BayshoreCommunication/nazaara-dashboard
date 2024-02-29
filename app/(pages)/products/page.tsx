@@ -204,15 +204,92 @@ const Products: any = () => {
           {searchData && searchText ? (
             <>
               {searchData?.map((elem: any) => (
+                // <tr key={elem.item._id}>
+                //   <td>
+                //     {elem.item.variant[0].imageUrl[0] ? (
+                //       <Image
+                //         src={elem.item.variant[0].imageUrl[0]}
+                //         alt="nazaara main logo"
+                //         width={248}
+                //         height={248}
+                //         className="w-[64px] h-[80px] rounded-md"
+                //       />
+                //     ) : (
+                //       <Image
+                //         src="/images/no-image.jpg"
+                //         alt="nazaara main logo"
+                //         width={248}
+                //         height={248}
+                //         className="w-[64px] h-[80px] rounded-md"
+                //       />
+                //     )}
+                //   </td>
+                //   <td>{elem.item.erpId}</td>
+                //   <td>{elem.item.sku}</td>
+                //   <td>{elem.item.erpCategory}</td>
+                //   <td>{elem.item.erpSubCategory}</td>
+                //   <td>{elem.item.category}</td>
+                //   <td>{elem.item.subCategory}</td>
+                //   <td>
+                //     <span className="text-xl">৳</span>
+                //     {elem.item.regularPrice}
+                //   </td>
+                //   <td>
+                //     <span className="text-xl">৳</span>
+                //     {elem.item.salePrice}
+                //   </td>
+                //   <td>{elem.item.stock}</td>
+                //   <td
+                //     className={`font-medium ${
+                //       elem.item.status === "published"
+                //         ? "text-green-500"
+                //         : "text-red-500"
+                //     }`}
+                //   >
+                //     {elem.item.status}
+                //   </td>
+                //   <td>
+                //     <div className="flex gap-2">
+                //       <Link
+                //         href={{
+                //           pathname: "/products/image-upload",
+                //           query: { id: `${elem.item._id}` },
+                //         }}
+                //         className="text-white bg-red-800 py-1 px-2 rounded-md shadow-md text-xs"
+                //       >
+                //         Edit Image
+                //       </Link>
+                //       <Link
+                //         href={`/products/update-product/${elem.item._id}`}
+                //         className="text-white bg-red-800 py-1 px-2 rounded-md shadow-md text-xs"
+                //       >
+                //         Edit Details
+                //       </Link>
+                //       <button
+                //         onClick={() => handleDelete(elem.item._id as string)}
+                //         className="text-white bg-red-800 py-1 px-2 rounded-md shadow-md text-xs"
+                //       >
+                //         Delete
+                //       </button>
+                //     </div>
+                //   </td>
+                // </tr>
                 <tr key={elem.item._id}>
                   <td>
-                    {elem.item.variant[0].imageUrl[0] ? (
+                    {elem.item.variant[0].imageUrl.length > 0 ? (
                       <Image
-                        src={elem.item.variant[0].imageUrl[0]}
+                        src={
+                          elem.item.variant
+                            .flatMap((v: any) => v.imageUrl)
+                            .find((image: any) => image.isFeatured)?.image ||
+                          elem.item.variant[0].imageUrl[0].image
+                        }
                         alt="nazaara main logo"
                         width={248}
                         height={248}
-                        className="w-[64px] h-[80px] rounded-md"
+                        placeholder="blur"
+                        blurDataURL={"/images/placeholder.png"}
+                        className="min-w-[66px] max-w-[66px] min-h-[80px] rounded-md"
                       />
                     ) : (
                       <Image
@@ -220,7 +297,9 @@ const Products: any = () => {
                         alt="nazaara main logo"
                         width={248}
                         height={248}
-                        className="w-[64px] h-[80px] rounded-md"
+                        placeholder="blur"
+                        blurDataURL={"/images/placeholder.png"}
+                        className="w-[66px] h-[80px] rounded-md"
                       />
                     )}
                   </td>
@@ -239,6 +318,26 @@ const Products: any = () => {
                     {elem.item.salePrice}
                   </td>
                   <td>{elem.item.stock}</td>
+                  {elem.item.preOrder ? (
+                    <td className="font-semibold text-green-600">Available</td>
+                  ) : (
+                    <td className="text-red-600 font-semibold">Unavailable</td>
+                  )}
+                  {(elem.item.stock === 0 && !elem.item.preOrder) ||
+                  elem.item.status === "draft" ? (
+                    <td>
+                      <span className="bg-red-600 font-medium text-white px-3 py-[1px] text-[12px] rounded-full">
+                        NO
+                      </span>{" "}
+                    </td>
+                  ) : (
+                    <td>
+                      <span className="bg-green-600 font-medium text-white px-3 py-[1px] text-[12px] rounded-full">
+                        YES
+                      </span>
+                    </td>
+                  )}
+
                   <td
                     className={`font-medium ${
                       elem.item.status === "published"
