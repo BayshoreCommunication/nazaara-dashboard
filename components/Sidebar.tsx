@@ -126,6 +126,12 @@ const Sidebar = () => {
       link: "/customization",
       icon: <MdOutlineDashboardCustomize size={18} />,
     },
+    {
+      _id: "1146",
+      title: "Sms Marketing",
+      link: "/sms-marketing",
+      icon: <MdOutlineDashboardCustomize size={18} />,
+    },
   ];
 
   const path = usePathname();
