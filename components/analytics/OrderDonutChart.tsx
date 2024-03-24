@@ -12,7 +12,7 @@ const OrderDonutChart: React.FC = () => {
   const chartRef = useRef<HTMLDivElement>(null);
   const { data: orderResult, isLoading: isOrderLoading } = useGetOrdersQuery();
 
-  console.log("order result", orderResult);
+  // console.log("order result", orderResult);
 
   let pending = 0;
   let orderReceived = 0;
@@ -44,10 +44,12 @@ const OrderDonutChart: React.FC = () => {
     });
   }
 
+  console.log("order result", orderResult);
+
   useEffect(() => {
     const fetchApexCharts = async () => {
       const ApexCharts = await import("apexcharts");
-      if (orderResult) {
+      if ((orderResult && orderResult?.data?.length > 0) as any) {
         const options = {
           series: [
             pending,
@@ -109,7 +111,13 @@ const OrderDonutChart: React.FC = () => {
       {isOrderLoading ? (
         <Loader height="h-[40vh]" />
       ) : (
-        <div id="chart" ref={chartRef}></div>
+        <>
+          {((orderResult && orderResult?.data?.length > 0) as any) ? (
+            <div id="chart" ref={chartRef}></div>
+          ) : (
+            <p>No order yet</p>
+          )}
+        </>
       )}
     </>
   );

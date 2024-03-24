@@ -102,8 +102,12 @@ const HomePage = async () => {
       <div className="grid grid-cols-2 gap-6 mt-6">
         <div className="w-full bg-basic p-4 rounded-lg">
           <h2 className="font-semibold text-md mb-3 ml-3">Recent Orders</h2>
-          {orderData.success && orderData.data.length > 0 && (
+          {orderData.success && orderData.data.length > 0 ? (
             <RecentOrder orderData={orderData.data} />
+          ) : (
+            <p className="flex items-center justify-center w-full h-full">
+              No Recent Order Found!
+            </p>
           )}
         </div>
         <div className="w-full bg-basic p-4 rounded-lg">
