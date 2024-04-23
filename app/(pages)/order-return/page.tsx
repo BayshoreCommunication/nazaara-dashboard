@@ -2,10 +2,13 @@
 import { fetchServerSideData } from "@/components/ServerSideDataFetching";
 import Return from "@/components/order-return/Return";
 import React from "react";
-const CategoryList = async () => {
+const OrderReturnList = async () => {
+  // console.log("api url", process.env.API_URL);
+
   const returnData = await fetchServerSideData(
     `${process.env.API_URL}/api/v1/return-exchange`
   );
+  // console.log("datatatatat", returnData);
 
   return (
     <main className="mx-4">
@@ -20,4 +23,4 @@ const CategoryList = async () => {
   );
 };
 
-export default CategoryList;
+export default OrderReturnList;

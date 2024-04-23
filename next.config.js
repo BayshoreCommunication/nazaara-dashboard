@@ -12,6 +12,9 @@ const nextConfig = {
     API_KEY: process.env.API_KEY,
     API_SECRET: process.env.API_SECRET,
     API_SECURE_KEY: process.env.API_SECURE_KEY,
+    API_BASE_URL: process.env.API_BASE_URL,
+    UPLOAD_PRESET: process.env.UPLOAD_PRESET,
+    OTHER_PRESET: process.env.OTHER_PRESET,
   },
   images: {
     domains: [
