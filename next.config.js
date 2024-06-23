@@ -17,6 +17,7 @@ const nextConfig = {
     OTHER_PRESET: process.env.OTHER_PRESET,
   },
   images: {
+    unoptimized: true,
     domains: [
       "anzara.s3.amazonaws.com",
       "res.cloudinary.com",
