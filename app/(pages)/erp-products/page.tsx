@@ -14,7 +14,7 @@ const ErpProducts = () => {
   const { data: productsErpId } = useGetProductErpIdQuery();
   const [erpData, setErpData] = useState<TErpData>();
   const [keyWord, setKeyWord] = useState<string>("");
-  // const [quantity, setQuantity] = useState<number>();
+  const [isLoading, setIsLoading] = useState(false);
 
   //pagination
   const pageSize = 20;
@@ -24,6 +24,7 @@ const ErpProducts = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true);
       try {
         const response = await axios.get(url, {
           headers: {
@@ -41,6 +42,8 @@ const ErpProducts = () => {
         });
       } catch (err) {
         console.error("Error fetching erp product data:", err);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -182,78 +185,86 @@ const ErpProducts = () => {
                 <th>Action</th>
               </tr>
             </thead>
-            <tbody>
-              {!erpData ? ( // if erpData is not available
-                <tr>
-                  <td colSpan={8}>
-                    <div className="flex justify-center items-center">
-                      <Loader height="h-[60vh]" />
-                    </div>
-                  </td>
-                </tr>
-              ) : erpData?.results?.length >= 0 ? ( // if erpData is available but no data
-                erpData?.results?.map((elem, index) => {
-                  const checkdata = productsErpId?.result.filter(
-                    (el: any) => el.erpId === elem.id
-                  )[0];
-                  return (
-                    <tr
-                      key={index}
-                      // className={`${checkdata != undefined && "bg-gray-300"}`}
-                    >
-                      <td>
-                        <Image
-                          src={elem?.ProductImage[0]?.photo}
-                          alt="nazaara main logo"
-                          width={248}
-                          height={248}
-                          placeholder="blur"
-                          blurDataURL={"/images/placeholder.png"}
-                          className="w-[66px] h-[80px] rounded-md"
-                        />
-                      </td>
-                      <td>{elem.id}</td>
-                      <td>{elem.title}</td>
-                      <td>{elem.Deatils.map((el) => el.main_category)}</td>
-                      <td>
-                        <span className="text-xl">৳</span>
-                        {Math.floor(Number(elem.selling_price))}
-                      </td>
-                      <td>{elem?.ProductDetails?.quantity}</td>
-                      {checkdata != undefined ? (
-                        <td className="text-green-500 font-medium">Stored</td>
-                      ) : (
-                        <td className="text-red-500 font-medium">Not stored</td>
-                      )}
-                      <td>
-                        {checkdata === undefined ? (
-                          <Link
-                            href={`/erp-products/${elem.id}`}
-                            className="text-sm bg-secondary px-3 py-1 text-white rounded-lg"
-                          >
-                            Upload Product
-                          </Link>
+            {isLoading ? (
+              <tbody className="w-[86vw] flex justify-center">
+                <Loader height="h-[80vh]" />
+              </tbody>
+            ) : (
+              <tbody>
+                {!erpData ? ( // if erpData is not available
+                  <tr>
+                    <td colSpan={8}>
+                      <div className="flex justify-center items-center">
+                        <Loader height="h-[60vh]" />
+                      </div>
+                    </td>
+                  </tr>
+                ) : erpData?.results?.length >= 0 ? ( // if erpData is available but no data
+                  erpData?.results?.map((elem, index) => {
+                    const checkdata = productsErpId?.result.filter(
+                      (el: any) => el.erpId === elem.id
+                    )[0];
+                    return (
+                      <tr
+                        key={index}
+                        // className={`${checkdata != undefined && "bg-gray-300"}`}
+                      >
+                        <td>
+                          <Image
+                            src={elem?.ProductImage[0]?.photo}
+                            alt="nazaara main logo"
+                            width={248}
+                            height={248}
+                            placeholder="blur"
+                            blurDataURL={"/images/placeholder.png"}
+                            className="w-[66px] h-[80px] rounded-md"
+                          />
+                        </td>
+                        <td>{elem.id}</td>
+                        <td>{elem.title}</td>
+                        <td>{elem.Deatils.map((el) => el.main_category)}</td>
+                        <td>
+                          <span className="text-xl">৳</span>
+                          {Math.floor(Number(elem.selling_price))}
+                        </td>
+                        <td>{elem?.ProductDetails?.quantity}</td>
+                        {checkdata != undefined ? (
+                          <td className="text-green-500 font-medium">Stored</td>
                         ) : (
-                          <p className="text-sm bg-gray-500 px-3 py-1 text-white rounded-lg w-max cursor-not-allowed">
-                            Already Added
-                          </p>
+                          <td className="text-red-500 font-medium">
+                            Not stored
+                          </td>
                         )}
-                      </td>
-                    </tr>
-                  );
-                })
-              ) : (
-                <tr>
-                  <td colSpan={8}>
-                    <div className="flex justify-center items-center h-[20vh]">
-                      <span className="text-lg font-medium text-gray-500">
-                        No products found
-                      </span>
-                    </div>
-                  </td>
-                </tr>
-              )}
-            </tbody>
+                        <td>
+                          {checkdata === undefined ? (
+                            <Link
+                              href={`/erp-products/${elem.id}`}
+                              className="text-sm bg-secondary px-3 py-1 text-white rounded-lg"
+                            >
+                              Upload Product
+                            </Link>
+                          ) : (
+                            <p className="text-sm bg-gray-500 px-3 py-1 text-white rounded-lg w-max cursor-not-allowed">
+                              Already Added
+                            </p>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td colSpan={8}>
+                      <div className="flex justify-center items-center h-[20vh]">
+                        <span className="text-lg font-medium text-gray-500">
+                          No products found
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            )}
           </table>
         </div>
         <ul className="flex -space-x-px text-sm justify-center mt-4">
