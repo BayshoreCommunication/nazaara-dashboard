@@ -13,11 +13,14 @@ import axios from "axios";
 const ErpProducts = () => {
   const { data: productsErpId } = useGetProductErpIdQuery();
   const [erpData, setErpData] = useState<TErpData>();
+  const [keyWord, setKeyWord] = useState<string>("");
+  // const [quantity, setQuantity] = useState<number>();
 
   //pagination
-  const pageSize = 10;
+  const pageSize = 20;
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const url = `https://erp.anzaralifestyle.com/api/product/Details/?format=json&page=${currentPage}&page_size=${pageSize}`;
+  const url = `https://erp.anzaralifestyle.com/api/product/Details/?format=json&page=${currentPage}&page_size=${pageSize}&keyward=${keyWord}`;
+  // const url = `https://erp.anzaralifestyle.com/api/product/Details/?format=json&page=${currentPage}&page_size=${pageSize}&keyward=${keyWord}&quantity=${quantity}`;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,15 +30,22 @@ const ErpProducts = () => {
             Authorization: `Token ${process.env.AUTH_TOKEN}`,
           },
         });
-        // const data = await response.json();
-        setErpData(response.data);
+
+        const filteredData = response.data.results.filter(
+          (data: any) => data.quantity > 0
+        );
+
+        setErpData({
+          ...response.data,
+          results: filteredData,
+        });
       } catch (err) {
         console.error("Error fetching erp product data:", err);
       }
     };
 
     fetchData();
-  }, [url]);
+  }, [url, keyWord]);
 
   //pagination
   const totalPages = Math.ceil(erpData?.count! / pageSize);
@@ -140,6 +150,20 @@ const ErpProducts = () => {
           <div className="flex gap-2 items-center">
             <AiOutlineShoppingCart size={18} color="gray" />
             <span className="font-medium text-lg">ERP Products</span>
+          </div>
+          <div className="flex items-center gap-2">
+            {/* <input
+              type="number"
+              placeholder="quantity"
+              onChange={(e) => setQuantity(Number(e.target.value))}
+              className="border border-gray-400 rounded-lg px-2 py-0.5"
+            /> */}
+            <input
+              type="text"
+              placeholder="slug"
+              onChange={(e) => setKeyWord(e.target.value)}
+              className="border border-gray-400 rounded-lg px-2 py-0.5"
+            />
           </div>
         </div>
         {/* product component  */}
