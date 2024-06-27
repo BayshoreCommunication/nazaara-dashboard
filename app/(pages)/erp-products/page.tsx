@@ -169,133 +169,137 @@ const ErpProducts = () => {
             />
           </div>
         </div>
-        {/* product component  */}
-        <div className="overflow-x-auto">
-          <table className="table bg-basic">
-            {/* head */}
-            <thead className="text-gray-700">
-              <tr>
-                <th>Image</th>
-                <th>ERP ID</th>
-                <th>Title</th>
-                <th>Category</th>
-                <th>Selling Price</th>
-                <th>Stock</th>
-                <th>Status</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            {isLoading ? (
-              <tbody className="w-[86vw] flex justify-center">
-                <Loader height="h-[80vh]" />
-              </tbody>
-            ) : (
-              <tbody>
-                {!erpData ? ( // if erpData is not available
+        {isLoading ? (
+          <div className="w-[86vw] flex justify-center">
+            <Loader height="h-[80vh]" />
+          </div>
+        ) : (
+          <>
+            {/* product component  */}
+            <div className="overflow-x-auto">
+              <table className="table bg-basic">
+                {/* head */}
+                <thead className="text-gray-700">
                   <tr>
-                    <td colSpan={8}>
-                      <div className="flex justify-center items-center">
-                        <Loader height="h-[60vh]" />
-                      </div>
-                    </td>
+                    <th>Image</th>
+                    <th>ERP ID</th>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Selling Price</th>
+                    <th>Stock</th>
+                    <th>Status</th>
+                    <th>Action</th>
                   </tr>
-                ) : erpData?.results?.length >= 0 ? ( // if erpData is available but no data
-                  erpData?.results?.map((elem, index) => {
-                    const checkdata = productsErpId?.result.filter(
-                      (el: any) => el.erpId === elem.id
-                    )[0];
-                    return (
-                      <tr
-                        key={index}
-                        // className={`${checkdata != undefined && "bg-gray-300"}`}
-                      >
-                        <td>
-                          <Image
-                            src={elem?.ProductImage[0]?.photo}
-                            alt="nazaara main logo"
-                            width={248}
-                            height={248}
-                            placeholder="blur"
-                            blurDataURL={"/images/placeholder.png"}
-                            className="w-[66px] h-[80px] rounded-md"
-                          />
-                        </td>
-                        <td>{elem.id}</td>
-                        <td>{elem.title}</td>
-                        <td>{elem.Deatils.map((el) => el.main_category)}</td>
-                        <td>
-                          <span className="text-xl">৳</span>
-                          {Math.floor(Number(elem.selling_price))}
-                        </td>
-                        <td>{elem?.ProductDetails?.quantity}</td>
-                        {checkdata != undefined ? (
-                          <td className="text-green-500 font-medium">Stored</td>
-                        ) : (
-                          <td className="text-red-500 font-medium">
-                            Not stored
+                </thead>
+                <tbody>
+                  {!erpData ? ( // if erpData is not available
+                    <tr>
+                      <td colSpan={8}>
+                        <div className="flex justify-center items-center">
+                          <Loader height="h-[60vh]" />
+                        </div>
+                      </td>
+                    </tr>
+                  ) : erpData?.results?.length >= 0 ? ( // if erpData is available but no data
+                    erpData?.results?.map((elem, index) => {
+                      const checkdata = productsErpId?.result.filter(
+                        (el: any) => el.erpId === elem.id
+                      )[0];
+                      return (
+                        <tr
+                          key={index}
+                          // className={`${checkdata != undefined && "bg-gray-300"}`}
+                        >
+                          <td>
+                            <Image
+                              src={elem?.ProductImage[0]?.photo}
+                              alt="nazaara main logo"
+                              width={248}
+                              height={248}
+                              placeholder="blur"
+                              blurDataURL={"/images/placeholder.png"}
+                              className="w-[66px] h-[80px] rounded-md"
+                            />
                           </td>
-                        )}
-                        <td>
-                          {checkdata === undefined ? (
-                            <Link
-                              href={`/erp-products/${elem.id}`}
-                              className="text-sm bg-secondary px-3 py-1 text-white rounded-lg"
-                            >
-                              Upload Product
-                            </Link>
+                          <td>{elem.id}</td>
+                          <td>{elem.title}</td>
+                          <td>{elem.Deatils.map((el) => el.main_category)}</td>
+                          <td>
+                            <span className="text-xl">৳</span>
+                            {Math.floor(Number(elem.selling_price))}
+                          </td>
+                          <td>{elem?.ProductDetails?.quantity}</td>
+                          {checkdata != undefined ? (
+                            <td className="text-green-500 font-medium">
+                              Stored
+                            </td>
                           ) : (
-                            <p className="text-sm bg-gray-500 px-3 py-1 text-white rounded-lg w-max cursor-not-allowed">
-                              Already Added
-                            </p>
+                            <td className="text-red-500 font-medium">
+                              Not stored
+                            </td>
                           )}
-                        </td>
-                      </tr>
-                    );
-                  })
-                ) : (
-                  <tr>
-                    <td colSpan={8}>
-                      <div className="flex justify-center items-center h-[20vh]">
-                        <span className="text-lg font-medium text-gray-500">
-                          No products found
-                        </span>
-                      </div>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            )}
-          </table>
-        </div>
-        <ul className="flex -space-x-px text-sm justify-center mt-4">
-          <li>
-            <button
-              onClick={handlePreviousPage}
-              disabled={currentPage === 1}
-              className={`flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-200 border border-gray-100 rounded-l-lg hover:text-gray-100 ${
-                currentPage === 1 ? "bg-secondary-hover" : "bg-secondary"
-              }`}
-            >
-              Previous
-            </button>
-          </li>
+                          <td>
+                            {checkdata === undefined ? (
+                              <Link
+                                href={`/erp-products/${elem.id}`}
+                                className="text-sm bg-secondary px-3 py-1 text-white rounded-lg"
+                              >
+                                Upload Product
+                              </Link>
+                            ) : (
+                              <p className="text-sm bg-gray-500 px-3 py-1 text-white rounded-lg w-max cursor-not-allowed">
+                                Already Added
+                              </p>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })
+                  ) : (
+                    <tr>
+                      <td colSpan={8}>
+                        <div className="flex justify-center items-center h-[20vh]">
+                          <span className="text-lg font-medium text-gray-500">
+                            No products found
+                          </span>
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+            <ul className="flex -space-x-px text-sm justify-center mt-4">
+              <li>
+                <button
+                  onClick={handlePreviousPage}
+                  disabled={currentPage === 1}
+                  className={`flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-200 border border-gray-100 rounded-l-lg hover:text-gray-100 ${
+                    currentPage === 1 ? "bg-secondary-hover" : "bg-secondary"
+                  }`}
+                >
+                  Previous
+                </button>
+              </li>
 
-          <li className="flex">{renderPageNumbers()}</li>
+              <li className="flex">{renderPageNumbers()}</li>
 
-          <li>
-            <button
-              onClick={handleNextPage}
-              disabled={currentPage === totalPages}
-              className={`flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-200 border border-gray-100 rounded-e-lg hover:text-gray-100 ${
-                currentPage === totalPages
-                  ? "bg-secondary-hover"
-                  : "bg-secondary"
-              }`}
-            >
-              Next
-            </button>
-          </li>
-        </ul>
+              <li>
+                <button
+                  onClick={handleNextPage}
+                  disabled={currentPage === totalPages}
+                  className={`flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-200 border border-gray-100 rounded-e-lg hover:text-gray-100 ${
+                    currentPage === totalPages
+                      ? "bg-secondary-hover"
+                      : "bg-secondary"
+                  }`}
+                >
+                  Next
+                </button>
+              </li>
+            </ul>
+          </>
+        )}
       </div>
     </div>
   );
