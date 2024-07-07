@@ -6,8 +6,8 @@ export const fetchServerSideData = async (url: string) => {
     },
     next: { revalidate: 0 },
   });
-  if (!res.ok) {
-    throw new Error("Failed to fetch data");
-  }
+  // if (!res.ok) {
+  //   throw new Error("Failed to fetch data");
+  // }
   return await res.json();
 };
