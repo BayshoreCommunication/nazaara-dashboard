@@ -1,5 +1,3 @@
-import { AiOutlineDownload, AiOutlineShoppingCart } from "react-icons/ai";
-import UtilityBtn from "@/components/UtilityBtn";
 import { GetAllContacts } from "@/components/contacts";
 import { GrContact } from "react-icons/gr";
 

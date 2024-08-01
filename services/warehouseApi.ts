@@ -41,10 +41,10 @@ export const warehouseApi = createApi({
         },
       }),
       // Update the cache after successful creation
-      async onQueryStarted(_, { dispatch, queryFulfilled }) {
-        await queryFulfilled; // Wait for the query to be fulfilled
-        await dispatch(warehouseApi.endpoints.getwarehouses.initiate()); // Fetch the updated category list
-      },
+      // async onQueryStarted(_, { dispatch, queryFulfilled }) {
+      //   await queryFulfilled; // Wait for the query to be fulfilled
+      //   await dispatch(warehouseApi.endpoints.getwarehouses.initiate()); // Fetch the updated category list
+      // },
     }),
     deleteWarehouse: builder.mutation({
       query: (id) => ({

@@ -48,13 +48,13 @@ const ImageUpload: FC = () => {
     }
   }, [product]);
 
-  console.log("variant state", variant);
+  // console.log("variant state", variant);
 
   // update image mutation
   const [updateProduct] = useUpdateProductMutation();
 
   const onChangeHandle = (imageList: any, variantIndex: number) => {
-    console.log("image list", imageList);
+    // console.log("image list", imageList);
 
     // data for submit
     const updateImageUrl = imageList.map((elem: any) => ({
@@ -88,14 +88,14 @@ const ImageUpload: FC = () => {
         elem.imageUrl.map((el: TImageUrl) => el)
       );
 
-      console.log("postOnCloudinary", postOnCloudinary);
+      // console.log("postOnCloudinary", postOnCloudinary);
 
       const updatedVariants: any = await Promise.all(
         postOnCloudinary.map(async (elem: any, variantIndex: number) => {
-          console.log("elem", elem);
+          // console.log("elem", elem);
           const getResponseUrl = await Promise.all(
             elem.map(async (imageFile: any) => {
-              console.log("imageFile", imageFile);
+              // console.log("imageFile", imageFile);
               if (imageFile.file) {
                 const formData = new FormData();
                 formData.append("file", imageFile.file);
@@ -117,7 +117,7 @@ const ImageUpload: FC = () => {
             })
           );
 
-          console.log("getResponseUrl", getResponseUrl);
+          // console.log("getResponseUrl", getResponseUrl);
 
           return {
             color: product?.data.variant[variantIndex].color, // Associate the color with the variant
@@ -127,14 +127,14 @@ const ImageUpload: FC = () => {
         })
       );
 
-      console.log("update variants", updatedVariants);
+      // console.log("update variants", updatedVariants);
 
       try {
         const mutationData: any = await updateProduct({
           id: productId,
           payload: { variant: updatedVariants },
         });
-        console.log("mutation data", mutationData);
+        // console.log("mutation data", mutationData);
 
         refetch();
         if (mutationData?.data?.success) {

@@ -64,7 +64,7 @@ const DeliveryPartner = () => {
       })
     );
 
-    console.log("images upload", imagesUpload);
+    // console.log("images upload", imagesUpload);
 
     try {
       const updatedDeliveryPartner: any = await updateCustomization({

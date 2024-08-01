@@ -52,15 +52,17 @@ const Discount: FC = () => {
       _id: filtered?._id,
       title: filtered?.title,
       promotionOn: filtered?.promotionOn,
-      categoryId: (filtered?.categoryId || []).map((data) => ({
+      categoryId: (filtered?.categoryId || []).map((data: any) => ({
         value: data,
         label:
-          categoryData?.data.find((item) => item._id === data)?.title || "",
+          categoryData?.data.find((item: any) => item._id === data)?.title ||
+          "",
       })),
-      subCategoryId: (filtered?.subCategoryId || []).map((data) => ({
+      subCategoryId: (filtered?.subCategoryId || []).map((data: any) => ({
         value: data,
         label:
-          subCategoryData?.data.find((item) => item._id === data)?.title || "",
+          subCategoryData?.data.find((item: any) => item._id === data)?.title ||
+          "",
       })),
       startDate: filtered?.startDate,
       expireDate: filtered?.expireDate,
@@ -77,7 +79,7 @@ const Discount: FC = () => {
   //update category start
   const [updatePromotion] = useUpdateAPromotionMutation();
 
-  const options = categoryData?.data.map((elem) => ({
+  const options = categoryData?.data.map((elem: any) => ({
     value: elem._id,
     label: elem.title,
   }));
@@ -120,7 +122,7 @@ const Discount: FC = () => {
     }
   };
 
-  const subCategoryOptions = subCategoryData?.data.map((elem) => ({
+  const subCategoryOptions = subCategoryData?.data.map((elem: any) => ({
     value: elem._id,
     label: elem.title,
   }));

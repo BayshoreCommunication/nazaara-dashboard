@@ -53,7 +53,7 @@ const SaleTag = () => {
 
   const { data: productsData } = useGetProductsQuery({});
 
-  const options = productsData?.product?.map((elem) => ({
+  const options = productsData?.product?.map((elem: any) => ({
     value: elem._id,
     label: elem.sku,
   }));
@@ -193,7 +193,7 @@ const SaleTag = () => {
               </tr>
             </thead>
             <tbody>
-              {salesData?.data?.map((elem, index) => (
+              {salesData?.data?.map((elem: any, index: any) => (
                 <tr key={elem._id}>
                   <td>{index + 1}</td>
                   <td>
@@ -208,7 +208,7 @@ const SaleTag = () => {
                   <td>{elem.title}</td>
                   <td>
                     <span className="flex flex-wrap gap-2">
-                      {elem.products.map((data) => (
+                      {elem.products.map((data: any) => (
                         <Link
                           href={`/products/update-product/${data._id}`}
                           className="bg-gray-200 px-1"

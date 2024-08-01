@@ -138,7 +138,7 @@ const Customers = () => {
               </>
             ) : (
               <>
-                {customersData?.data.map((cus) => {
+                {customersData?.data.map((cus: any) => {
                   return (
                     <tr key={cus._id}>
                       <td>

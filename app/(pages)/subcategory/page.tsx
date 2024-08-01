@@ -83,8 +83,8 @@ const SubCategory: FC = () => {
       (item: any) => item._id === id
     );
 
-    console.log("filter data", filteredData);
-    console.log("filterererere", filtered);
+    // console.log("filter data", filteredData);
+    // console.log("filterererere", filtered);
 
     setFilteredData(filtered);
     setSelectedValue(filtered[0].status);

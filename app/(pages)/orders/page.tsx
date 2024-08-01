@@ -13,7 +13,7 @@ import Fuse from "fuse.js";
 const Orders = () => {
   const { data, isLoading } = useGetOrdersQuery();
 
-  console.log("dataaaa", data);
+  // console.log("dataaaa", data);
 
   const [openModal, setOpenModal] = useState(false);
 
@@ -182,7 +182,7 @@ const Orders = () => {
                       <>
                         {data &&
                           !isLoading &&
-                          data?.data?.map((el) => (
+                          data?.data?.map((el: any) => (
                             <tr key={el._id}>
                               <td>{formatDate(el?.createdAt as Date)}</td>
                               <td>{el?.transactionId}</td>

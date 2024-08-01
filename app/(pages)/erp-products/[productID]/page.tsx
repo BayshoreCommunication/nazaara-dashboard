@@ -128,7 +128,7 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
     status: "draft",
   });
 
-  console.log("form data", formData);
+  // console.log("form data", formData);
 
   const { data: productsData, isLoading: productsLoading } =
     useGetErpDataByIdQuery({
@@ -284,7 +284,7 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
     };
 
     // console.log("form data", formData);
-    console.log("submit form", submitData);
+    // console.log("submit form", submitData);
 
     // color should be toCapitalize before sending to backend
 
@@ -292,7 +292,7 @@ const AddProduct: FC<ErpIdProps> = ({ params }) => {
       // each variant color should to toCapitalize before sending to backend
       const response: any = await createProduct(submitData);
       // refetch();
-      console.log("response", response);
+      // console.log("response", response);
 
       if (response?.data?.success === true) {
         router.push("/products");

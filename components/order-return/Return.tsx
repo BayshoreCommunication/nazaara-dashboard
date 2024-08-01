@@ -62,7 +62,7 @@ const Return = ({ returnData }: any) => {
             "success"
           );
         }
-        console.log("response for delete", response.data);
+        // console.log("response for delete", response.data);
       }
     });
   };

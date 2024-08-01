@@ -131,7 +131,7 @@ const Discount: FC = () => {
 
   const handleEditCoupon = (id: string) => {
     const filtered: any = couponData?.data?.filter(
-      (item) => item._id === id
+      (item: any) => item._id === id
     )[0];
     setFilteredData(filtered);
     setIsOpen(true);

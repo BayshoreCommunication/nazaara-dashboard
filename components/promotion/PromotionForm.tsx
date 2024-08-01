@@ -24,18 +24,18 @@ const PromotionForm = () => {
     status: "",
   });
 
-  console.log("promotion state data", promotionData);
+  // console.log("promotion state data", promotionData);
 
   const { data: categoryData } = useGetCategoriesQuery();
   const { data: subCategoryData } = useGetSubCategoriesQuery();
   const [createPromotion] = useCreateAPromotionMutation();
 
-  const options = categoryData?.data.map((elem) => ({
+  const options = categoryData?.data.map((elem: any) => ({
     value: elem._id,
     label: elem.title,
   }));
 
-  const subCategoryOptions = subCategoryData?.data.map((elem) => ({
+  const subCategoryOptions = subCategoryData?.data.map((elem: any) => ({
     value: elem._id,
     label: elem.title,
   }));
@@ -95,10 +95,10 @@ const PromotionForm = () => {
         status: promotionData.status,
       };
 
-      console.log("create data", createData);
+      // console.log("create data", createData);
 
       const promotion = await createPromotion(createData);
-      console.log("create promoton data", promotion);
+      // console.log("create promoton data", promotion);
 
       if ((promotion as any)?.data?.success) {
         toast.success("Promotion created successfully", { duration: 3000 });

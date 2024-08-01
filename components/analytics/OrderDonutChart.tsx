@@ -44,7 +44,7 @@ const OrderDonutChart: React.FC = () => {
     });
   }
 
-  console.log("order result", orderResult);
+  // console.log("order result", orderResult);
 
   useEffect(() => {
     const fetchApexCharts = async () => {

@@ -20,7 +20,7 @@ const Navbar = () => {
   useEffect(() => {
     if (jsonStr != null) {
       const obj = JSON.parse(jsonStr);
-      console.log("obj", obj);
+      // console.log("obj", obj);
       setUserCredential({
         email: obj.email,
         fullName: obj.fullName,

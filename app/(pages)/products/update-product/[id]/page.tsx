@@ -18,9 +18,7 @@ import { useGetSubCategoriesQuery } from "@/services/subcategory";
 import axios from "axios";
 import { ISaleTag } from "@/types/saleTypes";
 import { IFestival } from "@/types/festivalTypes";
-import ColorPicker from "@/components/ColorPicker";
-import useToggle from "@/hooks/useToogle";
-import { HexColorInput, HexColorPicker } from "react-colorful";
+// import useToggle from "@/hooks/useToogle";
 import ColorVariant from "@/components/ColorPicker";
 const Select = dynamic(() => import("react-select"), {
   ssr: false,
@@ -154,7 +152,7 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
   // console.log("erp data", productsData);
 
   useEffect(() => {
-    if (productsData) {
+    if (productsData && productsData.success) {
       setFormData({
         erpId: productsData.data.erpId ? productsData.data.erpId : 0,
         sku: productsData.data.sku ? productsData.data.sku : "",
@@ -170,12 +168,12 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
         salePrice: productsData.data.salePrice
           ? Number(productsData.data.salePrice)
           : 0,
-        variant: productsData.data.variant.map((variant) => ({
+        variant: productsData.data.variant.map((variant: any) => ({
           color: toCapitalize(variant.color),
           colorCode: variant.colorCode,
-          imageUrl: variant.imageUrl.map((image) => image),
+          imageUrl: variant.imageUrl.map((image: any) => image),
         })),
-        size: productsData.data.size.map((size) => size),
+        size: productsData.data.size.map((size: any) => size),
         saleIds: productsData.data.saleIds,
         festivalIds: productsData.data.festivalIds,
         description: productsData.data.description,
@@ -239,23 +237,23 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
     }
   };
 
-  const handleVariant = (
-    event: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-    index: number
-  ) => {
-    const { name, value } = event.target;
-    const updatedVariants = [...formData.variant]; // Create a copy of the variant array
-    const updatedVariant = {
-      ...updatedVariants[index], // Get the variant object at the specified index
-      [name]: toCapitalize(value), // Update the specific field of the variant object
-    };
-    updatedVariants[index] = updatedVariant; // Update the variant object in the array
+  // const handleVariant = (
+  //   event: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  //   index: number
+  // ) => {
+  //   const { name, value } = event.target;
+  //   const updatedVariants = [...formData.variant]; // Create a copy of the variant array
+  //   const updatedVariant = {
+  //     ...updatedVariants[index], // Get the variant object at the specified index
+  //     [name]: toCapitalize(value), // Update the specific field of the variant object
+  //   };
+  //   updatedVariants[index] = updatedVariant; // Update the variant object in the array
 
-    setFormData((prevFormData: TProduct) => ({
-      ...prevFormData,
-      variant: updatedVariants,
-    }));
-  };
+  //   setFormData((prevFormData: TProduct) => ({
+  //     ...prevFormData,
+  //     variant: updatedVariants,
+  //   }));
+  // };
 
   const addDivField = () => {
     setFormData((prevFormData: TProduct) => ({
@@ -271,17 +269,17 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
     }));
   };
 
-  const removeDivField = (index: number) => {
-    setFormData((prevFormData: any) => {
-      const updatedVariants = prevFormData.variant.filter(
-        (_: any, i: number) => i !== index
-      );
-      return {
-        ...prevFormData,
-        variant: updatedVariants,
-      };
-    });
-  };
+  // const removeDivField = (index: number) => {
+  //   setFormData((prevFormData: any) => {
+  //     const updatedVariants = prevFormData.variant.filter(
+  //       (_: any, i: number) => i !== index
+  //     );
+  //     return {
+  //       ...prevFormData,
+  //       variant: updatedVariants,
+  //     };
+  //   });
+  // };
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
@@ -352,31 +350,31 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
     }
   );
 
-  const {
-    node,
-    toggle: showColorPicker,
-    setToggle: setShowColorPicker,
-  } = useToggle();
+  // const {
+  //   node,
+  //   toggle: showColorPicker,
+  //   setToggle: setShowColorPicker,
+  // } = useToggle();
 
   const [color, setColor] = useState("#820000");
   // const [colorCode, setColorCode] = useState<string>(formData.variant?.colorCode || "#000000");
 
-  const handleColorCode = (variantIndex: number) => {
-    setColor;
-    const updatedVariants = [...formData.variant];
-    const updatedVariant = {
-      ...updatedVariants[variantIndex], // Get the variant object at the specified index
-      colorCode: color, // Update the specific field of the variant object
-    };
-    updatedVariants[variantIndex] = updatedVariant;
-    setFormData((prevFormData: TProduct) => ({
-      ...prevFormData,
-      variant: updatedVariants,
-    }));
-  };
+  // const handleColorCode = (variantIndex: number) => {
+  //   setColor;
+  //   const updatedVariants = [...formData.variant];
+  //   const updatedVariant = {
+  //     ...updatedVariants[variantIndex], // Get the variant object at the specified index
+  //     colorCode: color, // Update the specific field of the variant object
+  //   };
+  //   updatedVariants[variantIndex] = updatedVariant;
+  //   setFormData((prevFormData: TProduct) => ({
+  //     ...prevFormData,
+  //     variant: updatedVariants,
+  //   }));
+  // };
 
-  console.log("color code", color);
-  console.log("formdata", formData);
+  // console.log("color code", color);
+  // console.log("formdata", formData);
 
   const handleRemoveVariant = (variantIndex: number) => {
     const updatedVariants = [...formData.variant].filter(
@@ -477,22 +475,20 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
                             Choose Subcategory
                           </option>
                           {/* filter subCategories based on category, only show the subCategories which are under the selected categories */}
-                          {subCategories?.data?.map(
-                            (subCategory: any, index) => {
-                              if (
-                                subCategory.category._id === formData.category
-                              ) {
-                                return (
-                                  <option
-                                    key={subCategory._id}
-                                    value={subCategory._id}
-                                  >
-                                    {subCategory.title}
-                                  </option>
-                                );
-                              }
+                          {subCategories?.data?.map((subCategory: any) => {
+                            if (
+                              subCategory.category._id === formData.category
+                            ) {
+                              return (
+                                <option
+                                  key={subCategory._id}
+                                  value={subCategory._id}
+                                >
+                                  {subCategory.title}
+                                </option>
+                              );
                             }
-                          )}
+                          })}
                         </select>
                       </div>
                       <div>

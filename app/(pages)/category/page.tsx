@@ -82,7 +82,9 @@ const Category: FC = () => {
   });
 
   const handleEditCategory = (id: string) => {
-    const filtered: any = categoriesData?.data?.find((item) => item._id === id);
+    const filtered: any = categoriesData?.data?.find(
+      (item: any) => item._id === id
+    );
 
     if (filtered) {
       setFilteredData(filtered);
