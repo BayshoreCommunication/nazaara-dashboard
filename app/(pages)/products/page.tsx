@@ -10,7 +10,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Swal from "sweetalert2";
 import { useEffect, useState } from "react";
-import { AiOutlineShoppingCart } from "react-icons/ai";
+import { AiFillProduct, AiOutlineShoppingCart } from "react-icons/ai";
 import Fuse from "fuse.js";
 
 const Products: any = () => {
@@ -512,29 +512,32 @@ const Products: any = () => {
               *search through erpId, sku, web-category, web-subCategory, status*
             </small>
             {/* search user  */}
-            <div>
-              <label
-                htmlFor="search"
-                className="text-sm text-gray-600 font-semibold"
-              >
-                Search:{" "}
-              </label>
-              <input
-                type="text"
-                id="search"
-                onChange={(e) => setSearchText(e.target.value)}
-                className="border border-gray-300 outline-none hover:outline-none px-2 py-1 rounded-md text-gray-600 text-sm"
-              />
+            <div className="flex items-center gap-2">
+              <div>
+                <label
+                  htmlFor="search"
+                  className="text-sm text-gray-600 font-semibold"
+                >
+                  Search:{" "}
+                </label>
+                <input
+                  type="text"
+                  id="search"
+                  onChange={(e) => setSearchText(e.target.value)}
+                  className="border border-gray-300 outline-none hover:outline-none px-2 py-1 rounded-md text-gray-600 text-sm"
+                />
+              </div>
             </div>
           </div>
-          {/* <div className="flex justify-end py-4">
-        <button
-          className="text-white bg-red-800 py-2 px-3 rounded-md shadow-md"
-          onClick={syncErpDataHandler}
-        >
-          Sync with erp data
-        </button>
-      </div> */}
+          <button className="bg-secondary py-1 px-4 rounded-md text-white mb-4">
+            <Link
+              href={"/products/create-product"}
+              className="flex items-center gap-2"
+            >
+              <AiFillProduct size={18} />
+              Create New Product
+            </Link>
+          </button>
           {/* product component  */}
           <div className="overflow-x-auto">
             <table className="table bg-basic">
