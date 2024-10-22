@@ -16,6 +16,7 @@ import { AiOutlineShoppingCart } from "react-icons/ai";
 import { FaFileInvoice, FaRulerHorizontal } from "react-icons/fa";
 import Swal from "sweetalert2";
 import invoiceImg from "@/public/images/nazaara-invoice-logo.png";
+import { IoMdPrint } from "react-icons/io";
 
 const OrderUpdate = ({ params }: any) => {
   const [openSizeChartModal, setOpenSizeChartModal] = useState(false);
@@ -183,6 +184,8 @@ const OrderUpdate = ({ params }: any) => {
   const visibleHistory = showAll
     ? orderData?.data?.updateHistory
     : orderData?.data?.updateHistory?.slice(0, 5);
+
+  console.log("orderData?.data", orderData?.data);
 
   return (
     <div className="dynamic-container">
@@ -992,7 +995,7 @@ const OrderUpdate = ({ params }: any) => {
       )}
 
       {/* invoice model  */}
-      <div>
+      <div className="uppercase">
         <input type="checkbox" id="invoice-model" className="modal-toggle" />
         <div className="modal overflow-y-scroll lg:overflow-auto">
           <div
@@ -1006,53 +1009,68 @@ const OrderUpdate = ({ params }: any) => {
             </div>
 
             <div ref={invoiceRef} className="flex flex-col gap-y-4 p-6">
-              <div className="flex justify-center border-b">
-                <Image
-                  alt="Nazaara logo"
-                  src={invoiceImg}
-                  width={300}
-                  height={300}
-                  className="invert w-48 h-auto"
-                />
+              <div className="flex items-end border-b gap-12">
+                <p className="text-gray-700 font-medium -translate-y-4 flex-1 min-w-max">
+                  Invoice No: 123456
+                </p>
+                <div className="flex-[2] flex justify-center">
+                  <Image
+                    alt="Nazaara logo"
+                    src={invoiceImg}
+                    width={500}
+                    height={500}
+                    className="invert w-56 h-auto"
+                  />
+                </div>
+                <p className="text-gray-700 font-medium -translate-y-4 flex-1 min-w-max">
+                  Order No: {orderData?.data?.transactionId}
+                </p>
               </div>
-              <div className="flex items-center justify-between border-b border-gray-300 pb-1 text-gray-600 font-medium">
+              {/* <div className="flex items-center justify-between border-b border-gray-300 pb-1 text-gray-600 font-medium">
                 <p>Order ID: {orderData?.data?.transactionId}</p>
                 <p>
                   Order Date:{" "}
                   {formatYearMonthDay(orderData?.data?.createdAt as Date)}
                 </p>
+              </div> */}
+              <div className="flex flex-col gap-1 text-gray-700 font-medium text-sm">
+                <div className="flex items-center justify-between">
+                  <p>
+                    Client Name:{" "}
+                    {orderData?.data?.shippingAddress?.fullName
+                      ? orderData?.data?.shippingAddress?.fullName
+                      : orderData?.data?.user?.fullName}
+                  </p>
+                  {orderData?.data?.shippingAddress?.phone && (
+                    <p>Phone: {orderData?.data?.shippingAddress?.phone}</p>
+                  )}
+                </div>
+                <p>
+                  Address: {orderData?.data?.shippingAddress?.street},{" "}
+                  {orderData?.data?.shippingAddress?.city},{" "}
+                  {orderData?.data?.shippingAddress?.country}
+                </p>
               </div>
-              <div className="flex flex-col gap-1 text-gray-600">
-                <span>Client Name: {orderData?.data?.user?.fullName}</span>
-                {orderData?.data?.user?.phone && (
-                  <span>Contact: {orderData?.data?.user?.phone}</span>
-                )}
-                {(orderData?.data?.user?.street ||
-                  orderData?.data?.user?.city) && (
-                  <span>
-                    Shipping Address: {orderData?.data?.user?.street},
-                    {orderData?.data?.user?.city},{" "}
-                    {orderData?.data?.user?.country}
-                  </span>
-                )}
-              </div>
-              <table className="table bg-basic border">
-                {/* head */}
-                <thead className="">
-                  <tr>
-                    <th>SL</th>
-                    <th>PRODUCT</th>
-                    <th>RATE</th>
-                    <th>QUANTITY</th>
-                    <th>AMOUNT</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <>
+              <div>
+                <table className="table bg-basic border border-gray-400">
+                  {/* head */}
+                  <thead className="border border-gray-400">
+                    <tr className="font-bold text-gray-700 border border-gray-400">
+                      <th>SL</th>
+                      <th>PRODUCT</th>
+                      <th>RATE</th>
+                      <th>QUANTITY</th>
+                      <th>AMOUNT</th>
+                    </tr>
+                  </thead>
+                  <tbody>
                     {orderData?.data.product.map(
                       (product: any, index: number) => {
                         return (
-                          <tr key={product._id}>
+                          <tr
+                            key={product._id}
+                            className="text-gray-700 font-medium border border-gray-400"
+                          >
                             <td>{index + 1}</td>
                             <td>{product.sku}</td>
                             {product?.offeredPrice ? (
@@ -1072,34 +1090,92 @@ const OrderUpdate = ({ params }: any) => {
                         );
                       }
                     )}
-                  </>
-                </tbody>
-              </table>
-              <div className="flex justify-between text-gray-600">
-                <div className="flex flex-col gap-1">
-                  <p>Payment Method: {orderData?.data?.paymentMethod}</p>
-                  <p>Sub Total: {orderData?.data?.subTotal}/-</p>
-                  <p>Vat Included: {orderData?.data?.vatIncluded}/-</p>
-                  <p>Shipping Cost: {orderData?.data?.shippingCharge}/-</p>
-                  <p>Discount: {orderData?.data?.discountAmount}/-</p>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <p>Total Amount: {orderData?.data?.totalAmount}/-</p>
-                  <p>Total Pay: {orderData?.data?.totalPay}/-</p>
-                  <p>Due: {orderData?.data?.due}/-</p>
+                  </tbody>
+                </table>
+                <div className="flex justify-between text-gray-600 text-xs font-medium">
+                  <div>
+                    <p className="font-semibold text-gray-700 mt-4">
+                      Payment Method
+                    </p>
+                    <div className="flex items-center gap-1">
+                      <div className="form-control">
+                        <label className="label cursor-pointer">
+                          <span className="label-text text-xs font-semibold text-gray-800">
+                            Cash
+                          </span>
+                          <input
+                            type="checkbox"
+                            defaultChecked
+                            className="checkbox checkbox-xs rounded ml-1"
+                          />
+                        </label>
+                      </div>
+                      <div className="form-control">
+                        <label className="label cursor-pointer">
+                          <span className="label-text text-xs font-semibold text-gray-800">
+                            Card
+                          </span>
+                          <input
+                            type="checkbox"
+                            defaultChecked
+                            className="checkbox checkbox-xs rounded ml-1"
+                          />
+                        </label>
+                      </div>
+                      <div className="form-control">
+                        <label className="label cursor-pointer">
+                          <span className="label-text text-xs font-semibold text-gray-800">
+                            Mobile Banking
+                          </span>
+                          <input
+                            type="checkbox"
+                            defaultChecked
+                            className="checkbox checkbox-xs rounded ml-1"
+                          />
+                        </label>
+                      </div>
+                      <div className="form-control">
+                        <label className="label cursor-pointer">
+                          <span className="label-text text-xs font-semibold text-gray-800">
+                            Others
+                          </span>
+                          <input
+                            type="checkbox"
+                            defaultChecked
+                            className="checkbox checkbox-xs rounded ml-1"
+                          />
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-1 p-1">
+                    <p className="border p-1 border-gray-400 text-end">
+                      Total Amount:{" "}
+                      <span className="font-bold">
+                        {orderData?.data?.totalAmount}/-
+                      </span>
+                    </p>
+                    <p className="border p-1 border-gray-400 text-end">
+                      Total Pay:{" "}
+                      <span className="font-bold">
+                        {orderData?.data?.totalPay}/-
+                      </span>
+                    </p>
+                    <p className="border p-1 border-gray-400 text-end">
+                      Due Amount:{" "}
+                      <span className="font-bold">
+                        {orderData?.data?.due}/-
+                      </span>
+                    </p>
+                  </div>
                 </div>
               </div>
-              {/* <div className="modal-action">
-                <label className="flex gap-2" htmlFor="invoice-model">
-                  <PrimaryButton name={`Download Invoice`} />
-                </label>
-              </div> */}
             </div>
             <button
               onClick={() => invoicePrintFn()}
-              className="bg-secondary rounded px-3 py-1 text-sm text-white translate-x-6 -translate-y-4"
+              className="bg-secondary rounded px-3 py-1 text-sm text-white translate-x-6 -translate-y-4 uppercase flex items-center gap-1"
             >
-              print
+              <IoMdPrint size={18} /> print
             </button>
           </div>
         </div>
