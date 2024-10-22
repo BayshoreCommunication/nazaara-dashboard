@@ -9,11 +9,13 @@ import {
   useGetOrderByIdQuery,
   useUpdateOrderMutation,
 } from "@/services/orderApi";
+import { useReactToPrint } from "react-to-print";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { FaFileInvoice, FaRulerHorizontal } from "react-icons/fa";
 import Swal from "sweetalert2";
+import invoiceImg from "@/public/images/nazaara-invoice-logo.png";
 
 const OrderUpdate = ({ params }: any) => {
   const [openSizeChartModal, setOpenSizeChartModal] = useState(false);
@@ -49,6 +51,9 @@ const OrderUpdate = ({ params }: any) => {
       },
     ],
   });
+
+  const invoiceRef = useRef<HTMLDivElement>(null);
+  const invoicePrintFn = useReactToPrint({ contentRef: invoiceRef });
 
   const { data: orderData, isLoading } = useGetOrderByIdQuery(params.orderId);
 
@@ -987,26 +992,30 @@ const OrderUpdate = ({ params }: any) => {
       )}
 
       {/* invoice model  */}
-      <>
+      <div>
         <input type="checkbox" id="invoice-model" className="modal-toggle" />
         <div className="modal overflow-y-scroll lg:overflow-auto">
           <div
             // ref={invoiceContentRef}
-            className="modal-box bg-white max-h-min min-w-max mt-[29rem] lg:mt-0"
+            className="modal-box bg-white max-h-min min-w-max mt-[29rem] lg:mt-0 m-0 p-0"
           >
-            <div className="bg-gray-200 py-2 flex justify-between px-4 items-center">
-              <Image
-                alt="Nazaara logo"
-                src={"/images/nazaara-logo.png"}
-                width={120}
-                height={30}
-              />
+            <div className="flex justify-end -translate-x-4 translate-y-4">
               <label htmlFor="invoice-model" className="btn btn-sm btn-circle">
                 ✕
               </label>
             </div>
-            <div className="flex flex-col gap-y-4">
-              <div className="flex items-center justify-between mt-2 border-b border-gray-300 pb-1 text-gray-600 font-medium">
+
+            <div ref={invoiceRef} className="flex flex-col gap-y-4 p-6">
+              <div className="flex justify-center border-b">
+                <Image
+                  alt="Nazaara logo"
+                  src={invoiceImg}
+                  width={300}
+                  height={300}
+                  className="invert w-48 h-auto"
+                />
+              </div>
+              <div className="flex items-center justify-between border-b border-gray-300 pb-1 text-gray-600 font-medium">
                 <p>Order ID: {orderData?.data?.transactionId}</p>
                 <p>
                   Order Date:{" "}
@@ -1086,9 +1095,15 @@ const OrderUpdate = ({ params }: any) => {
                 </label>
               </div> */}
             </div>
+            <button
+              onClick={() => invoicePrintFn()}
+              className="bg-secondary rounded px-3 py-1 text-sm text-white translate-x-6 -translate-y-4"
+            >
+              print
+            </button>
           </div>
         </div>
-      </>
+      </div>
     </div>
   );
 };
