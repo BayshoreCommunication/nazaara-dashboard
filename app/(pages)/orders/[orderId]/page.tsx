@@ -997,10 +997,10 @@ const OrderUpdate = ({ params }: any) => {
       {/* invoice model  */}
       <div className="uppercase">
         <input type="checkbox" id="invoice-model" className="modal-toggle" />
-        <div className="modal overflow-y-scroll lg:overflow-auto">
+        <div className="modal overflow-y-scroll">
           <div
             // ref={invoiceContentRef}
-            className="modal-box bg-white max-h-min min-w-max mt-[29rem] lg:mt-0 m-0 p-0"
+            className="modal-box bg-white max-h-min min-w-max m-0 p-0"
           >
             <div className="flex justify-end -translate-x-4 translate-y-4">
               <label htmlFor="invoice-model" className="btn btn-sm btn-circle">
@@ -1197,9 +1197,9 @@ const OrderUpdate = ({ params }: any) => {
                     <p className="text-gray-700 font-medium mb-1">
                       Measurement Details
                     </p>
-                    <div className="flex flex-col lg:flex-row p-4 lg:border border-gray-300 rounded">
+                    <div className="flex p-4 border border-gray-300 rounded">
                       <div>
-                        <div className="lg:border-r-2 lg:pr-6 lg:mr-6">
+                        <div className="border-r-2 pr-6 mr-6">
                           <div className="flex gap-x-2 mb-4">
                             <label className="cursor-pointer flex items-center gap-x-1">
                               <input
