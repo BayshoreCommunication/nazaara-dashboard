@@ -1016,8 +1016,8 @@ const OrderUpdate = ({ params }: any) => {
             </div>
 
             <div ref={invoiceRef}>
-              <div className="flex flex-col gap-y-2 px-6 pb-2">
-                <div className="flex items-center border-b gap-12">
+              <div className="flex flex-col gap-y-2 px-6 py-2">
+                <div className="flex items-end border-b gap-12 pb-2">
                   <p className="text-gray-700 font-medium flex-1 min-w-max">
                     Invoice No: 123456
                   </p>
@@ -1027,7 +1027,7 @@ const OrderUpdate = ({ params }: any) => {
                       src={invoiceImg}
                       width={500}
                       height={500}
-                      className="invert w-56 h-auto -translate-y-4"
+                      className="invert w-56 h-auto"
                     />
                   </div>
                   <p className="text-gray-700 font-medium flex-1 min-w-max">
