@@ -1016,7 +1016,7 @@ const OrderUpdate = ({ params }: any) => {
             </div>
 
             <div ref={invoiceRef}>
-              <div className="flex flex-col gap-y-2 px-6 py-2">
+              <div className="flex flex-col gap-y-2 px-6 pb-2 pt-4">
                 <div className="flex items-end border-b gap-12 pb-2">
                   <p className="text-gray-700 font-medium flex-1 min-w-max">
                     Invoice No: 123456
@@ -1064,11 +1064,11 @@ const OrderUpdate = ({ params }: any) => {
                     {/* head */}
                     <thead className="border border-gray-400">
                       <tr className="font-bold text-gray-700 border border-gray-400">
-                        <th>SL</th>
-                        <th>PRODUCT</th>
-                        <th>RATE</th>
-                        <th>QUANTITY</th>
-                        <th>AMOUNT</th>
+                        <th className="border border-gray-400">SL</th>
+                        <th className="border border-gray-400">PRODUCT</th>
+                        <th className="border border-gray-400">RATE</th>
+                        <th className="border border-gray-400">QUANTITY</th>
+                        <th className="border border-gray-400">AMOUNT</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -1079,20 +1079,30 @@ const OrderUpdate = ({ params }: any) => {
                               key={product._id}
                               className="text-gray-700 font-medium border border-gray-400"
                             >
-                              <td>{index + 1}</td>
-                              <td>{product.sku}</td>
+                              <td className="py-1 border border-gray-400">
+                                {index + 1}
+                              </td>
+                              <td className="py-1 border border-gray-400">
+                                {product.sku}
+                              </td>
                               {product?.offeredPrice ? (
-                                <td>{product?.offeredPrice}/-</td>
+                                <td className="py-1 border border-gray-400">
+                                  {product?.offeredPrice}/-
+                                </td>
                               ) : (
-                                <td>{product?.salePrice}/-</td>
+                                <td className="py-1 border border-gray-400">
+                                  {product?.salePrice}/-
+                                </td>
                               )}
-                              <td>{product.quantity}</td>
+                              <td className="py-1 border border-gray-400">
+                                {product.quantity}
+                              </td>
                               {product?.offeredPrice ? (
-                                <td>
+                                <td className="py-1 border border-gray-400">
                                   {product?.offeredPrice * product.quantity}/-
                                 </td>
                               ) : (
-                                <td>
+                                <td className="py-1 border border-gray-400">
                                   {product?.salePrice * product.quantity}/-
                                 </td>
                               )}
