@@ -13,10 +13,17 @@ import { useReactToPrint } from "react-to-print";
 
 import { useEffect, useRef, useState } from "react";
 import { AiOutlineShoppingCart } from "react-icons/ai";
-import { FaFileInvoice, FaRulerHorizontal } from "react-icons/fa";
+import { FaFileInvoice, FaInstagram, FaRulerHorizontal } from "react-icons/fa";
 import Swal from "sweetalert2";
 import invoiceImg from "@/public/images/nazaara-invoice-logo.png";
 import { IoMdPrint } from "react-icons/io";
+import { RiFacebookCircleLine } from "react-icons/ri";
+import {
+  IoLocationOutline,
+  IoLocationSharp,
+  IoMailOutline,
+} from "react-icons/io5";
+import { TbWorldWww } from "react-icons/tb";
 
 const OrderUpdate = ({ params }: any) => {
   const [openSizeChartModal, setOpenSizeChartModal] = useState(false);
@@ -1172,7 +1179,7 @@ const OrderUpdate = ({ params }: any) => {
               </div>
               <hr className="mx-6" />
               <div className="p-6">
-                <div className="flex items-center justify-between text-gray-700 font-medium">
+                <div className="flex items-center justify-between text-gray-700 font-medium mb-2">
                   <p>For Order Update: +880 1316400566</p>
                   <div className="flex items-center gap-1">
                     <p>Delivery Date:</p>{" "}
@@ -1701,6 +1708,70 @@ const OrderUpdate = ({ params }: any) => {
                         </div>
                       </div>
                     </div>
+                  </div>
+                </div>
+                <div className="flex flex-row-reverse justify-between mt-4">
+                  <div className="flex flex-col justify-between">
+                    <div className="text-xs font-medium flex flex-col gap-1">
+                      <div className="flex items-center">
+                        <div className="flex">
+                          <RiFacebookCircleLine />
+                          <FaInstagram className="-translate-x-1" />
+                        </div>
+                        <p className="">/nazaara.official</p>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <IoLocationOutline size={16} />
+                        <p>HS 22/B, RD 02, Dhanmondi R/A, Dhaka-1205</p>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <IoMailOutline size={16} />
+                        <p>info@anzaralifestyleltd.com</p>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <TbWorldWww size={16} />
+                        <p>www.nazaaralifestyle.com</p>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-end">
+                      <div className="border-t border-gray-500 w-40 text-center font-medium mt-10">
+                        <p className="text-sm">Client Signature</p>
+                        <p className="text-xs">(With Date)</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-sm max-w-[30rem]">
+                    <p className="font-bold">Terms & Conditions</p>
+                    <ol className="font-xs list-decimal list-inside list">
+                      <li>
+                        No money refund, money can be adjusted with another
+                        purchase(within 7 days).
+                      </li>
+                      <li>Delivered products can not be exchanged.</li>
+                      <li>
+                        Dress can be booked for maximum 2 months (60 days) with
+                        50% booking money.
+                      </li>
+                      <li>
+                        Dress can be booked for maximum 2 months (60 days) with
+                        50% booking money. After 2 months the order will be
+                        cancelled and booking money will be non-refundable and
+                        non-adjustable.
+                      </li>
+                      <li>
+                        Booking money can not be cancelled but exchange
+                        possible(within 60 days maximum).
+                      </li>
+                      <li>
+                        Total value of the bill has to be met while exchange
+                        booked product.(Not just the booking amount).
+                      </li>
+                    </ol>
+                    <p className="text-[12px] text-gray-700 font-medium mt-1">
+                      I have read all the mentioned terms & conditions above,
+                      and I agree with them.
+                    </p>
                   </div>
                 </div>
               </div>
