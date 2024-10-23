@@ -1105,7 +1105,6 @@ const OrderUpdate = ({ params }: any) => {
                           </span>
                           <input
                             type="checkbox"
-                            defaultChecked
                             className="checkbox checkbox-xs rounded ml-1"
                           />
                         </label>
@@ -1117,7 +1116,6 @@ const OrderUpdate = ({ params }: any) => {
                           </span>
                           <input
                             type="checkbox"
-                            defaultChecked
                             className="checkbox checkbox-xs rounded ml-1"
                           />
                         </label>
@@ -1129,7 +1127,6 @@ const OrderUpdate = ({ params }: any) => {
                           </span>
                           <input
                             type="checkbox"
-                            defaultChecked
                             className="checkbox checkbox-xs rounded ml-1"
                           />
                         </label>
@@ -1141,7 +1138,6 @@ const OrderUpdate = ({ params }: any) => {
                           </span>
                           <input
                             type="checkbox"
-                            defaultChecked
                             className="checkbox checkbox-xs rounded ml-1"
                           />
                         </label>
@@ -1167,6 +1163,538 @@ const OrderUpdate = ({ params }: any) => {
                         {orderData?.data?.due}/-
                       </span>
                     </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr className="mx-6" />
+            <div className="p-6">
+              <div className="flex items-center justify-between text-gray-700 font-medium">
+                <p>For Order Update: +880 1316400566</p>
+                <div className="flex items-center gap-1">
+                  <p>Delivery Date:</p>{" "}
+                  <input
+                    type="text"
+                    className="w-32 border-2 border-gray-400 rounded focus:outline-gray-400 px-2 text-gray-700 py-0.5"
+                  />{" "}
+                </div>
+              </div>
+              <div className="flex gap-4">
+                <div>
+                  <p className="text-gray-700 font-medium mb-1">
+                    Extra Additions
+                  </p>
+                  <textarea
+                    cols={20}
+                    rows={10}
+                    className="border border-gray-400 rounded p-2 focus:outline-gray-400"
+                  />
+                </div>
+                <div>
+                  <p className="text-gray-700 font-medium mb-1">
+                    Measurement Details
+                  </p>
+                  <div className="flex flex-col lg:flex-row p-4 lg:border border-gray-300 rounded">
+                    <div>
+                      <div className="lg:border-r-2 lg:pr-6 lg:mr-6">
+                        <div className="flex gap-x-2 mb-4">
+                          <label className="cursor-pointer flex items-center gap-x-1">
+                            <input
+                              type="radio"
+                              name="top-radio"
+                              value="blouse"
+                              className="radio radio-xs"
+                              // checked={formData.topType === "blouse"}
+                              // onChange={() =>
+                              //   setFormData((prevData) => ({
+                              //     ...prevData,
+                              //     topType: "blouse",
+                              //   }))
+                              // }
+                            />
+                            <span className="label-text">Blouse</span>
+                          </label>
+                          <label className="cursor-pointer flex items-center gap-x-1">
+                            <input
+                              type="radio"
+                              name="top-radio"
+                              value="kameez"
+                              className="radio radio-xs"
+                              // checked={formData.topType === "kameez"}
+                              // onChange={() =>
+                              //   setFormData((prevData) => ({
+                              //     ...prevData,
+                              //     topType: "kameez",
+                              //   }))
+                              // }
+                            />
+                            <span className="label-text">Kameez</span>
+                          </label>
+                          <label className="cursor-pointer flex items-center gap-x-1">
+                            <input
+                              type="radio"
+                              name="top-radio"
+                              value="gown"
+                              className="radio radio-xs"
+                              // checked={formData.topType === "gown"}
+                              // onChange={() =>
+                              //   setFormData((prevData) => ({
+                              //     ...prevData,
+                              //     topType: "gown",
+                              //   }))
+                              // }
+                            />
+                            <span className="label-text">Gown</span>
+                          </label>
+                        </div>
+                        {/* {{-- input  --}} */}
+                        <div className="flex">
+                          <div className="flex flex-col gap-y-3">
+                            <div className="w-36 flex justify-between">
+                              <label htmlFor="chest">
+                                <span className="label-text">Chest:</span>
+                              </label>
+                              <input
+                                id="chest"
+                                type="number"
+                                className="input border border-gray-300 w-16 rounded h-8 text-center"
+                                // value={formData.tops.chest || ""}
+                                // onChange={(e) =>
+                                //   handleInputChange(
+                                //     "tops",
+                                //     "chest",
+                                //     e.target.value
+                                //   )
+                                // }
+                              />
+                            </div>
+                            <div className="w-36 flex justify-between">
+                              <label htmlFor="waist">
+                                <span className="label-text">Waist:</span>
+                              </label>
+                              <input
+                                id="waist"
+                                type="number"
+                                className="input border border-gray-300 w-16 rounded h-8 text-center"
+                                // value={formData.tops.waist || ""}
+                                // onChange={(e) =>
+                                //   handleInputChange(
+                                //     "tops",
+                                //     "waist",
+                                //     e.target.value
+                                //   )
+                                // }
+                              />
+                            </div>
+                            <div className="w-36 flex justify-between">
+                              <label htmlFor="hip">
+                                <span className="label-text">Hip:</span>
+                              </label>
+                              <input
+                                id="hip"
+                                type="number"
+                                className="input border border-gray-300 w-16 rounded h-8 text-center"
+                                // value={formData.tops.hip || ""}
+                                // onChange={(e) =>
+                                //   handleInputChange(
+                                //     "tops",
+                                //     "hip",
+                                //     e.target.value
+                                //   )
+                                // }
+                              />
+                            </div>
+                            <div className="w-36 flex justify-between">
+                              <label htmlFor="end">
+                                <span className="label-text">End:</span>
+                              </label>
+                              <input
+                                id="end"
+                                type="number"
+                                className="input border border-gray-300 w-16 rounded h-8 text-center"
+                                // value={formData.tops.end || ""}
+                                // onChange={(e) =>
+                                //   handleInputChange(
+                                //     "tops",
+                                //     "end",
+                                //     e.target.value
+                                //   )
+                                // }
+                              />
+                            </div>
+                            <div className="w-36 flex justify-between">
+                              <label htmlFor="shoulder">
+                                <span className="label-text">Shoulder:</span>
+                              </label>
+                              <input
+                                id="shoulder"
+                                type="number"
+                                className="input border border-gray-300 w-16 rounded h-8 text-center"
+                                // value={formData.tops.shoulder || ""}
+                                // onChange={(e) =>
+                                //   handleInputChange(
+                                //     "tops",
+                                //     "shoulder",
+                                //     e.target.value
+                                //   )
+                                // }
+                              />
+                            </div>
+                            <div className="w-36 flex justify-between">
+                              <label htmlFor="armHole">
+                                <span className="label-text">Arm Hole:</span>
+                              </label>
+                              <input
+                                id="armHole"
+                                type="number"
+                                className="input border border-gray-300 w-16 rounded h-8 text-center"
+                                // value={formData.tops.armHole || ""}
+                                // onChange={(e) =>
+                                //   handleInputChange(
+                                //     "tops",
+                                //     "armHole",
+                                //     e.target.value
+                                //   )
+                                // }
+                              />
+                            </div>
+                            <div className="w-36 flex justify-between">
+                              <label htmlFor="sleeveL">
+                                <span className="label-text">Sleeve L:</span>
+                              </label>
+                              <input
+                                id="sleeveL"
+                                type="number"
+                                className="input border border-gray-300 w-16 rounded h-8 text-center"
+                                // value={formData.tops.sleeveLength || ""}
+                                // onChange={(e) =>
+                                //   handleInputChange(
+                                //     "tops",
+                                //     "sleeveLength",
+                                //     e.target.value
+                                //   )
+                                // }
+                              />
+                            </div>
+                          </div>
+                          <div className="ml-6 flex flex-col gap-y-3">
+                            <div className="w-44 flex justify-between">
+                              <label htmlFor="muscle">
+                                <span className="label-text">Muscle:</span>
+                              </label>
+                              <input
+                                id="muscle"
+                                type="number"
+                                className="input border border-gray-300 w-16 rounded h-8 text-center"
+                                // value={formData.tops.muscle || ""}
+                                // onChange={(e) =>
+                                //   handleInputChange(
+                                //     "tops",
+                                //     "muscle",
+                                //     e.target.value
+                                //   )
+                                // }
+                              />
+                            </div>
+                            <div className="w-44 flex justify-between">
+                              <label htmlFor="handOpening">
+                                <span className="label-text">
+                                  Hand Opening:
+                                </span>
+                              </label>
+                              <input
+                                id="handOpening"
+                                type="number"
+                                className="input border border-gray-300 w-16 rounded h-8 text-center"
+                                // value={formData.tops.handOpening || ""}
+                                // onChange={(e) =>
+                                //   handleInputChange(
+                                //     "tops",
+                                //     "handOpening",
+                                //     e.target.value
+                                //   )
+                                // }
+                              />
+                            </div>
+                            <div className="w-44 flex justify-between">
+                              <label htmlFor="length">
+                                <span className="label-text">Length:</span>
+                              </label>
+                              <input
+                                id="length"
+                                type="number"
+                                className="input border border-gray-300 w-16 rounded h-8 text-center"
+                                // value={formData.tops.length || ""}
+                                // onChange={(e) =>
+                                //   handleInputChange(
+                                //     "tops",
+                                //     "length",
+                                //     e.target.value
+                                //   )
+                                // }
+                              />
+                            </div>
+                            <div className="w-44 flex justify-between">
+                              <label htmlFor="slit">
+                                <span className="label-text">Slit:</span>
+                              </label>
+                              <input
+                                id="slit"
+                                type="number"
+                                className="input border border-gray-300 w-16 rounded h-8 text-center"
+                                // value={formData.tops.slit || ""}
+                                // onChange={(e) =>
+                                //   handleInputChange(
+                                //     "tops",
+                                //     "slit",
+                                //     e.target.value
+                                //   )
+                                // }
+                              />
+                            </div>
+                            <div className="w-44 flex justify-between">
+                              <label htmlFor="neckDeepF">
+                                <span className="label-text">
+                                  Neck Deep (f):
+                                </span>
+                              </label>
+                              <input
+                                id="neckDeepF"
+                                type="number"
+                                className="input border border-gray-300 w-16 rounded h-8 text-center"
+                                // value={formData.tops.neckDeepf || ""}
+                                // onChange={(e) =>
+                                //   handleInputChange(
+                                //     "tops",
+                                //     "neckDeepf",
+                                //     e.target.value
+                                //   )
+                                // }
+                              />
+                            </div>
+                            <div className="w-44 flex justify-between">
+                              <label htmlFor="neckDeepB">
+                                <span className="label-text">
+                                  Neck Deep (b):
+                                </span>
+                              </label>
+                              <input
+                                id="neckDeepB"
+                                type="number"
+                                className="input border border-gray-300 w-16 rounded h-8 text-center"
+                                // value={formData.tops.neckDeepb || ""}
+                                // onChange={(e) =>
+                                //   handleInputChange(
+                                //     "tops",
+                                //     "neckDeepb",
+                                //     e.target.value
+                                //   )
+                                // }
+                              />
+                            </div>
+                            <div className="w-44 flex justify-between">
+                              <label htmlFor="halfBody">
+                                <span className="label-text">Half Body:</span>
+                              </label>
+                              <input
+                                id="halfBody"
+                                type="number"
+                                className="input border border-gray-300 w-16 rounded h-8 text-center"
+                                // value={formData.tops.halfBody || ""}
+                                // onChange={(e) =>
+                                //   handleInputChange(
+                                //     "tops",
+                                //     "halfBody",
+                                //     e.target.value
+                                //   )
+                                // }
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="">
+                      <div className="flex flex-col w-full">
+                        <div className="grid grid-cols-2 gap-2 mb-4">
+                          <label className="cursor-pointer flex items-center gap-x-1">
+                            <input
+                              type="radio"
+                              name="bottom-radio"
+                              value="skirt"
+                              className="radio radio-xs"
+                              // checked={formData.bottomType === "skirt"}
+                              // onChange={() =>
+                              //   setFormData((prevData) => ({
+                              //     ...prevData,
+                              //     bottomType: "skirt",
+                              //   }))
+                              // }
+                            />
+                            <span className="label-text">Skirt</span>
+                          </label>
+                          <label className="cursor-pointer flex items-center gap-x-1">
+                            <input
+                              type="radio"
+                              name="bottom-radio"
+                              value="palazzo"
+                              className="radio radio-xs"
+                              // checked={formData.bottomType === "palazzo"}
+                              // onChange={() =>
+                              //   setFormData((prevData) => ({
+                              //     ...prevData,
+                              //     bottomType: "palazzo",
+                              //   }))
+                              // }
+                            />
+                            <span className="label-text">Palazzo</span>
+                          </label>
+                          <label className="cursor-pointer flex items-center gap-x-1">
+                            <input
+                              type="radio"
+                              name="bottom-radio"
+                              value="pant"
+                              className="radio radio-xs"
+                              // checked={formData.bottomType === "pant"}
+                              // onChange={() =>
+                              //   setFormData((prevData) => ({
+                              //     ...prevData,
+                              //     bottomType: "pant",
+                              //   }))
+                              // }
+                            />
+                            <span className="label-text">Pant</span>
+                          </label>
+                          <label className="cursor-pointer flex items-center gap-x-1">
+                            <input
+                              type="radio"
+                              name="bottom-radio"
+                              value="gharara"
+                              className="radio radio-xs"
+                              // checked={formData.bottomType === "gharara"}
+                              // onChange={() =>
+                              //   setFormData((prevData) => ({
+                              //     ...prevData,
+                              //     bottomType: "gharara",
+                              //   }))
+                              // }
+                            />
+                            <span className="label-text">Gharara</span>
+                          </label>
+                        </div>
+                        {/* {{-- input  --}} */}
+                        <div className="flex flex-col gap-3">
+                          <div className="flex justify-between">
+                            <label htmlFor="length2">
+                              <span className="label-text">Length:</span>
+                            </label>
+                            <input
+                              id="length2"
+                              type="number"
+                              className="input border border-gray-300 w-16 rounded h-8 text-center"
+                              // value={formData.bottom.length || ""}
+                              // onChange={(e) =>
+                              //   handleInputChange(
+                              //     "bottom",
+                              //     "length",
+                              //     e.target.value
+                              //   )
+                              // }
+                            />
+                          </div>
+                          <div className="flex justify-between">
+                            <label htmlFor="waist2">
+                              <span className="label-text">Waist:</span>
+                            </label>
+                            <input
+                              id="waist2"
+                              type="number"
+                              className="input border border-gray-300 w-16 rounded h-8 text-center"
+                              // value={formData.bottom.waist || ""}
+                              // onChange={(e) =>
+                              //   handleInputChange(
+                              //     "bottom",
+                              //     "waist",
+                              //     e.target.value
+                              //   )
+                              // }
+                            />
+                          </div>
+                          <div className="flex justify-between">
+                            <label htmlFor="hip2">
+                              <span className="label-text">Hip:</span>
+                            </label>
+                            <input
+                              id="hip2"
+                              type="number"
+                              className="input border border-gray-300 w-16 rounded h-8 text-center"
+                              // value={formData.bottom.hip || ""}
+                              // onChange={(e) =>
+                              //   handleInputChange(
+                              //     "bottom",
+                              //     "hip",
+                              //     e.target.value
+                              //   )
+                              // }
+                            />
+                          </div>
+                          <div className="flex justify-between">
+                            <label htmlFor="thigh2">
+                              <span className="label-text">Thigh:</span>
+                            </label>
+                            <input
+                              id="thigh2"
+                              type="number"
+                              className="input border border-gray-300 w-16 rounded h-8 text-center"
+                              // value={formData.bottom.thigh || ""}
+                              // onChange={(e) =>
+                              //   handleInputChange(
+                              //     "bottom",
+                              //     "thigh",
+                              //     e.target.value
+                              //   )
+                              // }
+                            />
+                          </div>
+                          <div className="flex justify-between">
+                            <label htmlFor="knee2">
+                              <span className="label-text">Knee:</span>
+                            </label>
+                            <input
+                              id="knee2"
+                              type="number"
+                              className="input border border-gray-300 w-16 rounded h-8 text-center"
+                              // value={formData.bottom.knee || ""}
+                              // onChange={(e) =>
+                              //   handleInputChange(
+                              //     "bottom",
+                              //     "knee",
+                              //     e.target.value
+                              //   )
+                              // }
+                            />
+                          </div>
+                          <div className="flex justify-between">
+                            <label htmlFor="legOpenning2">
+                              <span className="label-text">Leg Openning:</span>
+                            </label>
+                            <input
+                              id="legOpenning2"
+                              type="number"
+                              className="input border border-gray-300 w-16 rounded h-8 text-center"
+                              // value={formData.bottom.legOpening || ""}
+                              // onChange={(e) =>
+                              //   handleInputChange(
+                              //     "bottom",
+                              //     "legOpening",
+                              //     e.target.value
+                              //   )
+                              // }
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
