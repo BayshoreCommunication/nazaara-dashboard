@@ -15,7 +15,7 @@ import { useEffect, useRef, useState } from "react";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { FaFileInvoice, FaInstagram, FaRulerHorizontal } from "react-icons/fa";
 import Swal from "sweetalert2";
-import invoiceImg from "@/public/images/nazaara-invoice-logo.png";
+import invoiceImg from "@/public/images/nazaara-invoice-croped-logo.png";
 import { IoMdPrint } from "react-icons/io";
 import { RiFacebookCircleLine } from "react-icons/ri";
 import {
@@ -1016,9 +1016,9 @@ const OrderUpdate = ({ params }: any) => {
             </div>
 
             <div ref={invoiceRef}>
-              <div className="flex flex-col gap-y-4 p-6">
-                <div className="flex items-end border-b gap-12">
-                  <p className="text-gray-700 font-medium -translate-y-4 flex-1 min-w-max">
+              <div className="flex flex-col gap-y-2 px-6 pb-2">
+                <div className="flex items-center border-b gap-12">
+                  <p className="text-gray-700 font-medium flex-1 min-w-max">
                     Invoice No: 123456
                   </p>
                   <div className="flex-[2] flex justify-center">
@@ -1027,10 +1027,10 @@ const OrderUpdate = ({ params }: any) => {
                       src={invoiceImg}
                       width={500}
                       height={500}
-                      className="invert w-56 h-auto"
+                      className="invert w-56 h-auto -translate-y-4"
                     />
                   </div>
-                  <p className="text-gray-700 font-medium -translate-y-4 flex-1 min-w-max">
+                  <p className="text-gray-700 font-medium flex-1 min-w-max">
                     Order No: {orderData?.data?.transactionId}
                   </p>
                 </div>
@@ -1178,7 +1178,7 @@ const OrderUpdate = ({ params }: any) => {
                 </div>
               </div>
               <hr className="mx-6" />
-              <div className="p-6">
+              <div className="px-6 pt-2">
                 <div className="flex items-center justify-between text-gray-700 font-medium mb-2">
                   <p>For Order Update: +880 1316400566</p>
                   <div className="flex items-center gap-1">
@@ -1196,7 +1196,7 @@ const OrderUpdate = ({ params }: any) => {
                     </p>
                     <textarea
                       cols={20}
-                      rows={10}
+                      rows={8}
                       className="border border-gray-400 rounded p-2 focus:outline-gray-400"
                     />
                   </div>
@@ -1204,10 +1204,10 @@ const OrderUpdate = ({ params }: any) => {
                     <p className="text-gray-700 font-medium mb-1">
                       Measurement Details
                     </p>
-                    <div className="flex p-4 border border-gray-300 rounded">
+                    <div className="flex p-4 border border-gray-300 rounded text-xs">
                       <div>
                         <div className="border-r-2 pr-6 mr-6">
-                          <div className="flex gap-x-2 mb-4">
+                          <div className="flex gap-x-2 mb-2">
                             <label className="cursor-pointer flex items-center gap-x-1">
                               <input
                                 type="radio"
@@ -1258,8 +1258,8 @@ const OrderUpdate = ({ params }: any) => {
                             </label>
                           </div>
                           {/* {{-- input  --}} */}
-                          <div className="flex">
-                            <div className="flex flex-col gap-y-3">
+                          <div className="flex text-xs">
+                            <div className="flex flex-col gap-y-1">
                               <div className="w-36 flex justify-between">
                                 <label htmlFor="chest">
                                   <span className="label-text">Chest:</span>
@@ -1267,7 +1267,7 @@ const OrderUpdate = ({ params }: any) => {
                                 <input
                                   id="chest"
                                   type="number"
-                                  className="input border border-gray-300 w-16 rounded h-8 text-center"
+                                  className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
                                   // value={formData.tops.chest || ""}
                                   // onChange={(e) =>
                                   //   handleInputChange(
@@ -1285,7 +1285,7 @@ const OrderUpdate = ({ params }: any) => {
                                 <input
                                   id="waist"
                                   type="number"
-                                  className="input border border-gray-300 w-16 rounded h-8 text-center"
+                                  className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
                                   // value={formData.tops.waist || ""}
                                   // onChange={(e) =>
                                   //   handleInputChange(
@@ -1303,7 +1303,7 @@ const OrderUpdate = ({ params }: any) => {
                                 <input
                                   id="hip"
                                   type="number"
-                                  className="input border border-gray-300 w-16 rounded h-8 text-center"
+                                  className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
                                   // value={formData.tops.hip || ""}
                                   // onChange={(e) =>
                                   //   handleInputChange(
@@ -1321,7 +1321,7 @@ const OrderUpdate = ({ params }: any) => {
                                 <input
                                   id="end"
                                   type="number"
-                                  className="input border border-gray-300 w-16 rounded h-8 text-center"
+                                  className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
                                   // value={formData.tops.end || ""}
                                   // onChange={(e) =>
                                   //   handleInputChange(
@@ -1339,7 +1339,7 @@ const OrderUpdate = ({ params }: any) => {
                                 <input
                                   id="shoulder"
                                   type="number"
-                                  className="input border border-gray-300 w-16 rounded h-8 text-center"
+                                  className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
                                   // value={formData.tops.shoulder || ""}
                                   // onChange={(e) =>
                                   //   handleInputChange(
@@ -1357,7 +1357,7 @@ const OrderUpdate = ({ params }: any) => {
                                 <input
                                   id="armHole"
                                   type="number"
-                                  className="input border border-gray-300 w-16 rounded h-8 text-center"
+                                  className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
                                   // value={formData.tops.armHole || ""}
                                   // onChange={(e) =>
                                   //   handleInputChange(
@@ -1375,7 +1375,7 @@ const OrderUpdate = ({ params }: any) => {
                                 <input
                                   id="sleeveL"
                                   type="number"
-                                  className="input border border-gray-300 w-16 rounded h-8 text-center"
+                                  className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
                                   // value={formData.tops.sleeveLength || ""}
                                   // onChange={(e) =>
                                   //   handleInputChange(
@@ -1387,7 +1387,7 @@ const OrderUpdate = ({ params }: any) => {
                                 />
                               </div>
                             </div>
-                            <div className="ml-6 flex flex-col gap-y-3">
+                            <div className="ml-6 flex flex-col gap-y-1">
                               <div className="w-44 flex justify-between">
                                 <label htmlFor="muscle">
                                   <span className="label-text">Muscle:</span>
@@ -1395,7 +1395,7 @@ const OrderUpdate = ({ params }: any) => {
                                 <input
                                   id="muscle"
                                   type="number"
-                                  className="input border border-gray-300 w-16 rounded h-8 text-center"
+                                  className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
                                   // value={formData.tops.muscle || ""}
                                   // onChange={(e) =>
                                   //   handleInputChange(
@@ -1415,7 +1415,7 @@ const OrderUpdate = ({ params }: any) => {
                                 <input
                                   id="handOpening"
                                   type="number"
-                                  className="input border border-gray-300 w-16 rounded h-8 text-center"
+                                  className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
                                   // value={formData.tops.handOpening || ""}
                                   // onChange={(e) =>
                                   //   handleInputChange(
@@ -1433,7 +1433,7 @@ const OrderUpdate = ({ params }: any) => {
                                 <input
                                   id="length"
                                   type="number"
-                                  className="input border border-gray-300 w-16 rounded h-8 text-center"
+                                  className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
                                   // value={formData.tops.length || ""}
                                   // onChange={(e) =>
                                   //   handleInputChange(
@@ -1451,7 +1451,7 @@ const OrderUpdate = ({ params }: any) => {
                                 <input
                                   id="slit"
                                   type="number"
-                                  className="input border border-gray-300 w-16 rounded h-8 text-center"
+                                  className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
                                   // value={formData.tops.slit || ""}
                                   // onChange={(e) =>
                                   //   handleInputChange(
@@ -1471,7 +1471,7 @@ const OrderUpdate = ({ params }: any) => {
                                 <input
                                   id="neckDeepF"
                                   type="number"
-                                  className="input border border-gray-300 w-16 rounded h-8 text-center"
+                                  className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
                                   // value={formData.tops.neckDeepf || ""}
                                   // onChange={(e) =>
                                   //   handleInputChange(
@@ -1491,7 +1491,7 @@ const OrderUpdate = ({ params }: any) => {
                                 <input
                                   id="neckDeepB"
                                   type="number"
-                                  className="input border border-gray-300 w-16 rounded h-8 text-center"
+                                  className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
                                   // value={formData.tops.neckDeepb || ""}
                                   // onChange={(e) =>
                                   //   handleInputChange(
@@ -1509,7 +1509,7 @@ const OrderUpdate = ({ params }: any) => {
                                 <input
                                   id="halfBody"
                                   type="number"
-                                  className="input border border-gray-300 w-16 rounded h-8 text-center"
+                                  className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
                                   // value={formData.tops.halfBody || ""}
                                   // onChange={(e) =>
                                   //   handleInputChange(
@@ -1526,7 +1526,7 @@ const OrderUpdate = ({ params }: any) => {
                       </div>
                       <div className="">
                         <div className="flex flex-col w-full">
-                          <div className="grid grid-cols-2 gap-2 mb-4">
+                          <div className="grid grid-cols-2 gap-1 mb-2">
                             <label className="cursor-pointer flex items-center gap-x-1">
                               <input
                                 type="radio"
@@ -1593,7 +1593,7 @@ const OrderUpdate = ({ params }: any) => {
                             </label>
                           </div>
                           {/* {{-- input  --}} */}
-                          <div className="flex flex-col gap-3">
+                          <div className="flex flex-col gap-1">
                             <div className="flex justify-between">
                               <label htmlFor="length2">
                                 <span className="label-text">Length:</span>
@@ -1601,7 +1601,7 @@ const OrderUpdate = ({ params }: any) => {
                               <input
                                 id="length2"
                                 type="number"
-                                className="input border border-gray-300 w-16 rounded h-8 text-center"
+                                className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
                                 // value={formData.bottom.length || ""}
                                 // onChange={(e) =>
                                 //   handleInputChange(
@@ -1619,7 +1619,7 @@ const OrderUpdate = ({ params }: any) => {
                               <input
                                 id="waist2"
                                 type="number"
-                                className="input border border-gray-300 w-16 rounded h-8 text-center"
+                                className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
                                 // value={formData.bottom.waist || ""}
                                 // onChange={(e) =>
                                 //   handleInputChange(
@@ -1637,7 +1637,7 @@ const OrderUpdate = ({ params }: any) => {
                               <input
                                 id="hip2"
                                 type="number"
-                                className="input border border-gray-300 w-16 rounded h-8 text-center"
+                                className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
                                 // value={formData.bottom.hip || ""}
                                 // onChange={(e) =>
                                 //   handleInputChange(
@@ -1655,7 +1655,7 @@ const OrderUpdate = ({ params }: any) => {
                               <input
                                 id="thigh2"
                                 type="number"
-                                className="input border border-gray-300 w-16 rounded h-8 text-center"
+                                className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
                                 // value={formData.bottom.thigh || ""}
                                 // onChange={(e) =>
                                 //   handleInputChange(
@@ -1673,7 +1673,7 @@ const OrderUpdate = ({ params }: any) => {
                               <input
                                 id="knee2"
                                 type="number"
-                                className="input border border-gray-300 w-16 rounded h-8 text-center"
+                                className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
                                 // value={formData.bottom.knee || ""}
                                 // onChange={(e) =>
                                 //   handleInputChange(
@@ -1693,7 +1693,7 @@ const OrderUpdate = ({ params }: any) => {
                               <input
                                 id="legOpenning2"
                                 type="number"
-                                className="input border border-gray-300 w-16 rounded h-8 text-center"
+                                className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
                                 // value={formData.bottom.legOpening || ""}
                                 // onChange={(e) =>
                                 //   handleInputChange(
@@ -1710,7 +1710,7 @@ const OrderUpdate = ({ params }: any) => {
                     </div>
                   </div>
                 </div>
-                <div className="flex flex-row-reverse justify-between mt-4">
+                <div className="flex flex-row-reverse justify-between mt-2 gap-4">
                   <div className="flex flex-col justify-between">
                     <div className="text-xs font-medium flex flex-col gap-1">
                       <div className="flex items-center">
