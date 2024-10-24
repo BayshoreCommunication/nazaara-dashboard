@@ -1016,8 +1016,8 @@ const OrderUpdate = ({ params }: any) => {
             </div>
 
             <div ref={invoiceRef}>
-              <div className="flex flex-col gap-y-2 px-6 pb-2 pt-6">
-                <div className="flex items-end border-b gap-12 pb-2">
+              <div className="flex flex-col gap-y-2 px-6 pb-4 pt-6">
+                <div className="flex items-end border-b border-gray-400 gap-12 pb-4">
                   <p className="text-gray-700 font-medium flex-1 min-w-max">
                     Invoice No:{" "}
                     <input className="w-16" defaultValue={"334425"} />
@@ -1042,7 +1042,7 @@ const OrderUpdate = ({ params }: any) => {
                   {formatYearMonthDay(orderData?.data?.createdAt as Date)}
                 </p>
               </div> */}
-                <div className="flex flex-col gap-1 text-gray-700 font-medium text-sm">
+                <div className="flex flex-col gap-1 text-gray-700 font-medium text-sm mt-2">
                   <div className="flex items-center justify-between">
                     <p>
                       Client Name:{" "}
@@ -1168,31 +1168,31 @@ const OrderUpdate = ({ params }: any) => {
                       </div>
                     </div>
                     <div className="flex flex-col gap-1 p-1">
-                      <p className="border p-1 border-gray-400 text-end">
+                      <p className="border p-1 border-gray-500 text-gray-700 text-end">
                         Sub Total:{" "}
                         <span className="font-bold">
                           {orderData?.data?.subTotal}/-
                         </span>
                       </p>
-                      <p className="border p-1 border-gray-400 text-end">
+                      <p className="border p-1 border-gray-500 text-gray-700 text-end">
                         Shipping Charge:{" "}
                         <span className="font-bold">
                           {orderData?.data?.shippingCharge}/-
                         </span>
                       </p>
-                      <p className="border p-1 border-gray-400 text-end">
+                      <p className="border p-1 border-gray-500 text-gray-700 text-end">
                         Total Amount:{" "}
                         <span className="font-bold">
                           {orderData?.data?.totalAmount}/-
                         </span>
                       </p>
-                      <p className="border p-1 border-gray-400 text-end">
+                      <p className="border p-1 border-gray-500 text-gray-700 text-end">
                         Total Pay:{" "}
                         <span className="font-bold">
                           {orderData?.data?.totalPay}/-
                         </span>
                       </p>
-                      <p className="border p-1 border-gray-400 text-end">
+                      <p className="border p-1 border-gray-500 text-gray-700 text-end">
                         Due Amount:{" "}
                         <span className="font-bold">
                           {orderData?.data?.due}/-
@@ -1202,7 +1202,7 @@ const OrderUpdate = ({ params }: any) => {
                   </div>
                 </div>
               </div>
-              <hr className="mx-6" />
+              <hr className="mx-6 border-gray-400" />
               <div className="px-6 pt-2 pb-4">
                 {/* <div className="flex items-center justify-between text-gray-700 font-medium mb-2">
                   <p>For Order Update: +880 1316400566</p>
