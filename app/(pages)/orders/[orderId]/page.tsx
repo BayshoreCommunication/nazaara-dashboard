@@ -1019,7 +1019,8 @@ const OrderUpdate = ({ params }: any) => {
               <div className="flex flex-col gap-y-2 px-6 pb-2 pt-4">
                 <div className="flex items-end border-b gap-12 pb-2">
                   <p className="text-gray-700 font-medium flex-1 min-w-max">
-                    Invoice No: 123456
+                    Invoice No:{" "}
+                    <input className="w-16" defaultValue={"334425"} />
                   </p>
                   <div className="flex-[2] flex justify-center">
                     <Image
@@ -1053,10 +1054,12 @@ const OrderUpdate = ({ params }: any) => {
                       <p>Phone: {orderData?.data?.shippingAddress?.phone}</p>
                     )}
                   </div>
-                  <p>
-                    Address: {orderData?.data?.shippingAddress?.street},{" "}
-                    {orderData?.data?.shippingAddress?.city},{" "}
-                    {orderData?.data?.shippingAddress?.country}
+                  <p className="flex items-center gap-1">
+                    Address:{" "}
+                    <input
+                      className="w-full"
+                      defaultValue={`${orderData?.data?.shippingAddress?.street},${orderData?.data?.shippingAddress?.city},${orderData?.data?.shippingAddress?.country}`}
+                    />
                   </p>
                 </div>
                 <div>
@@ -1166,6 +1169,18 @@ const OrderUpdate = ({ params }: any) => {
                     </div>
                     <div className="flex flex-col gap-1 p-1">
                       <p className="border p-1 border-gray-400 text-end">
+                        Sub Total:{" "}
+                        <span className="font-bold">
+                          {orderData?.data?.subTotal}/-
+                        </span>
+                      </p>
+                      <p className="border p-1 border-gray-400 text-end">
+                        Shipping Charge:{" "}
+                        <span className="font-bold">
+                          {orderData?.data?.shippingCharge}/-
+                        </span>
+                      </p>
+                      <p className="border p-1 border-gray-400 text-end">
                         Total Amount:{" "}
                         <span className="font-bold">
                           {orderData?.data?.totalAmount}/-
@@ -1188,8 +1203,8 @@ const OrderUpdate = ({ params }: any) => {
                 </div>
               </div>
               <hr className="mx-6" />
-              <div className="px-6 pt-2">
-                <div className="flex items-center justify-between text-gray-700 font-medium mb-2">
+              <div className="px-6 pt-2 pb-4">
+                {/* <div className="flex items-center justify-between text-gray-700 font-medium mb-2">
                   <p>For Order Update: +880 1316400566</p>
                   <div className="flex items-center gap-1">
                     <p>Delivery Date:</p>{" "}
@@ -1198,562 +1213,60 @@ const OrderUpdate = ({ params }: any) => {
                       className="w-32 border-2 border-gray-400 rounded focus:outline-gray-400 px-2 text-gray-700 py-0.5"
                     />{" "}
                   </div>
-                </div>
-                <div className="flex gap-4">
-                  <div>
-                    <p className="text-gray-700 font-medium mb-1">
-                      Extra Additions
-                    </p>
-                    <textarea
-                      cols={20}
-                      rows={8}
-                      className="border border-gray-400 rounded p-2 focus:outline-gray-400"
-                    />
-                  </div>
-                  <div>
-                    <p className="text-gray-700 font-medium mb-1">
-                      Measurement Details
-                    </p>
-                    <div className="flex p-4 border border-gray-300 rounded text-xs">
-                      <div>
-                        <div className="border-r-2 pr-6 mr-6">
-                          <div className="flex gap-x-2 mb-2">
-                            <label className="cursor-pointer flex items-center gap-x-1">
-                              <input
-                                type="radio"
-                                name="top-radio"
-                                value="blouse"
-                                className="radio radio-xs"
-                                // checked={formData.topType === "blouse"}
-                                // onChange={() =>
-                                //   setFormData((prevData) => ({
-                                //     ...prevData,
-                                //     topType: "blouse",
-                                //   }))
-                                // }
-                              />
-                              <span className="label-text">Blouse</span>
-                            </label>
-                            <label className="cursor-pointer flex items-center gap-x-1">
-                              <input
-                                type="radio"
-                                name="top-radio"
-                                value="kameez"
-                                className="radio radio-xs"
-                                // checked={formData.topType === "kameez"}
-                                // onChange={() =>
-                                //   setFormData((prevData) => ({
-                                //     ...prevData,
-                                //     topType: "kameez",
-                                //   }))
-                                // }
-                              />
-                              <span className="label-text">Kameez</span>
-                            </label>
-                            <label className="cursor-pointer flex items-center gap-x-1">
-                              <input
-                                type="radio"
-                                name="top-radio"
-                                value="gown"
-                                className="radio radio-xs"
-                                // checked={formData.topType === "gown"}
-                                // onChange={() =>
-                                //   setFormData((prevData) => ({
-                                //     ...prevData,
-                                //     topType: "gown",
-                                //   }))
-                                // }
-                              />
-                              <span className="label-text">Gown</span>
-                            </label>
-                          </div>
-                          {/* {{-- input  --}} */}
-                          <div className="flex text-xs">
-                            <div className="flex flex-col gap-y-1">
-                              <div className="w-36 flex justify-between">
-                                <label htmlFor="chest">
-                                  <span className="label-text">Chest:</span>
-                                </label>
-                                <input
-                                  id="chest"
-                                  type="number"
-                                  className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
-                                  // value={formData.tops.chest || ""}
-                                  // onChange={(e) =>
-                                  //   handleInputChange(
-                                  //     "tops",
-                                  //     "chest",
-                                  //     e.target.value
-                                  //   )
-                                  // }
-                                />
-                              </div>
-                              <div className="w-36 flex justify-between">
-                                <label htmlFor="waist">
-                                  <span className="label-text">Waist:</span>
-                                </label>
-                                <input
-                                  id="waist"
-                                  type="number"
-                                  className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
-                                  // value={formData.tops.waist || ""}
-                                  // onChange={(e) =>
-                                  //   handleInputChange(
-                                  //     "tops",
-                                  //     "waist",
-                                  //     e.target.value
-                                  //   )
-                                  // }
-                                />
-                              </div>
-                              <div className="w-36 flex justify-between">
-                                <label htmlFor="hip">
-                                  <span className="label-text">Hip:</span>
-                                </label>
-                                <input
-                                  id="hip"
-                                  type="number"
-                                  className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
-                                  // value={formData.tops.hip || ""}
-                                  // onChange={(e) =>
-                                  //   handleInputChange(
-                                  //     "tops",
-                                  //     "hip",
-                                  //     e.target.value
-                                  //   )
-                                  // }
-                                />
-                              </div>
-                              <div className="w-36 flex justify-between">
-                                <label htmlFor="end">
-                                  <span className="label-text">End:</span>
-                                </label>
-                                <input
-                                  id="end"
-                                  type="number"
-                                  className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
-                                  // value={formData.tops.end || ""}
-                                  // onChange={(e) =>
-                                  //   handleInputChange(
-                                  //     "tops",
-                                  //     "end",
-                                  //     e.target.value
-                                  //   )
-                                  // }
-                                />
-                              </div>
-                              <div className="w-36 flex justify-between">
-                                <label htmlFor="shoulder">
-                                  <span className="label-text">Shoulder:</span>
-                                </label>
-                                <input
-                                  id="shoulder"
-                                  type="number"
-                                  className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
-                                  // value={formData.tops.shoulder || ""}
-                                  // onChange={(e) =>
-                                  //   handleInputChange(
-                                  //     "tops",
-                                  //     "shoulder",
-                                  //     e.target.value
-                                  //   )
-                                  // }
-                                />
-                              </div>
-                              <div className="w-36 flex justify-between">
-                                <label htmlFor="armHole">
-                                  <span className="label-text">Arm Hole:</span>
-                                </label>
-                                <input
-                                  id="armHole"
-                                  type="number"
-                                  className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
-                                  // value={formData.tops.armHole || ""}
-                                  // onChange={(e) =>
-                                  //   handleInputChange(
-                                  //     "tops",
-                                  //     "armHole",
-                                  //     e.target.value
-                                  //   )
-                                  // }
-                                />
-                              </div>
-                              <div className="w-36 flex justify-between">
-                                <label htmlFor="sleeveL">
-                                  <span className="label-text">Sleeve L:</span>
-                                </label>
-                                <input
-                                  id="sleeveL"
-                                  type="number"
-                                  className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
-                                  // value={formData.tops.sleeveLength || ""}
-                                  // onChange={(e) =>
-                                  //   handleInputChange(
-                                  //     "tops",
-                                  //     "sleeveLength",
-                                  //     e.target.value
-                                  //   )
-                                  // }
-                                />
-                              </div>
-                            </div>
-                            <div className="ml-6 flex flex-col gap-y-1">
-                              <div className="w-44 flex justify-between">
-                                <label htmlFor="muscle">
-                                  <span className="label-text">Muscle:</span>
-                                </label>
-                                <input
-                                  id="muscle"
-                                  type="number"
-                                  className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
-                                  // value={formData.tops.muscle || ""}
-                                  // onChange={(e) =>
-                                  //   handleInputChange(
-                                  //     "tops",
-                                  //     "muscle",
-                                  //     e.target.value
-                                  //   )
-                                  // }
-                                />
-                              </div>
-                              <div className="w-44 flex justify-between">
-                                <label htmlFor="handOpening">
-                                  <span className="label-text">
-                                    Hand Opening:
-                                  </span>
-                                </label>
-                                <input
-                                  id="handOpening"
-                                  type="number"
-                                  className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
-                                  // value={formData.tops.handOpening || ""}
-                                  // onChange={(e) =>
-                                  //   handleInputChange(
-                                  //     "tops",
-                                  //     "handOpening",
-                                  //     e.target.value
-                                  //   )
-                                  // }
-                                />
-                              </div>
-                              <div className="w-44 flex justify-between">
-                                <label htmlFor="length">
-                                  <span className="label-text">Length:</span>
-                                </label>
-                                <input
-                                  id="length"
-                                  type="number"
-                                  className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
-                                  // value={formData.tops.length || ""}
-                                  // onChange={(e) =>
-                                  //   handleInputChange(
-                                  //     "tops",
-                                  //     "length",
-                                  //     e.target.value
-                                  //   )
-                                  // }
-                                />
-                              </div>
-                              <div className="w-44 flex justify-between">
-                                <label htmlFor="slit">
-                                  <span className="label-text">Slit:</span>
-                                </label>
-                                <input
-                                  id="slit"
-                                  type="number"
-                                  className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
-                                  // value={formData.tops.slit || ""}
-                                  // onChange={(e) =>
-                                  //   handleInputChange(
-                                  //     "tops",
-                                  //     "slit",
-                                  //     e.target.value
-                                  //   )
-                                  // }
-                                />
-                              </div>
-                              <div className="w-44 flex justify-between">
-                                <label htmlFor="neckDeepF">
-                                  <span className="label-text">
-                                    Neck Deep (f):
-                                  </span>
-                                </label>
-                                <input
-                                  id="neckDeepF"
-                                  type="number"
-                                  className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
-                                  // value={formData.tops.neckDeepf || ""}
-                                  // onChange={(e) =>
-                                  //   handleInputChange(
-                                  //     "tops",
-                                  //     "neckDeepf",
-                                  //     e.target.value
-                                  //   )
-                                  // }
-                                />
-                              </div>
-                              <div className="w-44 flex justify-between">
-                                <label htmlFor="neckDeepB">
-                                  <span className="label-text">
-                                    Neck Deep (b):
-                                  </span>
-                                </label>
-                                <input
-                                  id="neckDeepB"
-                                  type="number"
-                                  className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
-                                  // value={formData.tops.neckDeepb || ""}
-                                  // onChange={(e) =>
-                                  //   handleInputChange(
-                                  //     "tops",
-                                  //     "neckDeepb",
-                                  //     e.target.value
-                                  //   )
-                                  // }
-                                />
-                              </div>
-                              <div className="w-44 flex justify-between">
-                                <label htmlFor="halfBody">
-                                  <span className="label-text">Half Body:</span>
-                                </label>
-                                <input
-                                  id="halfBody"
-                                  type="number"
-                                  className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
-                                  // value={formData.tops.halfBody || ""}
-                                  // onChange={(e) =>
-                                  //   handleInputChange(
-                                  //     "tops",
-                                  //     "halfBody",
-                                  //     e.target.value
-                                  //   )
-                                  // }
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="">
-                        <div className="flex flex-col w-full">
-                          <div className="grid grid-cols-2 gap-1 mb-2">
-                            <label className="cursor-pointer flex items-center gap-x-1">
-                              <input
-                                type="radio"
-                                name="bottom-radio"
-                                value="skirt"
-                                className="radio radio-xs"
-                                // checked={formData.bottomType === "skirt"}
-                                // onChange={() =>
-                                //   setFormData((prevData) => ({
-                                //     ...prevData,
-                                //     bottomType: "skirt",
-                                //   }))
-                                // }
-                              />
-                              <span className="label-text">Skirt</span>
-                            </label>
-                            <label className="cursor-pointer flex items-center gap-x-1">
-                              <input
-                                type="radio"
-                                name="bottom-radio"
-                                value="palazzo"
-                                className="radio radio-xs"
-                                // checked={formData.bottomType === "palazzo"}
-                                // onChange={() =>
-                                //   setFormData((prevData) => ({
-                                //     ...prevData,
-                                //     bottomType: "palazzo",
-                                //   }))
-                                // }
-                              />
-                              <span className="label-text">Palazzo</span>
-                            </label>
-                            <label className="cursor-pointer flex items-center gap-x-1">
-                              <input
-                                type="radio"
-                                name="bottom-radio"
-                                value="pant"
-                                className="radio radio-xs"
-                                // checked={formData.bottomType === "pant"}
-                                // onChange={() =>
-                                //   setFormData((prevData) => ({
-                                //     ...prevData,
-                                //     bottomType: "pant",
-                                //   }))
-                                // }
-                              />
-                              <span className="label-text">Pant</span>
-                            </label>
-                            <label className="cursor-pointer flex items-center gap-x-1">
-                              <input
-                                type="radio"
-                                name="bottom-radio"
-                                value="gharara"
-                                className="radio radio-xs"
-                                // checked={formData.bottomType === "gharara"}
-                                // onChange={() =>
-                                //   setFormData((prevData) => ({
-                                //     ...prevData,
-                                //     bottomType: "gharara",
-                                //   }))
-                                // }
-                              />
-                              <span className="label-text">Gharara</span>
-                            </label>
-                          </div>
-                          {/* {{-- input  --}} */}
-                          <div className="flex flex-col gap-1">
-                            <div className="flex justify-between">
-                              <label htmlFor="length2">
-                                <span className="label-text">Length:</span>
-                              </label>
-                              <input
-                                id="length2"
-                                type="number"
-                                className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
-                                // value={formData.bottom.length || ""}
-                                // onChange={(e) =>
-                                //   handleInputChange(
-                                //     "bottom",
-                                //     "length",
-                                //     e.target.value
-                                //   )
-                                // }
-                              />
-                            </div>
-                            <div className="flex justify-between">
-                              <label htmlFor="waist2">
-                                <span className="label-text">Waist:</span>
-                              </label>
-                              <input
-                                id="waist2"
-                                type="number"
-                                className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
-                                // value={formData.bottom.waist || ""}
-                                // onChange={(e) =>
-                                //   handleInputChange(
-                                //     "bottom",
-                                //     "waist",
-                                //     e.target.value
-                                //   )
-                                // }
-                              />
-                            </div>
-                            <div className="flex justify-between">
-                              <label htmlFor="hip2">
-                                <span className="label-text">Hip:</span>
-                              </label>
-                              <input
-                                id="hip2"
-                                type="number"
-                                className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
-                                // value={formData.bottom.hip || ""}
-                                // onChange={(e) =>
-                                //   handleInputChange(
-                                //     "bottom",
-                                //     "hip",
-                                //     e.target.value
-                                //   )
-                                // }
-                              />
-                            </div>
-                            <div className="flex justify-between">
-                              <label htmlFor="thigh2">
-                                <span className="label-text">Thigh:</span>
-                              </label>
-                              <input
-                                id="thigh2"
-                                type="number"
-                                className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
-                                // value={formData.bottom.thigh || ""}
-                                // onChange={(e) =>
-                                //   handleInputChange(
-                                //     "bottom",
-                                //     "thigh",
-                                //     e.target.value
-                                //   )
-                                // }
-                              />
-                            </div>
-                            <div className="flex justify-between">
-                              <label htmlFor="knee2">
-                                <span className="label-text">Knee:</span>
-                              </label>
-                              <input
-                                id="knee2"
-                                type="number"
-                                className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
-                                // value={formData.bottom.knee || ""}
-                                // onChange={(e) =>
-                                //   handleInputChange(
-                                //     "bottom",
-                                //     "knee",
-                                //     e.target.value
-                                //   )
-                                // }
-                              />
-                            </div>
-                            <div className="flex justify-between">
-                              <label htmlFor="legOpenning2">
-                                <span className="label-text">
-                                  Leg Openning:
-                                </span>
-                              </label>
-                              <input
-                                id="legOpenning2"
-                                type="number"
-                                className="input border border-gray-300 w-16 rounded h-6 text-xs text-center"
-                                // value={formData.bottom.legOpening || ""}
-                                // onChange={(e) =>
-                                //   handleInputChange(
-                                //     "bottom",
-                                //     "legOpening",
-                                //     e.target.value
-                                //   )
-                                // }
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex flex-row-reverse justify-between mt-2 gap-4">
-                  <div className="flex flex-col justify-between">
-                    <div className="text-xs font-medium flex flex-col gap-1">
-                      <div className="flex items-center">
-                        <div className="flex">
-                          <RiFacebookCircleLine />
-                          <FaInstagram className="-translate-x-1" />
-                        </div>
-                        <p className="">/nazaara.official</p>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <IoLocationOutline size={16} />
-                        <p>HS 22/B, RD 02, Dhanmondi R/A, Dhaka-1205</p>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <IoMailOutline size={16} />
-                        <p>info@anzaralifestyleltd.com</p>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <TbWorldWww size={16} />
-                        <p>www.nazaaralifestyle.com</p>
-                      </div>
-                    </div>
+                </div> */}
 
-                    <div className="flex justify-end">
-                      <div className="border-t border-gray-500 w-40 text-center font-medium mt-10">
-                        <p className="text-sm">Client Signature</p>
+                {/* <hr /> */}
+
+                <div className="flex flex-row justify-between mt-2 gap-6">
+                  <div className="flex flex-col justify-between gap-4">
+                    <div className="flex flex-col gap-4 flex-1">
+                      <div className="flex flex-col gap-2 text-gray-700 font-medium mb-2">
+                        <p>For Order Update: +880 1316400566</p>
+                        <div className="flex items-center gap-1">
+                          <p>Delivery Date:</p>{" "}
+                          <input
+                            type="text"
+                            className="w-32 border-2 border-gray-400 rounded focus:outline-gray-400 px-2 text-gray-700 py-0.5"
+                          />{" "}
+                        </div>
+                      </div>
+                      <div className="text-sm font-medium flex flex-col gap-2 lowercase">
+                        <div className="flex items-center">
+                          <div className="flex">
+                            <RiFacebookCircleLine size={14} />
+                            <FaInstagram size={14} className="-translate-x-1" />
+                          </div>
+                          <p className="">/nazaara.official</p>
+                        </div>
+                        <div className="flex items-start gap-1 uppercase">
+                          <IoLocationOutline size={18} />
+                          <p className="text-xs">
+                            House 56 (5th Floor), Road 01, Block A,
+                            <br /> Aftabnagar (behind Model Clinic),
+                            <br />
+                            Dhaka 1212
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <IoMailOutline size={16} />
+                          <p>anzaralifestyleltd@gmail.com </p>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <TbWorldWww size={16} />
+                          <p>www.nazaaralifestyle.com</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex justify-start">
+                      <div className="border-t border-gray-500 w-44 text-center font-medium mt-10">
+                        <p className="text-sm pt-1">Authorized Signature</p>
                         <p className="text-xs">(With Date)</p>
                       </div>
                     </div>
                   </div>
                   <div className="text-sm max-w-[30rem]">
-                    <p className="font-bold">Terms & Conditions</p>
-                    <ol className="font-xs list-decimal list-inside list">
+                    <p className="font-bold mb-1">Terms & Conditions</p>
+                    <ol className="font-xs list-decimal list-inside list space-y-1">
                       <li>
                         No money refund, money can be adjusted with another
                         purchase(within 7 days).
@@ -1778,17 +1291,32 @@ const OrderUpdate = ({ params }: any) => {
                         booked product.(Not just the booking amount).
                       </li>
                     </ol>
-                    <p className="text-[12px] text-gray-700 font-medium mt-1">
-                      I have read all the mentioned terms & conditions above,
-                      and I agree with them.
-                    </p>
+                    <div className="form-control">
+                      <label className="label cursor-pointer flex items-center gap-1.5">
+                        <input
+                          type="checkbox"
+                          className="checkbox checkbox-xs rounded -translate-y-1"
+                          defaultChecked
+                        />
+                        <span className="label-text text-xs font-semibold text-gray-800">
+                          I have read all the mentioned terms & conditions
+                          above, and I agree with them.
+                        </span>
+                      </label>
+                    </div>
+                    <div className="flex justify-end">
+                      <div className="border-t border-gray-500 w-40 text-center font-medium mt-10">
+                        <p className="text-sm">Client Signature</p>
+                        <p className="text-xs">(With Date)</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
             <button
               onClick={() => invoicePrintFn()}
-              className="bg-secondary rounded px-3 py-1 text-sm text-white translate-x-6 -translate-y-4 uppercase flex items-center gap-1"
+              className="bg-secondary rounded px-3 py-1 text-sm text-white ml-6 mb-6 uppercase flex items-center gap-1"
             >
               <IoMdPrint size={18} /> print
             </button>
