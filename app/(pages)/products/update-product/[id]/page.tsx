@@ -319,11 +319,11 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
           payload: submitData,
         });
         refetch();
-        if (mutationData) {
+        if (mutationData?.data?.success) {
           router.push("/products");
           toast.success("Product updated sucessfully.", { duration: 3000 });
         } else {
-          toast.error("Failed to updated product!", { duration: 3000 });
+          toast.error(mutationData?.error?.data?.message, { duration: 3000 });
         }
       }
     } catch {
