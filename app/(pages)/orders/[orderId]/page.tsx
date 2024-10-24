@@ -1016,7 +1016,7 @@ const OrderUpdate = ({ params }: any) => {
             </div>
 
             <div ref={invoiceRef}>
-              <div className="flex flex-col gap-y-2 px-6 pb-2 pt-4">
+              <div className="flex flex-col gap-y-2 px-6 pb-2 pt-6">
                 <div className="flex items-end border-b gap-12 pb-2">
                   <p className="text-gray-700 font-medium flex-1 min-w-max">
                     Invoice No:{" "}
@@ -1298,14 +1298,14 @@ const OrderUpdate = ({ params }: any) => {
                           className="checkbox checkbox-xs rounded -translate-y-1"
                           defaultChecked
                         />
-                        <span className="label-text text-xs font-semibold text-gray-800">
+                        <span className="label-text text-xs font-semibold text-gray-800 capitalize">
                           I have read all the mentioned terms & conditions
                           above, and I agree with them.
                         </span>
                       </label>
                     </div>
                     <div className="flex justify-end">
-                      <div className="border-t border-gray-500 w-40 text-center font-medium mt-10">
+                      <div className="border-t border-gray-500 w-40 text-center font-medium mt-12">
                         <p className="text-sm">Client Signature</p>
                         <p className="text-xs">(With Date)</p>
                       </div>
