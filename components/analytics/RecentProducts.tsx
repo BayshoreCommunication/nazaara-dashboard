@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import Loader from "../Loader";
+import placeHolderImg from "@/public/images/placeholder.png";
 
 const RecentProducts = () => {
   const { data: productsData, isLoading: productsLoading } =
@@ -39,21 +40,28 @@ const RecentProducts = () => {
             </tr>
           </thead>
           <tbody>
-            {productsData?.product.map((elem: any, index) => (
-              <tr key={elem._id}>
+            {productsData?.product?.map((elem: any, index) => (
+              <tr key={elem?._id}>
                 <td>
-                  <Image
-                    // src={elem.variant[0].imageUrl[0]}
-                    src={
-                      elem.variant
-                        .flatMap((v: any) => v.imageUrl)
-                        .find((image: any) => image.isFeatured)?.image ||
-                      elem.variant[0].imageUrl[0].image
-                    }
-                    alt=""
-                    width={60}
-                    height={60}
-                  />
+                  {elem?.variant[0]?.imageUrl[0]?.image ? (
+                    <Image
+                      src={
+                        elem?.variant
+                          .flatMap((v: any) => v?.imageUrl)
+                          .find((image: any) => image?.isFeatured)?.image ||
+                        elem?.variant[0]?.imageUrl[0]?.image
+                      }
+                      alt="product images"
+                      width={60}
+                      height={60}
+                    />
+                  ) : (
+                    <Image
+                      src={placeHolderImg}
+                      alt="product image"
+                      className="w-[64px] h-[80px] rounded-lg"
+                    />
+                  )}
                 </td>
                 <td>{elem.productName.slice(0, 15)}</td>
                 <td>{elem.category}</td>

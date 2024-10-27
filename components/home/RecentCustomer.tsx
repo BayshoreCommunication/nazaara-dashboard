@@ -2,10 +2,13 @@ import React from "react";
 import Image from "next/image";
 import { UserData } from "@/types/userTypes";
 import { fetchServerSideData } from "../ServerSideDataFetching";
+import { FaUserCircle } from "react-icons/fa";
 
 const RecentCustomer = async () => {
   const url = `${process.env.API_URL}/api/v1/user?limit=5&userType=user`;
   const userData: { data: UserData[] } = await fetchServerSideData(url);
+
+  console.log("userData", userData);
 
   return (
     <>
@@ -30,7 +33,7 @@ const RecentCustomer = async () => {
                         <div className="mask mask-squircle w-8 h-8">
                           {user?.imageUrl && (
                             <Image
-                              src={user.imageUrl}
+                              src={user?.imageUrl}
                               width={80}
                               height={80}
                               alt="User Image"

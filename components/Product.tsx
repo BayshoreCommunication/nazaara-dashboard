@@ -1,14 +1,18 @@
 import Image from "next/image";
 import React from "react";
-import { Product } from "@/types/productTypes";
+// import { Product } from "@/types/productTypes";
 import Link from "next/link";
 import SecondaryButton from "./SecondaryButton";
 import { fetchServerSideData } from "./ServerSideDataFetching";
+import { Product as ProductType } from "@/types/productTypes";
+import placeHolderImg from "@/public/images/placeholder.png";
 
 const Product = async () => {
   const url = `${process.env.API_URL}/api/v1/product?limit=10`;
-  const productData: { product: Product[] } = await fetchServerSideData(url);
-  // console.log("product", productData);
+  const productData: { product: ProductType[] } = await fetchServerSideData(
+    url
+  );
+  console.log("product", productData.product[0].variant);
 
   return (
     <>
@@ -34,19 +38,27 @@ const Product = async () => {
               {productData?.product?.map((product: any) => (
                 <tr key={product._id}>
                   <td>
-                    <Image
-                      // src={product.variant[0].imageUrl[0]}
-                      src={
-                        product.variant
-                          .flatMap((v: any) => v.imageUrl)
-                          .find((image: any) => image.isFeatured)?.image ||
-                        product.variant[0].imageUrl[0].image
-                      }
-                      alt="product image"
-                      width={248}
-                      height={248}
-                      className="w-[64px] h-[80px] rounded-lg"
-                    />
+                    {product?.variant[0]?.imageUrl[0]?.image ? (
+                      <Image
+                        // src={product.variant[0].imageUrl[0]}
+                        src={
+                          product.variant
+                            .flatMap((v: any) => v?.imageUrl)
+                            .find((image: any) => image?.isFeatured)?.image ||
+                          product?.variant[0]?.imageUrl[0]?.image
+                        }
+                        alt="product image"
+                        width={248}
+                        height={248}
+                        className="w-[64px] h-[80px] rounded-lg"
+                      />
+                    ) : (
+                      <Image
+                        src={placeHolderImg}
+                        alt="product image"
+                        className="w-[64px] h-[80px] rounded-lg"
+                      />
+                    )}
                   </td>
                   <td>{product.sku}</td>
                   <td>{product.category}</td>
