@@ -65,14 +65,14 @@ input[type="number"]::-webkit-outer-spin-button {
 /* In your CSS file or inside a <style> tag */
 @media print {
   @page {
-    size: 80px 300px; /* Set to the barcode's dimensions */
+    size: 100px 400px; /* Set to the barcode's dimensions */
     margin: 0;
   }
   /* Centering the barcode on the page */
-  body {
+  /* body {
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 0;
-  }
+  } */
 }
