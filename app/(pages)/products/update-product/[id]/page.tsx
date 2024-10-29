@@ -206,6 +206,10 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
 
   // console.log("erp data", productsData);
 
+  // console.log("size", formData.size);
+  // console.log("variant", formData.variant);
+  console.log("productsData", productsData);
+
   useEffect(() => {
     if (productsData && productsData.success) {
       setFormData({
@@ -902,27 +906,35 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
               ref={barcodeRef}
               className="p-4 text-center flex flex-col gap-1 items-center border rounded-xl barcodeTagContainer"
             >
-              <h4 className="font-medium text-lg mb-2 tracking-wide">
+              <h4 className="font-medium text-lg mb-1 tracking-wide">
                 NAZAARA
               </h4>
-              <p className="font-medium text-sm mb-2">Sharee</p>
+              {/* <p className="font-medium text-sm mb-2">Sharee</p> */}
+              <input
+                className="py-1 focus:outline-gray-300 font-medium text-sm mb-1 text-center"
+                defaultValue={productsData?.data?.category?.title}
+              />
               <Barcode value="1234567865" />
               <p className="font-medium mt-2">DW-MX/00018</p>
               <input
                 className="py-0.5 focus:outline-gray-300 text-center"
-                defaultValue={"RED"}
+                defaultValue={formData?.variant[0]?.color}
               />
               <input
                 className="py-0.5 focus:outline-gray-300 text-center"
-                defaultValue={"44"}
+                defaultValue={formData?.size[0]}
               />
               <div>
-                <input
-                  className="py-1 focus:outline-gray-300 font-medium text-center"
-                  defaultValue={`BDT ${parseFloat(
-                    formData.salePrice as any
-                  ).toFixed(2)}`}
-                />
+                {formData?.salePrice ? (
+                  <input
+                    className="py-1 focus:outline-gray-300 font-medium text-center"
+                    defaultValue={`BDT ${parseFloat(
+                      formData?.salePrice as any
+                    ).toFixed(2)}`}
+                  />
+                ) : (
+                  <input className="py-1 focus:outline-gray-300 font-medium text-center" />
+                )}
                 <p className="text-xs -translate-y-2 font-medium text-gray-600 capitalize">
                   {"(Vat Inclusive)"}
                 </p>
