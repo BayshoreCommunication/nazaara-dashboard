@@ -88,7 +88,7 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
 
   const pageStyle = `
     @page{
-      size: 6cm 12cm;
+      size: 7cm 14cm;
     }
     @media all{
       .pageBreak{
@@ -884,7 +884,7 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
                 NAZAARA
               </h4>
               <p className="font-medium text-sm">Sharee</p>
-              <Barcode width={1} height={140} value="1234567865" />
+              <Barcode width={1} height={100} value="1234567865" />
               <p className="font-medium">DW-MX/00018</p>
               <input
                 className="py-0.5 focus:outline-gray-300 text-center"
