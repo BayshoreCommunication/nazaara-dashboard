@@ -859,7 +859,7 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
 
             <div
               ref={barcodeRef}
-              className="p-4 text-center flex flex-col gap-1 items-center border rounded-xl"
+              className="p-4 text-center flex flex-col gap-1 items-center border rounded-xl w-[6cm] h-[12cm]"
             >
               <h4 className="font-medium text-lg mb-2 tracking-wide">
                 NAZAARA
