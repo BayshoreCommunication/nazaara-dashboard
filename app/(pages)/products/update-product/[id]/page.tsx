@@ -86,10 +86,29 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
     label: data.title,
   }));
 
+  const pageStyle = `
+    @page{
+      size: 6cm 12cm;
+    }
+    @media all{
+      .pageBreak{
+        display: none;
+      }
+    }
+    @media print{
+      .pageBreak{
+        page-break-before: always;
+      }
+    }
+  `;
+
   // console.log("opert", optionsForSale);
 
   const barcodeRef = useRef<HTMLDivElement>(null);
-  const barcodePrintFn = useReactToPrint({ contentRef: barcodeRef });
+  const barcodePrintFn = useReactToPrint({
+    contentRef: barcodeRef,
+    pageStyle: pageStyle,
+  });
 
   //fetch sale data
   useEffect(() => {
@@ -859,13 +878,13 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
 
             <div
               ref={barcodeRef}
-              className="p-4 text-center flex flex-col gap-1 items-center border rounded-xl w-[6cm] h-[12cm]"
+              className="p-4 text-center flex flex-col gap-1 items-center border rounded-xl"
             >
               <h4 className="font-medium text-lg mb-2 tracking-wide">
                 NAZAARA
               </h4>
               <p className="font-medium text-sm">Sharee</p>
-              <Barcode value="1234567865" />
+              <Barcode width={1} height={140} value="1234567865" />
               <p className="font-medium">DW-MX/00018</p>
               <input
                 className="py-0.5 focus:outline-gray-300 text-center"
