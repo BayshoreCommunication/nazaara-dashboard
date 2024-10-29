@@ -61,3 +61,21 @@ input[type="number"]::-webkit-outer-spin-button {
 .invert {
   filter: invert(1); /* Adjust brightness if needed */
 }
+
+@media print {
+  body * {
+    visibility: hidden; /* Hide everything outside the print area */
+  }
+
+  .print-area {
+    visibility: visible;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5cm; /* Adjust width */
+    height: 10cm; /* Adjust height */
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+}
