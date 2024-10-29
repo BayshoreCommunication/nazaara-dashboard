@@ -905,9 +905,9 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
               <h4 className="font-medium text-lg mb-2 tracking-wide">
                 NAZAARA
               </h4>
-              <p className="font-medium text-sm">Sharee</p>
-              <Barcode width={1} height={60} value="1234567865" />
-              <p className="font-medium">DW-MX/00018</p>
+              <p className="font-medium text-sm mb-2">Sharee</p>
+              <Barcode value="1234567865" />
+              <p className="font-medium mt-2">DW-MX/00018</p>
               <input
                 className="py-0.5 focus:outline-gray-300 text-center"
                 defaultValue={"RED"}
