@@ -78,4 +78,12 @@ input[type="number"]::-webkit-outer-spin-button {
     padding: 0;
     overflow: hidden;
   }
+  .print-area div,
+  .print-area p,
+  .print-area h4,
+  .print-area input {
+    font-size: 10px; /* Adjust font size for readability */
+    margin: 0; /* Remove extra spacing */
+    padding: 0;
+  }
 }
