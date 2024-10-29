@@ -86,21 +86,43 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
     label: data.title,
   }));
 
+  // const pageStyle = `
+  //   @page{
+  //     size: 7cm 14cm;
+  //   }
+  //   @media all{
+  //     .pageBreak{
+  //       display: none;
+  //     }
+  //   }
+  //   @media print{
+  //     .pageBreak{
+  //       page-break-before: always;
+  //     }
+  //   }
+  // `;
   const pageStyle = `
-    @page{
-      size: 7cm 14cm;
+  @page {
+    size: 7cm 14cm; /* Adjust to the fixed dimensions of your barcode tag */
+    margin: 0; /* Remove any default margins for a tighter fit */
+  }
+  
+  @media print {
+    body {
+      margin: 0;
     }
-    @media all{
-      .pageBreak{
-        display: none;
-      }
+
+    .barcodeTagContainer {
+      width: 7cm;
+      height: 14cm;
+      overflow: hidden; /* Ensure no overflow */
     }
-    @media print{
-      .pageBreak{
-        page-break-before: always;
-      }
-    }
-  `;
+  }
+
+  .pageBreak {
+    display: none;
+  }
+`;
 
   // console.log("opert", optionsForSale);
 
@@ -878,13 +900,13 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
 
             <div
               ref={barcodeRef}
-              className="p-4 text-center flex flex-col gap-1 items-center border rounded-xl"
+              className="p-4 text-center flex flex-col gap-1 items-center border rounded-xl barcodeTagContainer"
             >
               <h4 className="font-medium text-lg mb-2 tracking-wide">
                 NAZAARA
               </h4>
               <p className="font-medium text-sm">Sharee</p>
-              <Barcode width={1} height={100} value="1234567865" />
+              <Barcode width={1} height={60} value="1234567865" />
               <p className="font-medium">DW-MX/00018</p>
               <input
                 className="py-0.5 focus:outline-gray-300 text-center"
@@ -940,7 +962,7 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
                 </div>
               </div>
             </div>
-            <div className="flex justify-center">
+            <div className="flex justify-center mt-2">
               <button
                 onClick={() => barcodePrintFn()}
                 className=" bg-secondary rounded px-3 py-1 text-sm text-white ml-6 mb-6 uppercase flex items-center gap-1"
