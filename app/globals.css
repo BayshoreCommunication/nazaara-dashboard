@@ -61,3 +61,18 @@ input[type="number"]::-webkit-outer-spin-button {
 .invert {
   filter: invert(1); /* Adjust brightness if needed */
 }
+
+/* In your CSS file or inside a <style> tag */
+@media print {
+  @page {
+    size: 80px 300px; /* Set to the barcode's dimensions */
+    margin: 0;
+  }
+  /* Centering the barcode on the page */
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+  }
+}
