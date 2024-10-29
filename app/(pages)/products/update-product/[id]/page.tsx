@@ -1,8 +1,9 @@
 "use client";
 import Editor from "@/components/Editor";
-import { FC, ChangeEvent, useState, useEffect } from "react";
+import { FC, ChangeEvent, useState, useEffect, useRef } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import Barcode from "react-barcode";
 import {
   useGetProductByIdQuery,
   useUpdateProductMutation,
@@ -20,6 +21,16 @@ import { ISaleTag } from "@/types/saleTypes";
 import { IFestival } from "@/types/festivalTypes";
 // import useToggle from "@/hooks/useToogle";
 import ColorVariant from "@/components/ColorPicker";
+import { useReactToPrint } from "react-to-print";
+import { IoMdPrint } from "react-icons/io";
+import { FaFileInvoice } from "react-icons/fa";
+import Image from "next/image";
+import barcodeLogo from "@/public/images/barcode.png";
+import barcode from "@/public/images/logo.png";
+import nazaara from "@/public/images/nazaara-logo.png";
+import { TbSlash } from "react-icons/tb";
+import { RxSlash } from "react-icons/rx";
+import { BsSlashLg } from "react-icons/bs";
 const Select = dynamic(() => import("react-select"), {
   ssr: false,
 });
@@ -76,6 +87,9 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
   }));
 
   // console.log("opert", optionsForSale);
+
+  const barcodeRef = useRef<HTMLDivElement>(null);
+  const barcodePrintFn = useReactToPrint({ contentRef: barcodeRef });
 
   //fetch sale data
   useEffect(() => {
@@ -395,7 +409,16 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
         ) : (
           <form onSubmit={handleSubmit}>
             <div className="bg-basic rounded-md px-6 py-3 flex flex-col gap-y-4">
-              <h4 className="text-lg font-bold">Product Information</h4>
+              <div className="flex items-center justify-between">
+                <h4 className="text-lg font-bold">Product Information</h4>
+                <label
+                  htmlFor="invoice-model"
+                  // onClick={() => handleSizeChart(el?.sizeChart?._id, el._id)}
+                  className="text-[#5B94FC] cursor-pointer flex items-center gap-[2px] text-sm font-semibold"
+                >
+                  <FaFileInvoice size={14} className="mt-[2px]" /> Barcode
+                </label>
+              </div>
               <div className="flex justify-between">
                 <p>
                   <b>Erp ID:</b> {formData?.erpId}
@@ -819,6 +842,93 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
             </div>
           </form>
         )}
+      </div>
+      {/* invoice model  */}
+      <div className="uppercase">
+        <input type="checkbox" id="invoice-model" className="modal-toggle" />
+        <div className="modal overflow-y-scroll">
+          <div
+            // ref={invoiceContentRef}
+            className="modal-box bg-white max-h-min w-max m-0 p-0"
+          >
+            <div className="flex justify-end -translate-x-4 translate-y-4">
+              <label htmlFor="invoice-model" className="btn btn-sm btn-circle">
+                ✕
+              </label>
+            </div>
+
+            <div
+              ref={barcodeRef}
+              className="p-4 text-center flex flex-col gap-1 items-center"
+            >
+              <h4 className="font-medium text-lg mb-2">NAZAARA</h4>
+              <p className="font-medium text-sm">Sharee</p>
+              <Barcode value="1234567865" />
+              <p className="font-medium">DW-MX/00018</p>
+              <input
+                className="py-0.5 focus:outline-gray-300 text-center"
+                defaultValue={"RED"}
+              />
+              <input
+                className="py-0.5 focus:outline-gray-300 text-center"
+                defaultValue={"44"}
+              />
+              <div>
+                <input
+                  className="py-1 focus:outline-gray-300 font-medium text-center"
+                  defaultValue={`BDT ${parseFloat(
+                    formData.salePrice as any
+                  ).toFixed(2)}`}
+                />
+                <p className="text-xs -translate-y-2 font-medium text-gray-600 capitalize">
+                  {"(Vat Inclusive)"}
+                </p>
+              </div>
+              <input
+                className="py-1 focus:outline-gray-300 text-gray-600 text-sm text-center"
+                defaultValue={"**Dry wash only"}
+              />
+              <div className="flex items-center mt-2">
+                <div>
+                  <div className="flex justify-center">
+                    <Image
+                      alt="logo"
+                      style={{ filter: "brightness(0) invert(0)" }}
+                      src={barcode}
+                      quality={100}
+                      className="w-9 h-auto"
+                    />
+                  </div>
+                  <Image
+                    alt="logo"
+                    src={nazaara}
+                    quality={100}
+                    className="w-10 h-auto mt-0.5 opacity-70"
+                  />
+                </div>
+                <p className="text-gray-600 text-6xl -translate-y-2 font-[100] -rotate-6 font-sans">
+                  /
+                </p>
+                <div className="flex flex-col text-xs">
+                  <p className="text-gray-600 font-thin text-start italic">
+                    ANZARA
+                  </p>
+                  <p className="text-gray-600 font-thin text-start italic -translate-y-1 -translate-x-1">
+                    LIFESTYLE LTD.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="flex justify-center">
+              <button
+                onClick={() => barcodePrintFn()}
+                className=" bg-secondary rounded px-3 py-1 text-sm text-white ml-6 mb-6 uppercase flex items-center gap-1"
+              >
+                <IoMdPrint size={18} /> print
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
