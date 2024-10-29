@@ -61,32 +61,3 @@ input[type="number"]::-webkit-outer-spin-button {
 .invert {
   filter: invert(1); /* Adjust brightness if needed */
 }
-
-@media print {
-  /* Hide everything except the print area */
-  body * {
-    visibility: hidden;
-  }
-
-  .print-area,
-  .print-area * {
-    visibility: visible;
-  }
-
-  /* Center the print area on the page */
-  .print-area {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    margin: auto;
-    width: 5cm; /* Set width to match your design */
-    height: 10cm; /* Set height to match your design */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid transparent; /* Optional border to visualize */
-  }
-}
