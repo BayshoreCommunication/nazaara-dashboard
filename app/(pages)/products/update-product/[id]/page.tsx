@@ -202,13 +202,13 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
     data: productsData,
     isLoading: productsLoading,
     refetch,
-  } = useGetProductByIdQuery(params.id);
+  } = useGetProductByIdQuery(params.id) as any;
 
   // console.log("erp data", productsData);
 
   // console.log("size", formData.size);
   // console.log("variant", formData.variant);
-  console.log("productsData", productsData);
+  // console.log("productsData", productsData);
 
   useEffect(() => {
     if (productsData && productsData.success) {
@@ -914,7 +914,7 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
                 className="py-1 focus:outline-gray-300 font-medium text-sm mb-1 text-center"
                 defaultValue={productsData?.data?.category?.title}
               />
-              <Barcode value="1234567865" />
+              <Barcode value={productsData?.data?.barcode} />
               <p className="font-medium mt-2">DW-MX/00018</p>
               <input
                 className="py-0.5 focus:outline-gray-300 text-center"
