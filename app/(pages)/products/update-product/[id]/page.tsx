@@ -925,11 +925,11 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
                 defaultValue={formData?.size[0]}
               />
               <div>
-                {formData?.salePrice ? (
+                {formData?.regularPrice ? (
                   <input
                     className="py-1 focus:outline-gray-300 font-medium text-center"
                     defaultValue={`BDT ${parseFloat(
-                      formData?.salePrice as any
+                      formData?.regularPrice as any
                     ).toFixed(2)}`}
                   />
                 ) : (
