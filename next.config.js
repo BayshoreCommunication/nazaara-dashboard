@@ -1,4 +1,5 @@
 /** @type {import('next').NextConfig} */
+//next config here
 const nextConfig = {
   env: {
     API_URL: process.env.API_URL,
