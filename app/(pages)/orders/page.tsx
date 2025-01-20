@@ -124,7 +124,14 @@ const Orders = () => {
                             <td>{el.item.user.phone}</td>
                             <td>{el.item.totalAmount}/-</td>
                             <td>{el.item.totalPay}/-</td>
-                            <td>{el.item.due}/-</td>
+                            <td>
+                              {el.item.paymentMethod == "partial-payment" &&
+                              (el.item.paymentStatus == "pending" ||
+                                el.item.paymentStatus == "partial-request")
+                                ? el.item.totalAmount
+                                : el.item.due}
+                              /-
+                            </td>
                             <td className="p-0">
                               <span
                                 className={`${
@@ -191,7 +198,14 @@ const Orders = () => {
                               <td>{el?.user?.phone}</td>
                               <td>{el?.totalAmount}/-</td>
                               <td>{el?.totalPay}/-</td>
-                              <td>{el?.due}/-</td>
+                              <td>
+                                {el.paymentMethod == "partial-payment" &&
+                                (el.paymentStatus == "pending" ||
+                                  el.paymentStatus == "partial-request")
+                                  ? el.totalAmount
+                                  : el.due}
+                                /-
+                              </td>
                               <td className="p-0">
                                 <span
                                   className={`${

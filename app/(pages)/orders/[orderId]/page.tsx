@@ -60,6 +60,8 @@ const OrderUpdate = ({ params }: any) => {
     ],
   });
 
+  console.log("shippingAddressData", shippingAddressData);
+
   const invoiceRef = useRef<HTMLDivElement>(null);
   const invoicePrintFn = useReactToPrint({ contentRef: invoiceRef });
 
@@ -283,7 +285,12 @@ const OrderUpdate = ({ params }: any) => {
                   <div className="">
                     <p className="font-medium mb-1">Due</p>
                     <p className="text-sm text-gray-600 font-medium">
-                      {orderData.data.due}/-
+                      {orderData.data.paymentMethod == "partial-payment" &&
+                      (orderData.data.paymentStatus == "pending" ||
+                        orderData.data.paymentStatus == "partial-request")
+                        ? orderData.data.totalAmount
+                        : orderData.data.due}
+                      /-
                     </p>
                   </div>
                   <div className="">
