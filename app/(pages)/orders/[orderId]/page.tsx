@@ -44,6 +44,7 @@ const OrderUpdate = ({ params }: any) => {
     deliveryStatus: "",
     shippingAddress: {
       fullName: "",
+      email: "",
       phone: "",
       city: "",
       country: "",
@@ -85,6 +86,7 @@ const OrderUpdate = ({ params }: any) => {
         deliveryStatus: orderData.data.deliveryStatus,
         shippingAddress: {
           fullName: orderData.data.shippingAddress.fullName || "",
+          email: orderData.data.shippingAddress.email || "",
           phone: orderData.data.shippingAddress.phone || "",
           city: orderData.data.shippingAddress.city || "",
           country: orderData.data.shippingAddress.country || "",
@@ -595,6 +597,32 @@ const OrderUpdate = ({ params }: any) => {
                             shippingAddress: {
                               ...shippingAddressData.shippingAddress,
                               fullName: e.target.value,
+                            },
+                          })
+                        }
+                      />
+                    </div>
+
+                    <div className="flex items-center">
+                      <label
+                        className="w-56 font-medium text-gray-500"
+                        htmlFor="email"
+                      >
+                        Email:
+                      </label>
+                      <input
+                        className="block rounded-sm w-full px-2 py-1 border border-gray-400 focus:outline-none text-gray-500 mt-1"
+                        type="text"
+                        id="email"
+                        required
+                        placeholder="Enter Email"
+                        value={shippingAddressData.shippingAddress.email}
+                        onChange={(e) =>
+                          setShippingAddressData({
+                            ...shippingAddressData,
+                            shippingAddress: {
+                              ...shippingAddressData.shippingAddress,
+                              email: e.target.value,
                             },
                           })
                         }

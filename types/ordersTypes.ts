@@ -37,6 +37,7 @@ export interface IOrderData {
 
 export interface IOrderShippingAddress {
   fullName: string;
+  email: string;
   phone: string;
   street?: string;
   country: string;

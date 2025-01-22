@@ -8,12 +8,14 @@ import { FaRulerHorizontal } from "react-icons/fa";
 import { formatDate } from "@/helpers/formatDate";
 import { TiEdit } from "react-icons/ti";
 import Fuse from "fuse.js";
+import PrimaryButton from "@/components/PrimaryButton";
+import { MdCreateNewFolder } from "react-icons/md";
 // import { IOrders } from "@/types/ordersTypes";
 
 const Orders = () => {
   const { data, isLoading } = useGetOrdersQuery();
 
-  // console.log("dataaaa", data);
+  console.log("dataaaa", data);
 
   const [openModal, setOpenModal] = useState(false);
 
@@ -73,22 +75,31 @@ const Orders = () => {
             *search through orderId, fullName, phone, email, deliveryStatus,
             paymentStatus, paymentMethod*
           </small>
-          {/*********** search user input start ************/}
-          <div className="flex items-center gap-1">
-            <label
-              htmlFor="search"
-              className="text-sm text-gray-600 font-semibold"
-            >
-              Search:
-            </label>
-            <input
-              type="text"
-              id="search"
-              onChange={(e) => setSearchText(e.target.value)}
-              className="border border-gray-300 outline-none hover:outline-none px-2 py-1 rounded-md text-gray-600 text-sm"
-            />
+          <div className="flex items-center gap-2">
+            {/*********** search user input start ************/}
+            <div className="flex items-center gap-1">
+              <label
+                htmlFor="search"
+                className="text-sm text-gray-600 font-semibold"
+              >
+                Search:
+              </label>
+              <input
+                type="text"
+                id="search"
+                onChange={(e) => setSearchText(e.target.value)}
+                className="border border-gray-300 outline-none hover:outline-none px-2 py-1 rounded-md text-gray-600 text-sm"
+              />
+            </div>
+            {/*********** search user input end ************/}
+
+            <Link href={"/orders/create-custom-order"}>
+              <button className="bg-secondary py-1.5 px-4 rounded-md text-white text-sm flex items-center gap-1.5">
+                <MdCreateNewFolder size={16} />
+                Create Order
+              </button>
+            </Link>
           </div>
-          {/*********** search user input end ************/}
         </div>
         <div className="overflow-auto">
           <table className="table bg-basic">
@@ -100,6 +111,7 @@ const Orders = () => {
                 <th>Customer Name</th>
                 <th>Customer Email</th>
                 <th>Customer Phone</th>
+                <th>Custom Order</th>
                 <th>Total Price</th>
                 <th>Total Pay</th>
                 <th>Due</th>
@@ -122,6 +134,9 @@ const Orders = () => {
                             <td>{el.item.user.fullName}</td>
                             <td>{el.item.user.email}</td>
                             <td>{el.item.user.phone}</td>
+                            <td className="font-semibold">
+                              {el?.isCustomOrder ? "Yes" : "No"}
+                            </td>
                             <td>{el.item.totalAmount}/-</td>
                             <td>{el.item.totalPay}/-</td>
                             <td>
@@ -193,9 +208,22 @@ const Orders = () => {
                             <tr key={el._id}>
                               <td>{formatDate(el?.createdAt as Date)}</td>
                               <td>{el?.transactionId}</td>
-                              <td>{el?.user?.fullName}</td>
-                              <td>{el?.user?.email}</td>
-                              <td>{el?.user?.phone}</td>
+                              <td>
+                                {el?.user?.fullName
+                                  ? el?.user?.fullName
+                                  : el?.shippingAddress?.fullName}
+                              </td>
+                              <td>
+                                {el?.user?.email
+                                  ? el?.user?.email
+                                  : el?.shippingAddress?.email}
+                              </td>
+                              <td>
+                                {el?.user?.phone
+                                  ? el?.user?.phone
+                                  : el?.shippingAddress?.phone}
+                              </td>
+                              <td>{el?.isCustomOrder ? "Yes" : "No"}</td>
                               <td>{el?.totalAmount}/-</td>
                               <td>{el?.totalPay}/-</td>
                               <td>
