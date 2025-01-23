@@ -9,14 +9,20 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 import Swal from "sweetalert2";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { AiFillProduct, AiOutlineShoppingCart } from "react-icons/ai";
-import Fuse from "fuse.js";
+// import Fuse from "fuse.js";
+import axios from "axios";
+import toast from "react-hot-toast";
+import { BeatLoader } from "react-spinners";
 
 const Products: any = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [searchText, setSearchText] = useState(""); // it manipulate search text
-  const [searchData, setSearchData] = useState([]); // it manipulate found searched data
+  // const [searchText, setSearchText] = useState(""); // it manipulate search text
+  // const [searchData, setSearchData] = useState([]); // it manipulate found searched data
+  const [searchedProduct, setSearchedProduct] = useState<any>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchLoading, setSearchLoading] = useState(false);
 
   // console.log("search text", searchText, "search data", searchData);
 
@@ -26,37 +32,37 @@ const Products: any = () => {
     error: productsError,
   } = useGetProductsQuery({ page: currentPage, limit: 10 });
 
-  const { data: productSearchData } = useGetProductsQuery({
-    page: 1,
-    limit: 0,
-  });
+  // const { data: productSearchData } = useGetProductsQuery({
+  //   page: 1,
+  //   limit: 0,
+  // });
 
-  // console.log("products data", productSearchData);
+  // console.log("products data", productsData);
 
-  useEffect(() => {
-    const fuseOptions = {
-      // isCaseSensitive: false,
-      // includeScore: false,
-      // shouldSort: true,
-      // includeMatches: false,
-      // findAllMatches: false,
-      // minMatchCharLength: 1,
-      // location: 0,
-      //threshold: 0.6, // 0.6 means it show similar search item
-      threshold: 0.1, // 0.1 means it match with exact string
-      // distance: 100,
-      // useExtendedSearch: false,
-      // ignoreLocation: false,
-      // ignoreFieldNorm: false,
-      // fieldNormWeight: 1,
-      keys: ["erpId", "sku", "category", "subCategory", "status"],
-    };
-    const fuse = new Fuse(productSearchData?.product as any, fuseOptions);
-    if (searchText) {
-      const currentSearchData = fuse.search(searchText);
-      setSearchData(currentSearchData as any);
-    }
-  }, [productSearchData?.product, searchText]);
+  // useEffect(() => {
+  //   const fuseOptions = {
+  //     // isCaseSensitive: false,
+  //     // includeScore: false,
+  //     // shouldSort: true,
+  //     // includeMatches: false,
+  //     // findAllMatches: false,
+  //     // minMatchCharLength: 1,
+  //     // location: 0,
+  //     //threshold: 0.6, // 0.6 means it show similar search item
+  //     threshold: 0.1, // 0.1 means it match with exact string
+  //     // distance: 100,
+  //     // useExtendedSearch: false,
+  //     // ignoreLocation: false,
+  //     // ignoreFieldNorm: false,
+  //     // fieldNormWeight: 1,
+  //     keys: ["erpId", "sku", "category", "subCategory", "status"],
+  //   };
+  //   const fuse = new Fuse(productSearchData?.product as any, fuseOptions);
+  //   if (searchText) {
+  //     const currentSearchData = fuse.search(searchText);
+  //     setSearchData(currentSearchData as any);
+  //   }
+  // }, [productSearchData?.product, searchText]);
 
   const totalPages = productsData?.totalPages;
 
@@ -150,22 +156,6 @@ const Products: any = () => {
     return pageNumbers;
   };
 
-  // const syncErpDataHandler = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       "https://erp.anzaralifestyle.com/api/product/Details/?format=json",
-  //       {
-  //         headers: {
-  //           Authorization: `Token ${process.env.AUTH_TOKEN}`,
-  //         },
-  //       }
-  //     );
-  //     // console.log("Fetched data:", response.data);
-  //   } catch (error) {
-  //     console.error("Request error:", error);
-  //   }
-  // };
-
   const [deleteProduct] = useDeleteProductMutation();
 
   const handleDelete = (id: string) => {
@@ -201,180 +191,106 @@ const Products: any = () => {
     } else if (!productsLoading) {
       return (
         <>
-          {searchData && searchText ? (
-            <>
-              {searchData?.map((elem: any) => (
-                // <tr key={elem.item._id}>
-                //   <td>
-                //     {elem.item.variant[0].imageUrl[0] ? (
-                //       <Image
-                //         src={elem.item.variant[0].imageUrl[0]}
-                //         alt="nazaara main logo"
-                //         width={248}
-                //         height={248}
-                //         className="w-[64px] h-[80px] rounded-md"
-                //       />
-                //     ) : (
-                //       <Image
-                //         src="/images/no-image.jpg"
-                //         alt="nazaara main logo"
-                //         width={248}
-                //         height={248}
-                //         className="w-[64px] h-[80px] rounded-md"
-                //       />
-                //     )}
-                //   </td>
-                //   <td>{elem.item.erpId}</td>
-                //   <td>{elem.item.sku}</td>
-                //   <td>{elem.item.erpCategory}</td>
-                //   <td>{elem.item.erpSubCategory}</td>
-                //   <td>{elem.item.category}</td>
-                //   <td>{elem.item.subCategory}</td>
-                //   <td>
-                //     <span className="text-xl">৳</span>
-                //     {elem.item.regularPrice}
-                //   </td>
-                //   <td>
-                //     <span className="text-xl">৳</span>
-                //     {elem.item.salePrice}
-                //   </td>
-                //   <td>{elem.item.stock}</td>
-                //   <td
-                //     className={`font-medium ${
-                //       elem.item.status === "published"
-                //         ? "text-green-500"
-                //         : "text-red-500"
-                //     }`}
-                //   >
-                //     {elem.item.status}
-                //   </td>
-                //   <td>
-                //     <div className="flex gap-2">
-                //       <Link
-                //         href={{
-                //           pathname: "/products/image-upload",
-                //           query: { id: `${elem.item._id}` },
-                //         }}
-                //         className="text-white bg-red-800 py-1 px-2 rounded-md shadow-md text-xs"
-                //       >
-                //         Edit Image
-                //       </Link>
-                //       <Link
-                //         href={`/products/update-product/${elem.item._id}`}
-                //         className="text-white bg-red-800 py-1 px-2 rounded-md shadow-md text-xs"
-                //       >
-                //         Edit Details
-                //       </Link>
-                //       <button
-                //         onClick={() => handleDelete(elem.item._id as string)}
-                //         className="text-white bg-red-800 py-1 px-2 rounded-md shadow-md text-xs"
-                //       >
-                //         Delete
-                //       </button>
-                //     </div>
-                //   </td>
-                // </tr>
-                <tr key={elem.item._id}>
-                  <td>
-                    {elem.item.variant[0].imageUrl.length > 0 ? (
-                      <Image
-                        src={
-                          elem.item.variant
-                            .flatMap((v: any) => v.imageUrl)
-                            .find((image: any) => image.isFeatured)?.image ||
-                          elem.item.variant[0].imageUrl[0].image
-                        }
-                        alt="nazaara main logo"
-                        width={248}
-                        height={248}
-                        placeholder="blur"
-                        blurDataURL={"/images/placeholder.png"}
-                        className="min-w-[66px] max-w-[66px] min-h-[80px] rounded-md"
-                      />
-                    ) : (
-                      <Image
-                        src="/images/no-image.jpg"
-                        alt="nazaara main logo"
-                        width={248}
-                        height={248}
-                        placeholder="blur"
-                        blurDataURL={"/images/placeholder.png"}
-                        className="w-[66px] h-[80px] rounded-md"
-                      />
-                    )}
-                  </td>
-                  <td>{elem.item.erpId}</td>
-                  <td>{elem.item.sku}</td>
-                  <td>{elem.item.erpCategory}</td>
-                  <td>{elem.item.erpSubCategory}</td>
-                  <td>{elem.item.category}</td>
-                  <td>{elem.item.subCategory}</td>
-                  <td>
-                    <span className="text-xl">৳</span>
-                    {elem.item.regularPrice}
-                  </td>
-                  <td>
-                    <span className="text-xl">৳</span>
-                    {elem.item.salePrice}
-                  </td>
-                  <td>{elem.item.stock}</td>
-                  {elem.item.preOrder ? (
-                    <td className="font-semibold text-green-600">Available</td>
-                  ) : (
-                    <td className="text-red-600 font-semibold">Unavailable</td>
-                  )}
-                  {(elem.item.stock === 0 && !elem.item.preOrder) ||
-                  elem.item.status === "draft" ? (
-                    <td>
-                      <span className="bg-red-600 font-medium text-white px-3 py-[1px] text-[12px] rounded-full">
-                        NO
-                      </span>{" "}
-                    </td>
-                  ) : (
-                    <td>
-                      <span className="bg-green-600 font-medium text-white px-3 py-[1px] text-[12px] rounded-full">
-                        YES
-                      </span>
-                    </td>
-                  )}
+          {searchedProduct ? (
+            <tr>
+              <td>
+                {searchedProduct.variant[0].imageUrl.length > 0 ? (
+                  <Image
+                    src={
+                      searchedProduct.variant
+                        .flatMap((v: any) => v.imageUrl)
+                        .find((image: any) => image.isFeatured)?.image ||
+                      searchedProduct.variant[0].imageUrl[0].image
+                    }
+                    alt="nazaara main logo"
+                    width={248}
+                    height={248}
+                    placeholder="blur"
+                    blurDataURL={"/images/placeholder.png"}
+                    className="min-w-[66px] max-w-[66px] min-h-[80px] rounded-md"
+                  />
+                ) : (
+                  <Image
+                    src="/images/no-image.jpg"
+                    alt="nazaara main logo"
+                    width={248}
+                    height={248}
+                    placeholder="blur"
+                    blurDataURL={"/images/placeholder.png"}
+                    className="w-[66px] h-[80px] rounded-md"
+                  />
+                )}
+              </td>
+              <td>{searchedProduct.erpId}</td>
+              <td>{searchedProduct.sku}</td>
+              <td>{searchedProduct.erpCategory}</td>
+              <td>{searchedProduct.erpSubCategory}</td>
+              <td>{searchedProduct.category.title}</td>
+              <td>{searchedProduct.subCategory.title}</td>
+              <td>
+                <span className="text-xl">৳</span>
+                {searchedProduct.regularPrice}
+              </td>
+              <td>
+                <span className="text-xl">৳</span>
+                {searchedProduct.salePrice}
+              </td>
+              <td>{searchedProduct.stock}</td>
+              {searchedProduct.preOrder ? (
+                <td className="font-semibold text-green-600">Available</td>
+              ) : (
+                <td className="text-red-600 font-semibold">Unavailable</td>
+              )}
+              {(searchedProduct.stock === 0 && !searchedProduct.preOrder) ||
+              searchedProduct.status === "draft" ? (
+                <td>
+                  <span className="bg-red-600 font-medium text-white px-3 py-[1px] text-[12px] rounded-full">
+                    NO
+                  </span>{" "}
+                </td>
+              ) : (
+                <td>
+                  <span className="bg-green-600 font-medium text-white px-3 py-[1px] text-[12px] rounded-full">
+                    YES
+                  </span>
+                </td>
+              )}
 
-                  <td
-                    className={`font-medium ${
-                      elem.item.status === "published"
-                        ? "text-green-500"
-                        : "text-red-500"
-                    }`}
+              <td
+                className={`font-medium ${
+                  searchedProduct.status === "published"
+                    ? "text-green-500"
+                    : "text-red-500"
+                }`}
+              >
+                {searchedProduct.status}
+              </td>
+              <td>
+                <div className="flex gap-2">
+                  <Link
+                    href={{
+                      pathname: "/products/image-upload",
+                      query: { id: `${searchedProduct._id}` },
+                    }}
+                    className="text-white bg-red-800 py-1 px-2 rounded-md shadow-md text-xs"
                   >
-                    {elem.item.status}
-                  </td>
-                  <td>
-                    <div className="flex gap-2">
-                      <Link
-                        href={{
-                          pathname: "/products/image-upload",
-                          query: { id: `${elem.item._id}` },
-                        }}
-                        className="text-white bg-red-800 py-1 px-2 rounded-md shadow-md text-xs"
-                      >
-                        Edit Image
-                      </Link>
-                      <Link
-                        href={`/products/update-product/${elem.item._id}`}
-                        className="text-white bg-red-800 py-1 px-2 rounded-md shadow-md text-xs"
-                      >
-                        Edit Details
-                      </Link>
-                      <button
-                        onClick={() => handleDelete(elem.item._id as string)}
-                        className="text-white bg-red-800 py-1 px-2 rounded-md shadow-md text-xs"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </>
+                    Edit Image
+                  </Link>
+                  <Link
+                    href={`/products/update-product/${searchedProduct._id}`}
+                    className="text-white bg-red-800 py-1 px-2 rounded-md shadow-md text-xs"
+                  >
+                    Edit Details
+                  </Link>
+                  <button
+                    onClick={() => handleDelete(searchedProduct._id as string)}
+                    className="text-white bg-red-800 py-1 px-2 rounded-md shadow-md text-xs"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </td>
+            </tr>
           ) : (
             <>
               {productsData?.product?.map((elem: any) => (
@@ -497,6 +413,43 @@ const Products: any = () => {
     }
   };
 
+  const handleSearch = async () => {
+    setSearchedProduct(null);
+    setSearchLoading(true);
+
+    if (!searchQuery.trim()) {
+      toast.error("Please enter a product ID or SKU.");
+      setSearchLoading(false);
+      return;
+    }
+
+    try {
+      const response = await axios.get(
+        `${process.env.API_URL}/api/v1/product/search`,
+        {
+          params: searchQuery.match(/^[0-9a-fA-F]{24}$/)
+            ? { _id: searchQuery }
+            : { sku: searchQuery },
+
+          headers: {
+            Authorization: `Nazaara@Token ${process.env.API_SECURE_KEY}`,
+          },
+        }
+      );
+      // console.log("response", response.data);
+      setSearchLoading(false);
+      setSearchedProduct(response.data);
+    } catch (err: any) {
+      setSearchLoading(false);
+      toast.error(err.response?.data?.message || "Error fetching product.");
+    }
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery("");
+    setSearchedProduct(null);
+  };
+
   return (
     <>
       {productsLoading ? (
@@ -508,11 +461,11 @@ const Products: any = () => {
               <AiOutlineShoppingCart size={18} color="gray" />
               <span className="font-medium text-lg">Products</span>
             </div>
-            <small className="text-gray-600 font-medium">
-              *search through erpId, sku, web-category, web-subCategory, status*
+            <small className="text-red-600 font-medium">
+              *search through (sku) only
             </small>
             {/* search user  */}
-            <div className="flex items-center gap-2">
+            {/* <div className="flex items-center gap-2">
               <div>
                 <label
                   htmlFor="search"
@@ -527,6 +480,34 @@ const Products: any = () => {
                   className="border border-gray-300 outline-none hover:outline-none px-2 py-1 rounded-md text-gray-600 text-sm"
                 />
               </div>
+            </div> */}
+            <div className="flex items-center gap-1">
+              <div className="flex items-center ">
+                <input
+                  type="text"
+                  className="border border-r-0 border-gray-400 px-2 rounded-l w-44 text-sm py-1 focus:outline-none focus:border-gray-500"
+                  placeholder="Search Product SKU"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <button
+                  onClick={handleSearch}
+                  className="bg-secondary text-white w-16 py-[5px] rounded-r text-sm"
+                >
+                  {searchLoading ? (
+                    <BeatLoader color="white" size={8} />
+                  ) : (
+                    "Search"
+                  )}
+                </button>
+              </div>
+              <button
+                style={{ backgroundColor: "red" }}
+                onClick={handleClearSearch}
+                className=" text-white px-3 py-[5px] rounded text-sm font-semibold"
+              >
+                X
+              </button>
             </div>
           </div>
           <button className="bg-secondary py-1 px-4 rounded-md text-white mb-4">
@@ -563,7 +544,7 @@ const Products: any = () => {
               <tbody>{tableComponent()}</tbody>
             </table>
           </div>
-          {!searchText && searchData.length >= 0 && (
+          {!searchedProduct && (
             <ul className="flex -space-x-px text-sm justify-center mt-4">
               <li>
                 <button
