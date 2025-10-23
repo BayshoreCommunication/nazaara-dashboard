@@ -20,8 +20,10 @@ export const GetAllContacts = () => {
       text: "You won't be able to revert this!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
+      customClass: {
+        confirmButton: "swal2-confirm !bg-blue-600 !text-white",
+        cancelButton: "swal2-cancel !bg-red-600 !text-white",
+      },
       confirmButtonText: "Yes, delete it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
