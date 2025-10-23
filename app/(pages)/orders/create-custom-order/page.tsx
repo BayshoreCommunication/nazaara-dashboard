@@ -1,5 +1,5 @@
 "use client";
-import axios from "axios";
+import { fetchServerSideData } from "@/action/fetchServerSideData";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -53,28 +53,25 @@ const CreateCustomOrderPage = () => {
     }
 
     try {
-      const response = await axios.get(
-        `${process.env.API_URL}/api/v1/product/search`,
-        {
-          params: searchQuery.match(/^[0-9a-fA-F]{24}$/)
-            ? { _id: searchQuery }
-            : { sku: searchQuery },
+      // Build query parameters
+      const params = searchQuery.match(/^[0-9a-fA-F]{24}$/)
+        ? `_id=${searchQuery}`
+        : `sku=${searchQuery}`;
 
-          headers: {
-            Authorization: `Nazaara@Token ${process.env.API_SECURE_KEY}`,
-          },
-        }
-      );
-      console.log("response", response.data);
+      const url = `${process.env.API_URL}/api/v1/product/search?${params}`;
+      const response = await fetchServerSideData(url);
 
-      setProduct(response.data);
+      if (!response) {
+        toast.error("Error fetching product.");
+        return;
+      }
+
+      console.log("response", response);
+      setProduct(response);
     } catch (err: any) {
-      toast.error(err.response?.data?.message || "Error fetching product.");
+      toast.error(err?.message || "Error fetching product.");
     }
   };
-
-  console.log("product", product);
-  console.log("orderPayloadData", orderPayloadData);
 
   const addProductIntoPayload = () => {
     if (!color) {
@@ -213,34 +210,39 @@ const CreateCustomOrderPage = () => {
       toast.error("Please fill up required shipping address");
       return;
     }
+
     if (
       !orderPayloadData.deliveryStatus ||
       !orderPayloadData.paymentMethod ||
       !orderPayloadData.paymentStatus ||
       !orderPayloadData.shippingMethod ||
-      orderPayloadData.subTotal == 0 ||
-      orderPayloadData.totalAmount == 0 ||
-      orderPayloadData.totalPay == 0
+      orderPayloadData.subTotal === 0 ||
+      orderPayloadData.totalAmount === 0 ||
+      orderPayloadData.totalPay === 0
     ) {
       toast.error("Please fill up required order details");
       return;
     }
 
     try {
-      await axios.post(
-        `${process.env.API_URL}/api/v1/order`,
-        orderPayloadData,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Nazaara@Token ${process.env.API_SECURE_KEY}`,
-          },
-        }
-      );
+      const response = await fetch(`${process.env.API_URL}/api/v1/order`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Nazaara@Token ${process.env.API_SECURE_KEY}`,
+        },
+        body: JSON.stringify(orderPayloadData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData?.message || "Failed to place order");
+      }
+
       toast.success("Order placed successfully!");
       router.push("/orders");
     } catch (error: any) {
-      toast.error(error.response?.data?.message || "Failed to place order");
+      toast.error(error.message || "Failed to place order");
     }
   };
 

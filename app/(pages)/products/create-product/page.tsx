@@ -1,26 +1,21 @@
 "use client";
 import Editor from "@/components/Editor";
-import { FC, ChangeEvent, useState, useEffect } from "react";
+import { ChangeEvent, useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
-import {
-  useCreateProductMutation,
-  useGetProductByIdQuery,
-  useUpdateProductMutation,
-} from "@/services/productApi";
+import { useCreateProductMutation } from "@/services/productApi";
 import dynamic from "next/dynamic";
 import { TProduct } from "@/types/types";
 import Loader from "@/components/Loader";
 // import { useGetErpDataByIdQuery } from "@/services/erpApi";
-import { toCapitalize } from "@/helpers";
 import { useGetCategoriesQuery } from "@/services/categoryApi";
 import { useGetSubCategoriesQuery } from "@/services/subcategory";
 // import { useGetSalesQuery } from "@/services/salesApi";
-import axios from "axios";
 import { ISaleTag } from "@/types/saleTypes";
 import { IFestival } from "@/types/festivalTypes";
 // import useToggle from "@/hooks/useToogle";
 import ColorVariant from "@/components/ColorPicker";
+import { fetchServerSideData } from "@/action/fetchServerSideData";
 const Select = dynamic(() => import("react-select"), {
   ssr: false,
 });
@@ -80,38 +75,29 @@ const CreateProduct = () => {
 
   //fetch sale data
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchSaleData = async () => {
       try {
-        const response = await axios.get(
-          `${process.env.API_URL}/api/v1/sale/published`,
-          {
-            headers: {
-              authorization: `Nazaara@Token ${process.env.API_SECURE_KEY}`,
-            },
-          }
+        const response = await fetchServerSideData(
+          `${process.env.API_URL}/api/v1/sale/published`
         );
-        setSaleData(response.data);
+        if (response) setSaleData(response);
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.error("Error fetching sale data:", error);
       }
     };
-    fetchData();
 
     const fetchFestivalData = async () => {
       try {
-        const response = await axios.get(
-          `${process.env.API_URL}/api/v1/festival/published`,
-          {
-            headers: {
-              authorization: `Nazaara@Token ${process.env.API_SECURE_KEY}`,
-            },
-          }
+        const response = await fetchServerSideData(
+          `${process.env.API_URL}/api/v1/festival/published`
         );
-        setFestivalData(response.data);
+        if (response) setFestivalData(response);
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.error("Error fetching festival data:", error);
       }
     };
+
+    fetchSaleData();
     fetchFestivalData();
   }, []);
 
@@ -151,53 +137,6 @@ const CreateProduct = () => {
     status: "",
   });
 
-  //   const {
-  //     data: productsData,
-  //     isLoading: productsLoading,
-  //     refetch,
-  //   } = useGetProductByIdQuery(params.id);
-
-  // console.log("erp data", productsData);
-
-  //   useEffect(() => {
-  //     if (productsData && productsData.success) {
-  //       setFormData({
-  //         erpId: productsData.data.erpId ? productsData.data.erpId : 0,
-  //         sku: productsData.data.sku ? productsData.data.sku : "",
-  //         productName: productsData.data.productName
-  //           ? productsData.data.productName
-  //           : "",
-  //         purchasePrice: productsData.data.purchasePrice
-  //           ? Number(productsData.data.purchasePrice)
-  //           : 0,
-  //         regularPrice: productsData.data.regularPrice
-  //           ? Number(productsData.data.regularPrice)
-  //           : 0,
-  //         salePrice: productsData.data.salePrice
-  //           ? Number(productsData.data.salePrice)
-  //           : 0,
-  //         variant: productsData.data.variant.map((variant: any) => ({
-  //           color: toCapitalize(variant.color),
-  //           colorCode: variant.colorCode,
-  //           imageUrl: variant.imageUrl.map((image: any) => image),
-  //         })),
-  //         size: productsData.data.size.map((size: any) => size),
-  //         saleIds: productsData.data.saleIds,
-  //         festivalIds: productsData.data.festivalIds,
-  //         description: productsData.data.description,
-  //         erpCategory: productsData.data.erpCategory,
-  //         erpSubCategory: productsData.data.erpSubCategory,
-  //         category: productsData.data.category._id,
-  //         subCategory: productsData.data.subCategory._id,
-  //         stock: Number(productsData.data.stock),
-  //         preOrder: productsData.data.preOrder,
-  //         status: productsData.data.status,
-  //       });
-  //     }
-  //   }, [productsData]);
-
-  // console.log("form data", formData);
-
   const handleChange = (
     event: ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -206,17 +145,6 @@ const CreateProduct = () => {
       [event.target.name]: event.target.value,
     });
   };
-
-  // const handleChange = (
-  //   event: ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  // ) => {
-  //   const { name, value, type } = event.target;
-
-  //   setFormData((prevFormData) => ({
-  //     ...prevFormData,
-  //     [name]: type === "checkbox" ? event.target.checked : value,
-  //   }));
-  // };
 
   const handleSelectionChange = (option: any | null) => {
     if (option) {
@@ -245,24 +173,6 @@ const CreateProduct = () => {
     }
   };
 
-  // const handleVariant = (
-  //   event: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  //   index: number
-  // ) => {
-  //   const { name, value } = event.target;
-  //   const updatedVariants = [...formData.variant]; // Create a copy of the variant array
-  //   const updatedVariant = {
-  //     ...updatedVariants[index], // Get the variant object at the specified index
-  //     [name]: toCapitalize(value), // Update the specific field of the variant object
-  //   };
-  //   updatedVariants[index] = updatedVariant; // Update the variant object in the array
-
-  //   setFormData((prevFormData: TProduct) => ({
-  //     ...prevFormData,
-  //     variant: updatedVariants,
-  //   }));
-  // };
-
   const addDivField = () => {
     setFormData((prevFormData: TProduct) => ({
       ...prevFormData,
@@ -276,18 +186,6 @@ const CreateProduct = () => {
       ],
     }));
   };
-
-  // const removeDivField = (index: number) => {
-  //   setFormData((prevFormData: any) => {
-  //     const updatedVariants = prevFormData.variant.filter(
-  //       (_: any, i: number) => i !== index
-  //     );
-  //     return {
-  //       ...prevFormData,
-  //       variant: updatedVariants,
-  //     };
-  //   });
-  // };
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();

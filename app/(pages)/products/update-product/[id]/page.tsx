@@ -15,8 +15,6 @@ import Loader from "@/components/Loader";
 import { toCapitalize } from "@/helpers";
 import { useGetCategoriesQuery } from "@/services/categoryApi";
 import { useGetSubCategoriesQuery } from "@/services/subcategory";
-// import { useGetSalesQuery } from "@/services/salesApi";
-import axios from "axios";
 import { ISaleTag } from "@/types/saleTypes";
 import { IFestival } from "@/types/festivalTypes";
 // import useToggle from "@/hooks/useToogle";
@@ -31,6 +29,7 @@ import nazaara from "@/public/images/nazaara-logo.png";
 import { TbSlash } from "react-icons/tb";
 import { RxSlash } from "react-icons/rx";
 import { BsSlashLg } from "react-icons/bs";
+import { fetchServerSideData } from "@/action/fetchServerSideData";
 const Select = dynamic(() => import("react-select"), {
   ssr: false,
 });
@@ -134,38 +133,29 @@ const UpdateProduct: FC<IProps> = ({ params }) => {
 
   //fetch sale data
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchSaleData = async () => {
       try {
-        const response = await axios.get(
-          `${process.env.API_URL}/api/v1/sale/published`,
-          {
-            headers: {
-              authorization: `Nazaara@Token ${process.env.API_SECURE_KEY}`,
-            },
-          }
+        const response = await fetchServerSideData(
+          `${process.env.API_URL}/api/v1/sale/published`
         );
-        setSaleData(response.data);
+        if (response) setSaleData(response);
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.error("Error fetching sale data:", error);
       }
     };
-    fetchData();
 
     const fetchFestivalData = async () => {
       try {
-        const response = await axios.get(
-          `${process.env.API_URL}/api/v1/festival/published`,
-          {
-            headers: {
-              authorization: `Nazaara@Token ${process.env.API_SECURE_KEY}`,
-            },
-          }
+        const response = await fetchServerSideData(
+          `${process.env.API_URL}/api/v1/festival/published`
         );
-        setFestivalData(response.data);
+        if (response) setFestivalData(response);
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.error("Error fetching festival data:", error);
       }
     };
+
+    fetchSaleData();
     fetchFestivalData();
   }, []);
 

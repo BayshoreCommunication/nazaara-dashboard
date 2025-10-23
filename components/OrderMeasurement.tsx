@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 import { useUpdateOrderMutation } from "@/services/orderApi";
 import { getAuthenticateUserInfo } from "@/helpers/getAuthenticateUser";
+import { fetchServerSideData } from "@/action/fetchServerSideData";
 
 interface OrderMeasurementProps {
   openModal: boolean;
@@ -62,12 +63,14 @@ const OrderMeasurement: React.FC<OrderMeasurementProps> = ({
       try {
         if (sizeChartId) {
           const url = `${process.env.API_URL}/api/v1/size-chart/${sizeChartId}`;
-          const response = await axios.get(url, {
-            headers: {
-              authorization: `Nazaara@Token ${process.env.API_SECURE_KEY}`,
-            },
-          });
-          const data = response.data.data;
+          const response = await fetchServerSideData(url);
+
+          const data = response?.data;
+          if (!data) {
+            console.error("No size chart data found");
+            return;
+          }
+
           setFormData({
             topType: data.topType,
             bottomType: data.bottomType,
@@ -102,6 +105,7 @@ const OrderMeasurement: React.FC<OrderMeasurementProps> = ({
         console.error("Error fetching data:", error);
       }
     };
+
     if (sizeChartId) {
       fetchData();
     }

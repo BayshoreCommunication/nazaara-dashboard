@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 import axios from "axios";
 import { RxCross2 } from "react-icons/rx";
 import toast from "react-hot-toast";
+import { fetchServerSideData } from "@/action/fetchServerSideData";
 
 const Return = ({ returnData }: any) => {
   const [returnSingleData, setReturnSingleData] = useState({});
@@ -16,20 +17,26 @@ const Return = ({ returnData }: any) => {
     approval: "pending",
   });
   // console.log("api url ff", process.env.API_URL);
-  const handleEditReturn = async (id: any) => {
-    setModalOpen(true);
-    const response = await axios.get(
-      `${process.env.API_URL}/api/v1/return-exchange/${id}`,
-      {
-        headers: {
-          authorization: `Nazaara@Token ${process.env.API_SECURE_KEY}`,
-        },
+  const handleEditReturn = async (id: string) => {
+    try {
+      setModalOpen(true);
+
+      const url = `${process.env.API_URL}/api/v1/return-exchange/${id}`;
+      const response = await fetchServerSideData(url);
+
+      const data = response?.data;
+      if (!data) {
+        console.error("No return-exchange data found");
+        return;
       }
-    );
-    setFormData({
-      approval: response.data.data.approval,
-    });
-    setReturnSingleData(response.data.data);
+
+      setFormData({
+        approval: data.approval,
+      });
+      setReturnSingleData(data);
+    } catch (error) {
+      console.error("Error fetching return-exchange data:", error);
+    }
   };
 
   // console.log("returnData", returnData);

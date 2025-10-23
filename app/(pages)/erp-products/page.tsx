@@ -8,8 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AiOutlineShoppingCart } from "react-icons/ai";
-import axios from "axios";
-
+import { fetchServerSideData } from "@/action/fetchServerSideData";
 const ErpProducts = () => {
   const { data: productsErpId } = useGetProductErpIdQuery();
   const [erpData, setErpData] = useState<TErpData>();
@@ -25,19 +24,22 @@ const ErpProducts = () => {
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
-      try {
-        const response = await axios.get(url, {
-          headers: {
-            Authorization: `Token ${process.env.AUTH_TOKEN}`,
-          },
-        });
 
-        const filteredData = response.data.results.filter(
+      try {
+        const response = await fetchServerSideData(url);
+
+        if (!response) {
+          console.error("No response from server");
+          setIsLoading(false);
+          return;
+        }
+
+        const filteredData = response.results.filter(
           (data: any) => data.quantity > 0
         );
 
         setErpData({
-          ...response.data,
+          ...response,
           results: filteredData,
         });
       } catch (err) {

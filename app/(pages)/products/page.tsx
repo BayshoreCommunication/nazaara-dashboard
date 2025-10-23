@@ -1,20 +1,17 @@
 "use client";
-// import UtilityBtn from "@/components/UtilityBtn";
 import Loader from "@/components/Loader";
 import {
   useGetProductsQuery,
   useDeleteProductMutation,
 } from "@/services/productApi";
-// import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
 import Swal from "sweetalert2";
 import { useState } from "react";
 import { AiFillProduct, AiOutlineShoppingCart } from "react-icons/ai";
-// import Fuse from "fuse.js";
-import axios from "axios";
 import toast from "react-hot-toast";
 import { BeatLoader } from "react-spinners";
+import { fetchServerSideData } from "@/action/fetchServerSideData";
 
 const Products: any = () => {
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -424,24 +421,25 @@ const Products: any = () => {
     }
 
     try {
-      const response = await axios.get(
-        `${process.env.API_URL}/api/v1/product/search`,
-        {
-          params: searchQuery.match(/^[0-9a-fA-F]{24}$/)
-            ? { _id: searchQuery }
-            : { sku: searchQuery },
+      // Build query string
+      const params = searchQuery.match(/^[0-9a-fA-F]{24}$/)
+        ? `_id=${searchQuery}`
+        : `sku=${searchQuery}`;
 
-          headers: {
-            Authorization: `Nazaara@Token ${process.env.API_SECURE_KEY}`,
-          },
-        }
-      );
-      // console.log("response", response.data);
+      const url = `${process.env.API_URL}/api/v1/product/search?${params}`;
+      const response = await fetchServerSideData(url);
+
       setSearchLoading(false);
-      setSearchedProduct(response.data);
+
+      if (!response) {
+        toast.error("Error fetching product.");
+        return;
+      }
+
+      setSearchedProduct(response);
     } catch (err: any) {
       setSearchLoading(false);
-      toast.error(err.response?.data?.message || "Error fetching product.");
+      toast.error(err?.message || "Error fetching product.");
     }
   };
 

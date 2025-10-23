@@ -1,4 +1,5 @@
 "use client";
+import { fetchServerSideData } from "@/action/fetchServerSideData";
 import { cloudinaryImageUpload } from "@/helpers";
 import { cloudinaryImageDeleteWithUrl } from "@/helpers/cloudinaryImageDeleteWithUrl";
 import axios from "axios";
@@ -26,21 +27,21 @@ const SmsMarketing = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(apiUrl, {
-          headers: {
-            authorization: `Nazaara@Token ${process.env.API_SECURE_KEY}`,
-          },
-        });
-        // console.log("respnse", response);
+        const response = await fetchServerSideData(apiUrl);
 
-        setFilteredData({
-          id: response.data.data[0]._id,
-          imageUrl: response.data.data[0].imageUrl,
-        });
+        if (response?.data?.[0]) {
+          setFilteredData({
+            id: response.data[0]._id,
+            imageUrl: response.data[0].imageUrl,
+          });
+        } else {
+          console.error("No data found in response:", response);
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
+
     fetchData();
   }, [apiUrl]);
 
